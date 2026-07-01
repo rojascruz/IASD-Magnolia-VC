@@ -1,0 +1,260 @@
+@page "/admin/tipos-eventos"
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Components.Admin
+@inject EventTypesService EventTypesService
+@inject NavigationManager Navigation
+@inject AuthStateService AuthState
+@rendermode InteractiveServer
+@inject ILogger<Index> Logger
+
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })" />
+
+<PageTitle>Gestión de Tipos de Eventos - IASD Magnolia</PageTitle>
+
+<div class="eventos-admin-page">
+    <div class="eventos-admin-container" style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Gestión de Tipos de Eventos</h1>
+                <p class="page-subtitle">Administra las categorías de eventos</p>
+            </div>
+            <button class="btn-create" @onclick="GoToCreate">
+               <i class="fa-solid fa-calendar-plus"></i>
+                Nuevo Tipo de Evento
+            </button>
+        </div>
+
+    @if (isLoading)
+    {
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Cargando tipos de eventos...</p>
+        </div>
+    }
+    else if (eventTypes.Count == 0)
+    {
+        <div class="empty-state">
+            <i class="fas fa-folder-open"></i>
+            <h3>No hay tipos de eventos</h3>
+            <p>Comienza creando tu primer tipo de evento</p>
+            <button class="btn-primary" @onclick="GoToCreate">
+                Crear Tipo de Evento
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="filters-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" 
+                       placeholder="Buscar por nombre..." 
+                       @bind="searchTerm" 
+                       @bind:event="oninput"
+                       @onkeyup="ApplyFilters" />
+            </div>
+            <div class="filter-chips">
+                <button class="filter-chip @(activeFilter == "all" ? "active" : "")" 
+                        @onclick='() => FilterByStatus("all")'>
+                    Todos (@eventTypes.Count)
+                </button>
+                <button class="filter-chip @(activeFilter == "active" ? "active" : "")" 
+                        @onclick='() => FilterByStatus("active")'>
+                    Activos (@eventTypes.Count(e => e.IsActive))
+                </button>
+                <button class="filter-chip @(activeFilter == "inactive" ? "active" : "")" 
+                        @onclick='() => FilterByStatus("inactive")'>
+                    Inactivos (@eventTypes.Count(e => !e.IsActive))
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="eventos-table">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Fecha Creación</th>
+                        <th class="actions-column">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var eventType in FilteredEventTypes)
+                    {
+                        <tr>
+                            <td>
+                                <div class="event-type-cell">
+                                    <span class="event-type-name">@eventType.Name</span>
+                                    @if (!string.IsNullOrEmpty(eventType.Color))
+                                    {
+                                        <span class="color-badge" style="background-color: @eventType.Color"></span>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <span class="description-cell">
+                                    @(string.IsNullOrEmpty(eventType.Description) ? "—" : 
+                                      eventType.Description.Length > 60 ? eventType.Description.Substring(0, 60) + "..." : eventType.Description)
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge @(eventType.IsActive ? "status-active" : "status-inactive")">
+                                    @(eventType.IsActive ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td>@eventType.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td class="actions-column">
+                                <div class="action-buttons">
+                                    <button class="btn-icon btn-edit" 
+                                            @onclick="() => GoToEdit(eventType.Id)"
+                                            title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete" 
+                                            @onclick="() => ShowDeleteModal(eventType)"
+                                            title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (showDeleteModal)
+    {
+        <div class="modal-overlay" @onclick="CloseDeleteModal">
+            <div class="modal-content" @onclick:stopPropagation="true">
+                <div class="modal-header">
+                    <h3>Confirmar Eliminación</h3>
+                    <button class="btn-close" @onclick="CloseDeleteModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <p>¿Estás seguro de que deseas eliminar el tipo de evento <strong>@eventTypeToDelete?.Name</strong>?</p>
+                    <p class="warning-text">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" @onclick="CloseDeleteModal">Cancelar</button>
+                    <button class="btn-danger" @onclick="ConfirmDelete">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+</div>
+
+@code {
+    private List<EventTypeAdmin> eventTypes = new();
+    private bool isLoading = true;
+    private string searchTerm = string.Empty;
+    private string activeFilter = "all";
+    private bool showDeleteModal = false;
+    private EventTypeAdmin? eventTypeToDelete = null;
+
+    private List<EventTypeAdmin> FilteredEventTypes
+    {
+        get
+        {
+            var filtered = eventTypes.AsEnumerable();
+
+            if (activeFilter == "active")
+                filtered = filtered.Where(e => e.IsActive);
+            else if (activeFilter == "inactive")
+                filtered = filtered.Where(e => !e.IsActive);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var search = searchTerm.ToLower();
+                filtered = filtered.Where(e =>
+                    (e.Name?.ToLower().Contains(search) ?? false) ||
+                    (e.Description?.ToLower().Contains(search) ?? false));
+            }
+
+            return filtered.ToList();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEventTypes();
+    }
+
+    private async Task LoadEventTypes()
+    {
+        try
+        {
+            isLoading = true;
+            eventTypes = await EventTypesService.GetAllEventTypesAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error cargando tipos de eventos.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ApplyFilters()
+    {
+        StateHasChanged();
+    }
+
+    private void FilterByStatus(string filter)
+    {
+        activeFilter = filter;
+    }
+
+    private void GoToCreate()
+    {
+        Navigation.NavigateTo("/admin/tipos-eventos/crear");
+    }
+
+    private void GoToEdit(int id)
+    {
+        Navigation.NavigateTo($"/admin/tipos-eventos/editar/{id}");
+    }
+
+    private void ShowDeleteModal(EventTypeAdmin eventType)
+    {
+        eventTypeToDelete = eventType;
+        showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        showDeleteModal = false;
+        eventTypeToDelete = null;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (eventTypeToDelete == null) return;
+
+        try
+        {
+            var success = await EventTypesService.DeleteEventTypeAsync(eventTypeToDelete.Id);
+            if (success)
+            {
+                await LoadEventTypes();
+                CloseDeleteModal();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error eliminando tipo de evento.");
+        }
+    }
+}

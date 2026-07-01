@@ -1,0 +1,158 @@
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@implements IDisposable
+
+@if (AuthState.IsAuthenticated)
+{
+    <div class="user-menu-container">
+        <button class="user-menu-button" @onclick="ToggleUserMenu">
+            <div class="user-avatar-small">
+                @GetUserInitials()
+            </div>
+            <span class="user-name">@GetUserFirstName()</span>
+            <i class="fas fa-chevron-down" style="font-size: 12px; transition: transform 0.3s; transform: rotate(@(showUserMenu ? "180deg" : "0deg"));"></i>
+        </button>
+
+        @if (showUserMenu)
+        {
+            <div class="user-dropdown">
+                <div class="user-dropdown-header">
+                    <div class="user-avatar-large">
+                        @GetUserInitials()
+                    </div>
+                    <div class="user-info">
+                        <div class="user-fullname">@AuthState.CurrentUser?.FullName</div>
+                        <div class="user-email">@AuthState.CurrentUser?.Email</div>
+                        <div class="user-role">
+                            @if (AuthState.IsAdmin)
+                            {
+                                <span class="badge-admin-sm"><i class="fas fa-shield-alt"></i> Administrador</span>
+                            }
+                            else
+                            {
+                                <span class="badge-editor-sm"><i class="fas fa-user"></i> Editor</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-dropdown-divider"></div>
+
+                @if (AuthState.IsAdmin)
+                {
+                    <a href="/admin/usuarios" class="user-dropdown-item" @onclick="CloseMenu">
+                        <i class="fas fa-users"></i>
+                        <span>Gestionar Usuarios</span>
+                    </a>
+                }
+
+                @* Gestionar Eventos - disponible para Admin y Editor *@
+                @if (AuthState.IsAuthenticated)
+                {
+                    <a href="/admin/eventos" class="user-dropdown-item" @onclick="CloseMenu">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Gestionar Eventos</span>
+                    </a>
+
+                    <a href="/admin/tipos-eventos" class="user-dropdown-item" @onclick="CloseMenu">
+                        <i class="fas fa-tags"></i>
+                        <span>Gestionar Tipos de Eventos</span>
+                    </a>
+
+                    <a href="/admin/departamentos" class="user-dropdown-item" @onclick="CloseMenu">
+                        <i class="fas fa-sitemap"></i>
+                        <span>Gestionar Departamentos</span>
+                    </a>
+
+                    <a href="/admin/liderazgo" class="user-dropdown-item" @onclick="CloseMenu">
+                        <i class="fas fa-users"></i>
+                        <span>Gestionar Liderazgo</span>
+                    </a>
+                }
+
+             @*    <a href="/mi-perfil" class="user-dropdown-item" @onclick="CloseMenu">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Mi Perfil</span>
+                </a>
+
+                <a href="/configuracion" class="user-dropdown-item" @onclick="CloseMenu">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a> *@
+
+                <div class="user-dropdown-divider"></div>
+
+                <button @onclick="HandleLogout" class="user-dropdown-item user-dropdown-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <a href="/" class="">
+      
+    </a>
+}
+
+@code {
+    private bool showUserMenu = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthState.InitializeAsync();
+        AuthState.OnAuthStateChanged += StateHasChanged;
+
+   
+    }
+
+    private void ToggleUserMenu()
+    {
+        showUserMenu = !showUserMenu;
+    }
+
+    private void CloseMenu()
+    {
+        showUserMenu = false;
+    }
+
+    private string GetUserInitials()
+    {
+        if (AuthState.CurrentUser == null) return "?";
+
+        var fullName = AuthState.CurrentUser.FullName;
+        if (string.IsNullOrWhiteSpace(fullName)) return "?";
+
+        var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1) return parts[0].Substring(0, Math.Min(2, parts[0].Length)).ToUpper();
+
+        return (parts[0][0].ToString() + parts[^1][0].ToString()).ToUpper();
+    }
+
+    private string GetUserFirstName()
+    {
+        if (AuthState.CurrentUser == null) return "";
+
+        var fullName = AuthState.CurrentUser.FullName;
+        if (string.IsNullOrWhiteSpace(fullName)) return "";
+
+        var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length > 0 ? parts[0] : fullName;
+    }
+
+    private async Task HandleLogout()
+    {
+        showUserMenu = false;
+        await AuthState.LogoutAsync();
+        Navigation.NavigateTo("/", forceLoad: true);
+    }
+
+    public void Dispose()
+    {
+        AuthState.OnAuthStateChanged -= StateHasChanged;
+    }
+}

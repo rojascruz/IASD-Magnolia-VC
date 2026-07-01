@@ -1,0 +1,316 @@
+@page "/admin/liderazgo/crear"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Shared
+@using IASD_Magnolia.Components.Admin
+@using Microsoft.AspNetCore.Components.Forms
+@inject LeadershipService LeadershipService
+@inject DepartmentsService DepartmentsService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@inject ILogger<Crear> Logger
+
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })" />
+
+<PageTitle>Crear nuevo líder - IASD Magnolia</PageTitle>
+
+<Toast IsVisible="@showToast" 
+       Title="@toastTitle" 
+       Message="@toastMessage" 
+       Type="@toastType" 
+       OnHide="@(() => showToast = false)" />
+
+<div class="evento-create-page">
+    <div class="evento-page-header">
+        <button class="btn-volver" @onclick="@(() => Navigation.NavigateTo("/admin/liderazgo"))">
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver</span>
+        </button>
+        <div class="header-icon-circle">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="header-text">
+            <h1 class="evento-page-title">Crear nuevo líder</h1>
+            <p class="evento-page-subtitle">Registra un nuevo líder o servidor de la iglesia.</p>
+        </div>
+    </div>
+
+    <div class="evento-form-wrapper">
+        <EditForm Model="@newLeader" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Información básica</h3>
+                <div class="form-row-2col">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Nombre completo <span class="required-mark">*</span></label>
+                        <InputText class="form-control-simple" @bind-Value="newLeader.FullName" 
+                                   placeholder="Ej: José Rodríguez" maxlength="150" />
+                        <ValidationMessage For="@(() => newLeader.FullName)" class="text-danger" />
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Cargo o posición <span class="required-mark">*</span></label>
+                        <InputText class="form-control-simple" @bind-Value="newLeader.Position" 
+                                   placeholder="Ej: Pastor, Director, Tesorero..." maxlength="150" />
+                        <ValidationMessage For="@(() => newLeader.Position)" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-row-2col mt-3">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Departamento <span class="required-mark">*</span></label>
+                        <InputSelect class="form-control-simple" @bind-Value="newLeader.DepartmentId">
+                            <option value="0">Selecciona un departamento</option>
+                            @foreach (var dept in departments)
+                            {
+                                <option value="@dept.Id">@dept.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => newLeader.DepartmentId)" class="text-danger" />
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Orden <span class="required-mark">*</span></label>
+                        <InputNumber class="form-control-simple" @bind-Value="newLeader.DisplayOrder" />
+                        <small class="form-text text-muted">Números más bajos aparecen primero (ej: 1, 2, 3...)</small>
+                    </div>
+                </div>
+                <div class="form-row-2col mt-3">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Correo público</label>
+                        <InputText class="form-control-simple" @bind-Value="newLeader.PublicEmail" 
+                                   type="email" placeholder="ejemplo@iglesia.org" maxlength="150" />
+                        <small class="form-text text-muted">Opcional - Se mostrará en la página pública</small>
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Teléfono público</label>
+                        <InputText class="form-control-simple" @bind-Value="newLeader.PublicPhone" 
+                                   placeholder="787-000-0000" maxlength="20" />
+                        <small class="form-text text-muted">Opcional - Se mostrará en la página pública</small>
+                    </div>
+                </div>
+                <div class="form-group-simple mt-3">
+                    <label class="form-label-simple">Biografía</label>
+                    <InputTextArea class="form-control-simple textarea-simple" @bind-Value="newLeader.Biography" 
+                                  placeholder="Breve biografía o descripción del líder..." rows="3" />
+                    <small class="form-text text-muted">Opcional - Se mostrará en el perfil público</small>
+                </div>
+            </div>
+
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Foto del líder</h3>
+
+                <!-- Información sobre las especificaciones de imagen -->
+                <div class="alert alert-info mb-3" style="background-color: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 8px; padding: 12px;">
+                    <div style="display: flex; align-items: start; gap: 10px;">
+                        <i class="fas fa-info-circle" style="color: #0066cc; margin-top: 2px;"></i>
+                        <div style="flex: 1;">
+                            <strong style="color: #003d7a;">Especificaciones de la foto:</strong>
+                            <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #004d99; font-size: 0.9rem;">
+                                <li><strong>Formato:</strong> PNG, JPG o WEBP</li>
+                                <li><strong>Tamaño máximo:</strong> 10 MB</li>
+                                <li><strong>Dimensiones recomendadas:</strong> 400x400 píxeles (cuadrada)</li>
+                                <li><strong>Fondo:</strong> Preferiblemente sólido o profesional</li>
+                                <li><strong>Nota:</strong> La foto se mostrará circular en la página pública</li>
+                                <li><strong>Optimización:</strong> El sistema redimensionará automáticamente la imagen</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="image-upload-simple">
+                    @if (string.IsNullOrEmpty(photoPreview))
+                    {
+                        <div class="upload-area-simple">
+                            <i class="fas fa-user-circle upload-icon-simple"></i>
+                            <p class="upload-text-simple">Subir foto del líder</p>
+                            <p class="upload-hint-simple">JPG, PNG o WEBP • Máx. 10MB • Se optimizará automáticamente</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="image-preview-simple">
+                            <img src="@photoPreview" alt="Preview" class="preview-img-simple" style="border-radius: 50%;" />
+                            <button type="button" class="btn-remove-preview" @onclick="RemovePhoto">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+                <InputFile OnChange="HandlePhotoSelected" accept="image/jpeg,image/jpg,image/png,image/webp" 
+                           class="file-input-hidden" id="photoUpload" />
+                <div class="image-actions-simple">
+                    <label for="photoUpload" class="btn-select-image">
+                        <i class="fas fa-upload me-2"></i>
+                        @(string.IsNullOrEmpty(photoPreview) ? "Seleccionar foto" : "Cambiar foto")
+                    </label>
+                    @if (!string.IsNullOrEmpty(photoPreview))
+                    {
+                        <button type="button" class="btn-delete-image" @onclick="RemovePhoto">
+                            <i class="fas fa-trash me-2"></i>Eliminar foto
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Periodo del cargo (opcional)</h3>
+                <div class="form-row-2col">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Fecha de inicio</label>
+                        <InputDate class="form-control-simple" @bind-Value="newLeader.StartDate" />
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Fecha de fin</label>
+                        <InputDate class="form-control-simple" @bind-Value="newLeader.EndDate" />
+                        <small class="form-text text-muted">Dejar vacío si aún está activo</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Estado</h3>
+                <div class="status-toggle-wrapper" style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 2px solid #e9ecef;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, @(newLeader.IsActive ? "#28a745" : "#6c757d"), @(newLeader.IsActive ? "#20c997" : "#495057")); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <i class="fas @(newLeader.IsActive ? "fa-check" : "fa-pause")" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div>
+                                <label for="isActive" style="font-weight: 600; font-size: 1.1rem; margin: 0; cursor: pointer; color: #212529;">
+                                    @(newLeader.IsActive ? "Líder Activo" : "Líder Inactivo")
+                                </label>
+                                <p style="margin: 0; font-size: 0.875rem; color: #6c757d;">
+                                    @(newLeader.IsActive ? "Este líder se mostrará en la página pública" : "Este líder está oculto del público")
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch" style="padding: 0; margin: 0;">
+                            <InputCheckbox class="form-check-input" id="isActive" @bind-Value="newLeader.IsActive" 
+                                          style="width: 60px; height: 30px; cursor: pointer; border-radius: 15px;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions-simple">
+                <button type="button" class="btn-cancel-simple" @onclick="@(() => Navigation.NavigateTo("/admin/liderazgo"))">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+                <button type="submit" class="btn-submit-simple" disabled="@isSaving">
+                    @if (isSaving)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-save me-2"></i>
+                    }
+                    Guardar líder
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private Leadership newLeader = new() { IsActive = true };
+    private List<Department> departments = new();
+    private bool isSaving = false;
+    private IBrowserFile? selectedPhoto;
+    private string? photoPreview;
+
+    private bool showToast = false;
+    private string toastTitle = "";
+    private string toastMessage = "";
+    private Toast.ToastType toastType = Toast.ToastType.Success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        departments = await DepartmentsService.GetAllDepartmentsAsync();
+    }
+
+    private async Task HandlePhotoSelected(InputFileChangeEventArgs e)
+    {
+        selectedPhoto = e.File;
+        try
+        {
+            // Validar tamaño del archivo
+            if (selectedPhoto.Size > 10 * 1024 * 1024)
+            {
+                ShowToast("Error", "La imagen no puede superar los 10MB", "error");
+                return;
+            }
+
+            // Para la vista previa, redimensionar a 400x400 en el cliente
+            var imageFile = await selectedPhoto.RequestImageFileAsync("image/jpeg", 400, 400);
+
+            // Leer el archivo redimensionado (la imagen redimensionada será mucho más pequeña)
+            var bufferSize = 5 * 1024 * 1024; // 5MB es suficiente para la preview
+            using var stream = imageFile.OpenReadStream(bufferSize);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+
+            var base64 = Convert.ToBase64String(memoryStream.ToArray());
+            photoPreview = $"data:image/jpeg;base64,{base64}";
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading image.");    
+
+            selectedPhoto = null;
+            photoPreview = null;
+        }
+    }
+
+    private void RemovePhoto()
+    {
+        selectedPhoto = null;
+        photoPreview = null;
+    }
+
+    private async Task HandleSubmit()
+    {
+        isSaving = true;
+        try
+        {
+            if (newLeader.DepartmentId <= 0)
+            {
+                ShowToast("Error", "Debe seleccionar un departamento", "error");
+                isSaving = false;
+                return;
+            }
+
+            if (selectedPhoto != null)
+            {
+                newLeader.PhotoUrl = await LeadershipService.SavePhotoAsync(selectedPhoto);
+            }
+
+            var id = await LeadershipService.CreateLeadershipAsync(newLeader);
+
+            if (id != Guid.Empty)
+            {
+                ShowToast("Éxito", "Líder creado exitosamente", "success");
+                await Task.Delay(1500);
+                Navigation.NavigateTo("/admin/liderazgo");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error creating leadership.");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private void ShowToast(string title, string message, string type)
+    {
+        toastTitle = title;
+        toastMessage = message;
+        toastType = type == "error" ? Toast.ToastType.Error : Toast.ToastType.Success;
+        showToast = true;
+    }
+}

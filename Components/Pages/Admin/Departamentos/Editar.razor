@@ -1,0 +1,245 @@
+@page "/admin/departamentos/editar/{id:int}"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Shared
+@using IASD_Magnolia.Components.Admin
+@inject DepartmentsService DepartmentsService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })" />
+
+<PageTitle>Editar departamento - IASD Magnolia</PageTitle>
+
+<!-- Toast Notification -->
+<Toast IsVisible="@showToast" 
+       Title="@toastTitle" 
+       Message="@toastMessage" 
+       Type="@toastType" 
+       OnHide="@(() => showToast = false)" />
+
+@if (isLoading)
+{
+    <div class="loading-container" style="min-height: 50vh; display: flex; align-items: center; justify-content: center;">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="ms-3">Cargando departamento...</p>
+    </div>
+}
+else if (department == null)
+{
+    <div class="alert alert-danger m-4">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        No se encontró el departamento solicitado.
+    </div>
+}
+else
+{
+    <div class="evento-create-page">
+        <!-- Header -->
+        <div class="evento-page-header">
+            <button class="btn-volver" @onclick="@(() => Navigation.NavigateTo("/admin/departamentos"))">
+                <i class="fas fa-arrow-left"></i>
+                <span>Volver</span>
+            </button>
+            <div class="header-icon-circle">
+                <i class="fas fa-edit"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="evento-page-title">Editar departamento</h1>
+                <p class="evento-page-subtitle">Actualiza la información del departamento.</p>
+            </div>
+        </div>
+
+        <div class="evento-form-wrapper">
+            <EditForm Model="@department" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+
+                <!-- Información básica -->
+                <div class="form-section-simple">
+                    <h3 class="section-title-simple">Información básica</h3>
+                    <div class="form-row-2col">
+                        <div class="form-group-simple">
+                            <label class="form-label-simple">Nombre del departamento <span class="required-mark">*</span></label>
+                            <InputText class="form-control-simple" @bind-Value="department.Name" 
+                                       placeholder="Ej. Ministerio Joven, Mayordomía..." maxlength="150" />
+                            <ValidationMessage For="@(() => department.Name)" class="text-danger" />
+                            @if (!string.IsNullOrEmpty(nameError))
+                            {
+                                <div class="text-danger mt-1"><small>@nameError</small></div>
+                            }
+                        </div>
+                        <div class="form-group-simple">
+                            <label class="form-label-simple">Orden de visualización <span class="required-mark">*</span></label>
+                            <InputNumber class="form-control-simple" @bind-Value="department.DisplayOrder" />
+                            <small class="form-text text-muted">Números más bajos aparecen primero</small>
+                            <ValidationMessage For="@(() => department.DisplayOrder)" class="text-danger" />
+                        </div>
+                    </div>
+                    <div class="form-group-simple mt-3">
+                        <label class="form-label-simple">Descripción</label>
+                        <InputTextArea class="form-control-simple textarea-simple" @bind-Value="department.Description" 
+                                      placeholder="Describe las funciones y propósito de este departamento..." rows="4" />
+                        <small class="form-text text-muted">Opcional</small>
+                    </div>
+                </div>
+
+                <!-- Estado -->
+                <div class="form-section-simple">
+                    <h3 class="section-title-simple">Estado</h3>
+                    <div class="status-toggle-wrapper" style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 2px solid #e9ecef;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, @(department.IsActive ? "#28a745" : "#6c757d"), @(department.IsActive ? "#20c997" : "#495057")); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                    <i class="fas @(department.IsActive ? "fa-check" : "fa-pause")" style="color: white; font-size: 20px;"></i>
+                                </div>
+                                <div>
+                                    <label for="isActive" style="font-weight: 600; font-size: 1.1rem; margin: 0; cursor: pointer; color: #212529;">
+                                        @(department.IsActive ? "Departamento Activo" : "Departamento Inactivo")
+                                    </label>
+                                    <p style="margin: 0; font-size: 0.875rem; color: #6c757d;">
+                                        @(department.IsActive ? "Este departamento se mostrará en la página pública" : "Este departamento está oculto del público")
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch" style="padding: 0; margin: 0;">
+                                <InputCheckbox class="form-check-input" id="isActive" @bind-Value="department.IsActive" 
+                                              style="width: 60px; height: 30px; cursor: pointer; border-radius: 15px;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="alert alert-light">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Creado:</strong> @department.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                    </small>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="form-actions-simple">
+                    <button type="button" class="btn-delete-simple" @onclick="ConfirmDelete">
+                        <i class="fas fa-trash me-2"></i>Eliminar departamento
+                    </button>
+                    <div class="actions-right">
+                        <button type="button" class="btn-cancel-simple" @onclick="@(() => Navigation.NavigateTo("/admin/departamentos"))">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn-submit-simple" disabled="@isSaving">
+                            @if (isSaving)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-save me-2"></i>
+                            }
+                            Guardar cambios
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Department? department;
+    private bool isLoading = true;
+    private bool isSaving = false;
+    private string? nameError;
+
+    // Toast
+    private bool showToast = false;
+    private string toastTitle = "";
+    private string toastMessage = "";
+    private Toast.ToastType toastType = Toast.ToastType.Success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        department = await DepartmentsService.GetDepartmentByIdAsync(Id);
+        isLoading = false;
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (department == null) return;
+
+        nameError = null;
+        isSaving = true;
+
+        try
+        {
+            // Validar nombre único (excluyendo el actual)
+            var nameExists = await DepartmentsService.DepartmentNameExistsAsync(department.Name, department.Id);
+            if (nameExists)
+            {
+                nameError = "Ya existe otro departamento con este nombre";
+                isSaving = false;
+                return;
+            }
+
+            // Actualizar departamento
+            var success = await DepartmentsService.UpdateDepartmentAsync(department);
+
+            if (success)
+            {
+                ShowToast("Éxito", "Departamento actualizado exitosamente", "success");
+                await Task.Delay(1500);
+                Navigation.NavigateTo("/admin/departamentos");
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowToast("Error", $"Error al actualizar departamento: {ex.Message}", "error");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private void ShowToast(string title, string message, string type)
+    {
+        toastTitle = title;
+        toastMessage = message;
+        toastType = type == "error" ? Toast.ToastType.Error : Toast.ToastType.Success;
+        showToast = true;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (department == null) return;
+
+        var confirmed = await JS.InvokeAsync<bool>("confirm", 
+            $"¿Estás seguro de eliminar el departamento '{department.Name}'?\\n\\nEsta acción no se puede deshacer.");
+
+        if (confirmed)
+        {
+            try
+            {
+                var success = await DepartmentsService.DeleteDepartmentAsync(Id);
+                if (success)
+                {
+                    ShowToast("Éxito", "Departamento eliminado exitosamente", "success");
+                    await Task.Delay(1500);
+                    Navigation.NavigateTo("/admin/departamentos");
+                }
+                else
+                {
+                    ShowToast("Error", "No se pudo eliminar el departamento", "error");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowToast("Error", $"Error al eliminar: {ex.Message}", "error");
+            }
+        }
+    }
+}

@@ -1,0 +1,330 @@
+@page "/recursos"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@inject ResourcesService ResourcesService
+@inject ILogger<Recursos> Logger
+
+<PageTitle>Recursos - IASD Magnolia</PageTitle>
+
+<div class="recursos-page">
+    <!-- Hero Section -->
+    <section class="recursos-hero-section">
+        <div class="recursos-hero-overlay">
+            <div class="recursos-hero-content">
+                <h1>Recursos de la Iglesia</h1>
+                <p class="recursos-subtitle">Conoce a los líderes y departamentos que sirven en<br />nuestra iglesia con amor y dedicación.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="recursos-filter-section">
+        <div class="container">
+            <div class="row g-3 align-items-center">
+                <!-- Search -->
+                <div class="col-12 col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control border-start-0" 
+                               placeholder="Buscar por nombre o posición..." 
+                               @bind="searchTerm"
+                               @bind:event="oninput"
+                               @onkeyup="OnSearchChanged" />
+                    </div>
+                </div>
+
+                <!-- Department Filter -->
+                <div class="col-12 col-md-6">
+                    <select class="form-select" @onchange="OnDepartmentChanged">
+                        <option value="">Todos los ministerios</option>
+                        @if (departments != null)
+                        {
+                            @foreach (var dept in departments)
+                            {
+                                <option value="@dept.Id">@dept.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leadership Grid -->
+    <section class="recursos-grid-section py-5">
+        <div class="container">
+            @if (isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            }
+            else if (pagedLeadership == null || !pagedLeadership.Any())
+            {
+                <div class="empty-state text-center py-5">
+                    <i class="fas fa-user-times fa-4x text-muted mb-3"></i>
+                    <h3>No se encontraron recursos</h3>
+                    <p class="text-muted">Intenta con otros criterios de búsqueda</p>
+                </div>
+            }
+            else
+            {
+                <!-- Grid 3 columnas -->
+                <div class="row g-4">
+                    @foreach (var leader in pagedLeadership)
+                    {
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="recurso-card">
+                                <div class="recurso-photo-container">
+                                    <img src="@leader.DisplayPhoto" alt="@leader.FullName" class="recurso-photo" />
+                                    <div class="recurso-department-badge">
+                                        @leader.DepartmentName
+                                    </div>
+                                </div>
+                                <div class="recurso-body">
+                                    <h5 class="recurso-name">@leader.FullName</h5>
+                                    <p class="recurso-position">@leader.Position</p>
+
+                                    @if (!string.IsNullOrEmpty(leader.Biography))
+                                    {
+                                        <p class="recurso-bio">@leader.ShortBiography</p>
+                                    }
+
+                                    <div class="recurso-contact">
+                                        @if (!string.IsNullOrEmpty(leader.PublicEmail))
+                                        {
+                                            <a href="mailto:@leader.PublicEmail" class="recurso-contact-item" title="Email">
+                                                <i class="fas fa-envelope"></i>
+                                            </a>
+                                        }
+                                        @if (!string.IsNullOrEmpty(leader.PublicPhone))
+                                        {
+                                            <a href="tel:@leader.PublicPhone" class="recurso-contact-item" title="Teléfono">
+                                                <i class="fas fa-phone"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                @if (totalPages > 1)
+                {
+                    <div class="pagination-container mt-5">
+                        <nav aria-label="Navegación de recursos">
+                            <ul class="pagination justify-content-center">
+                                <!-- Previous Button -->
+                                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                    <button class="page-link" @onclick="() => ChangePage(currentPage - 1)" disabled="@(currentPage == 1)">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                </li>
+
+                                <!-- Page Numbers -->
+                                @foreach (var page in GetPageNumbers())
+                                {
+                                    <li class="page-item @(currentPage == page ? "active" : "")">
+                                        <button class="page-link" @onclick="() => ChangePage(page)">
+                                            @((MarkupString)page.ToString())
+                                        </button>
+                                    </li>
+                                }
+
+                                <!-- Next Button -->
+                                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                    <button class="page-link" @onclick="() => ChangePage(currentPage + 1)" disabled="@(currentPage == totalPages)">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                        <p class="text-center text-muted mt-2">
+                            Mostrando @pagedLeadership.Count de @filteredLeadership.Count recursos
+                        </p>
+                    </div>
+                }
+            }
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="recursos-values-section py-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Personas comprometidas -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="value-card text-center">
+                        <div class="value-icon mb-3">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h5 class="value-title">Personas comprometidas</h5>
+                        <p class="value-description">Hombres y mujeres dedicados a servir con amor y humildad.</p>
+                    </div>
+                </div>
+
+                <!-- Un solo propósito -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="value-card text-center">
+                        <div class="value-icon mb-3">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h5 class="value-title">Un solo propósito</h5>
+                        <p class="value-description">Llevar esperanza, formar discípulos y servir a nuestra comunidad.</p>
+                    </div>
+                </div>
+
+                <!-- Trabajamos juntos -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="value-card text-center">
+                        <div class="value-icon mb-3">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h5 class="value-title">Trabajamos juntos</h5>
+                        <p class="value-description">Cada ministerio y líder cumple un papel importante.</p>
+                    </div>
+                </div>
+
+                <!-- Para la gloria de Dios -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="value-card text-center">
+                        <div class="value-icon mb-3">
+                            <i class="fas fa-book-bible"></i>
+                        </div>
+                        <h5 class="value-title">Para la gloria de Dios</h5>
+                        <p class="value-description">Todo lo que hacemos es para honrar a Dios y bendecir vidas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@code {
+    private List<Leadership> allLeadership = new();
+    private List<Leadership> filteredLeadership = new();
+    private List<Leadership> pagedLeadership = new();
+    private List<Department> departments = new();
+
+    private string searchTerm = string.Empty;
+    private int? selectedDepartmentId = null;
+
+    private int currentPage = 1;
+    private int itemsPerPage = 6; // 3 columnas x 2 filas
+    private int totalPages = 0;
+
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+
+            allLeadership = await ResourcesService.GetActiveLeadershipAsync();
+            departments = await ResourcesService.GetDepartmentsWithLeadershipAsync();
+
+        
+
+            ApplyFilters();
+        }
+        catch (Exception ex)
+        {
+            allLeadership = new List<Leadership>();
+            departments = new List<Department>();
+            Logger.LogError(ex, "Error loading leadership and departments.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void OnDepartmentChanged(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        selectedDepartmentId = string.IsNullOrEmpty(value) ? null : int.Parse(value);
+        currentPage = 1;
+        ApplyFilters();
+        StateHasChanged();
+    }
+
+    private void OnSearchChanged(KeyboardEventArgs e)
+    {
+        currentPage = 1;
+        ApplyFilters();
+        StateHasChanged();
+    }
+
+    private void ApplyFilters()
+    {
+        filteredLeadership = allLeadership;
+
+        // Apply department filter
+        if (selectedDepartmentId.HasValue)
+        {
+            filteredLeadership = filteredLeadership
+                .Where(l => l.DepartmentId == selectedDepartmentId.Value)
+                .ToList();
+        }
+
+        // Apply search filter
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var search = searchTerm.ToLower();
+            filteredLeadership = filteredLeadership
+                .Where(l => 
+                    l.FullName.ToLower().Contains(search) ||
+                    l.Position.ToLower().Contains(search) ||
+                    (l.DepartmentName != null && l.DepartmentName.ToLower().Contains(search)) ||
+                    (l.Biography != null && l.Biography.ToLower().Contains(search)))
+                .ToList();
+        }
+
+        UpdatePagedLeadership();
+    }
+
+    private void UpdatePagedLeadership()
+    {
+        totalPages = (int)Math.Ceiling(filteredLeadership.Count / (double)itemsPerPage);
+
+        if (currentPage > totalPages && totalPages > 0)
+        {
+            currentPage = totalPages;
+        }
+
+        pagedLeadership = filteredLeadership
+            .Skip((currentPage - 1) * itemsPerPage)
+            .Take(itemsPerPage)
+            .ToList();
+    }
+
+    private void ChangePage(int page)
+    {
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        UpdatePagedLeadership();
+        StateHasChanged();
+    }
+
+    private List<int> GetPageNumbers()
+    {
+        var pages = new List<int>();
+        var startPage = Math.Max(1, currentPage - 2);
+        var endPage = Math.Min(totalPages, currentPage + 2);
+
+        for (int i = startPage; i <= endPage; i++)
+        {
+            pages.Add(i);
+        }
+
+        return pages;
+    }
+}

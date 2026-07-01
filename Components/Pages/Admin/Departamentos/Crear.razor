@@ -1,0 +1,179 @@
+@page "/admin/departamentos/crear"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Shared
+@using IASD_Magnolia.Components.Admin
+@inject DepartmentsService DepartmentsService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })" />
+
+<PageTitle>Crear nuevo departamento - IASD Magnolia</PageTitle>
+
+<!-- Toast Notification -->
+<Toast IsVisible="@showToast" 
+       Title="@toastTitle" 
+       Message="@toastMessage" 
+       Type="@toastType" 
+       OnHide="@(() => showToast = false)" />
+
+<div class="evento-create-page">
+    <!-- Header -->
+    <div class="evento-page-header">
+        <button class="btn-volver" @onclick="@(() => Navigation.NavigateTo("/admin/departamentos"))">
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver</span>
+        </button>
+        <div class="header-icon-circle">
+            <i class="fas fa-sitemap"></i>
+        </div>
+        <div class="header-text">
+            <h1 class="evento-page-title">Crear nuevo departamento</h1>
+            <p class="evento-page-subtitle">Completa la información para crear un nuevo ministerio.</p>
+        </div>
+    </div>
+
+    <div class="evento-form-wrapper">
+        <EditForm Model="@newDepartment" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+
+            <!-- Información básica -->
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Información básica</h3>
+                <div class="form-row-2col">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Nombre del departamento <span class="required-mark">*</span></label>
+                        <InputText class="form-control-simple" @bind-Value="newDepartment.Name" 
+                                   placeholder="Ej. Ministerio Joven, Mayordomía..." maxlength="150" />
+                        <ValidationMessage For="@(() => newDepartment.Name)" class="text-danger" />
+                        @if (!string.IsNullOrEmpty(nameError))
+                        {
+                            <div class="text-danger mt-1"><small>@nameError</small></div>
+                        }
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Orden de visualización <span class="required-mark">*</span></label>
+                        <InputNumber class="form-control-simple" @bind-Value="newDepartment.DisplayOrder" />
+                        <small class="form-text text-muted">Números más bajos aparecen primero. Sugerido: @suggestedOrder</small>
+                        <ValidationMessage For="@(() => newDepartment.DisplayOrder)" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group-simple mt-3">
+                    <label class="form-label-simple">Descripción</label>
+                    <InputTextArea class="form-control-simple textarea-simple" @bind-Value="newDepartment.Description" 
+                                  placeholder="Describe las funciones y propósito de este departamento..." rows="4" />
+                    <small class="form-text text-muted">Opcional</small>
+                </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Estado</h3>
+                <div class="status-toggle-wrapper" style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 2px solid #e9ecef;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, @(newDepartment.IsActive ? "#28a745" : "#6c757d"), @(newDepartment.IsActive ? "#20c997" : "#495057")); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <i class="fas @(newDepartment.IsActive ? "fa-check" : "fa-pause")" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div>
+                                <label for="isActive" style="font-weight: 600; font-size: 1.1rem; margin: 0; cursor: pointer; color: #212529;">
+                                    @(newDepartment.IsActive ? "Departamento Activo" : "Departamento Inactivo")
+                                </label>
+                                <p style="margin: 0; font-size: 0.875rem; color: #6c757d;">
+                                    @(newDepartment.IsActive ? "Este departamento se mostrará en la página pública" : "Este departamento está oculto del público")
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch" style="padding: 0; margin: 0;">
+                            <InputCheckbox class="form-check-input" id="isActive" @bind-Value="newDepartment.IsActive" 
+                                          style="width: 60px; height: 30px; cursor: pointer; border-radius: 15px;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="form-actions-simple">
+                <button type="button" class="btn-cancel-simple" @onclick="@(() => Navigation.NavigateTo("/admin/departamentos"))">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+                <button type="submit" class="btn-submit-simple" disabled="@isSaving">
+                    @if (isSaving)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-save me-2"></i>
+                    }
+                    Guardar departamento
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private Department newDepartment = new() { IsActive = true };
+    private bool isSaving = false;
+    private string? nameError;
+    private int suggestedOrder = 10;
+
+    // Toast
+    private bool showToast = false;
+    private string toastTitle = "";
+    private string toastMessage = "";
+    private Toast.ToastType toastType = Toast.ToastType.Success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        suggestedOrder = await DepartmentsService.GetNextDisplayOrderAsync();
+        newDepartment.DisplayOrder = suggestedOrder;
+    }
+
+    private async Task HandleSubmit()
+    {
+        nameError = null;
+        isSaving = true;
+
+        try
+        {
+            // Validar nombre único
+            var nameExists = await DepartmentsService.DepartmentNameExistsAsync(newDepartment.Name);
+            if (nameExists)
+            {
+                nameError = "Ya existe un departamento con este nombre";
+                isSaving = false;
+                return;
+            }
+
+            // Crear departamento
+            var id = await DepartmentsService.CreateDepartmentAsync(newDepartment);
+
+            if (id > 0)
+            {
+                ShowToast("Éxito", "Departamento creado exitosamente", "success");
+                await Task.Delay(1500);
+                Navigation.NavigateTo("/admin/departamentos");
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowToast("Error", $"Error al crear departamento: {ex.Message}", "error");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private void ShowToast(string title, string message, string type)
+    {
+        toastTitle = title;
+        toastMessage = message;
+        toastType = type == "error" ? Toast.ToastType.Error : Toast.ToastType.Success;
+        showToast = true;
+    }
+}

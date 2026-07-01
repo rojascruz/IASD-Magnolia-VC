@@ -1,0 +1,320 @@
+﻿/* ============================================
+   PÁGINA: MINISTERIOS Y DEPARTAMENTOS
+   ============================================ */
+
+/* Hero Section */
+.ministry-hero-section {
+    position: relative;
+    height: 450px;
+    background-image: url('/img/home/IASD.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ministry-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(26, 54, 93, 0.95) 0%, rgba(26, 54, 93, 0.85) 50%, rgba(26, 54, 93, 0.3) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ministry-hero-content {
+    text-align: center;
+    color: white;
+    z-index: 2;
+    padding: 0 30px;
+}
+
+.ministry-hero-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFB84D;
+}
+
+    .ministry-hero-icon i {
+        font-size: 90px;
+    }
+
+
+.ministry-hero-content h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ministry-subtitle {
+    font-size: 18px;
+    line-height: 1.8;
+    color: white;
+    margin: 0;
+    opacity: 0.95;
+}
+
+/* Sección de Grid de Ministerios */
+.ministries-section {
+    max-width: 1400px;
+    margin: 80px auto;
+    padding: 0 80px;
+}
+
+.ministries-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.ministry-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 350px;
+}
+
+    .ministry-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        border-color: #FFB84D;
+    }
+
+.ministry-icon-circle {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 25px;
+    background-color: #003057;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 48, 87, 0.2);
+    transition: all 0.3s;
+}
+
+    .ministry-icon-circle i {
+        font-size: 30px;
+    }
+
+.ministry-card:hover .ministry-icon-circle {
+    background-color: #FFB84D;
+    color: #003057;
+    transform: scale(1.1);
+}
+
+.ministry-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #003057;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ministry-card p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #6C757D;
+    margin: 0 0 25px 0;
+    flex-grow: 1;
+}
+
+.ministry-schedule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #FFB84D;
+}
+
+    .ministry-schedule svg {
+        color: #003057;
+        flex-shrink: 0;
+    }
+
+    .ministry-schedule span {
+        font-size: 14px;
+        color: #333;
+        text-align: left;
+    }
+
+    .ministry-schedule strong {
+        color: #003057;
+    }
+
+/* Call to Action Section */
+.ministry-cta-section {
+    background: linear-gradient(135deg, #003057 0%, #004a7f 100%);
+    padding: 0;
+    margin-top: 80px;
+}
+
+.ministry-cta-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    min-height: 450px;
+}
+
+.ministry-cta-image {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .ministry-cta-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+.ministry-cta-text {
+    padding: 60px 80px;
+    text-align: left;
+    color: white;
+}
+
+.ministry-cta-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 0 30px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFB84D;
+}
+
+.ministry-cta-text h2 {
+    font-size: 42px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+}
+
+.ministry-cta-text p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: white;
+    margin: 0 0 35px 0;
+    opacity: 0.95;
+}
+
+.btn-join-ministry {
+    display: inline-block;
+    background-color: #FFB84D;
+    color: #003057;
+    padding: 16px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 184, 77, 0.3);
+}
+
+    .btn-join-ministry:hover {
+        background-color: #e5a43d;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 184, 77, 0.5);
+        color: #003057;
+    }
+
+/* Responsive: Ministerios */
+@media (max-width: 1200px) {
+    .ministries-container {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ministry-hero-section {
+        height: auto;
+        min-height: 450px;
+    }
+
+    .ministry-hero-content h1 {
+        font-size: 32px;
+    }
+
+    .ministry-subtitle {
+        font-size: 16px;
+    }
+
+    .ministries-section {
+        padding: 0 30px;
+    }
+
+    .ministries-container {
+        grid-template-columns: 1fr;
+    }
+
+    .ministry-cta-content {
+        grid-template-columns: 1fr;
+    }
+
+    .ministry-cta-image {
+        height: 300px;
+        order: 1;
+    }
+
+    .ministry-cta-text {
+        padding: 40px 30px;
+        order: 2;
+    }
+
+        .ministry-cta-text h2 {
+            font-size: 28px;
+        }
+
+        .ministry-cta-text p {
+            font-size: 16px;
+        }
+}
+
+/* Estilos adicionales para badges de eventos en Home */
+.evento-tipo {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.evento-card .ubicacion {
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+    margin: 5px 0;
+}

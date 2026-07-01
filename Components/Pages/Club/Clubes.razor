@@ -1,0 +1,204 @@
+@page "/clubes"
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@inject LeadershipService LeadershipService
+@rendermode InteractiveServer
+
+<PageTitle>Nuestros Clubes - IASD Magnolia</PageTitle>
+
+<div class="clubes-page">
+
+    <section class="clubes-hero">
+        <div class="clubes-hero-overlay">
+            <div class="clubes-hero-content">
+                <h1>Nuestros Clubes</h1>
+                <p class="clubes-subtitle">
+                    Programas diseñados para niños y jóvenes que buscan aprender,<br />
+                    crecer y servir a Dios de una manera divertida.
+                </p>
+
+                <a href="https://forms.gle/r49u7khmEvCzmQhZA"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="club-register-btn">
+                    <i class="fas fa-edit"></i>
+                    Inscripción a los Clubes
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="clubs-section">
+        <div class="clubs-container">
+
+            <div class="club-card aventureros">
+                <div class="club-bg">
+                    <img src="/img/Clubes/Aventutero.png" alt="Aventureros" />
+                    <div class="club-overlay"></div>
+
+                    <div class="club-info">
+                        <div class="club-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+
+                        <h2>Los Aventureros</h2>
+
+                        <span class="age-range">
+                            <i class="fas fa-user"></i> 6 - 9 años
+                        </span>
+
+                        <p>
+                            Un programa diseñado para los más pequeños, donde aprenden sobre Jesús
+                            a través de juegos, manualidades y actividades al aire libre.
+                        </p>
+
+                        <div class="club-features">
+                            <span><i class="fas fa-book-bible"></i> Historias bíblicas interactivas</span>
+                            <span><i class="fas fa-palette"></i> Manualidades creativas</span>
+                            <span><i class="fas fa-running"></i> Juegos al aire libre</span>
+                            <span><i class="fas fa-music"></i> Canciones y música</span>
+                            <span><i class="fas fa-leaf"></i> Exploración de la naturaleza</span>
+                            <span><i class="fas fa-hands-helping"></i> Actividades de servicio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="club-footer">
+                    <i class="far fa-clock"></i>
+                    <strong>Reuniones: Sábados 5:00 PM</strong>
+                </div>
+            </div>
+
+            <div class="club-card conquistadores">
+                <div class="club-bg">
+                    <img src="/img/Clubes/Conquistadores.png" alt="Conquistadores" />
+                    <div class="club-overlay"></div>
+
+                    <div class="club-info">
+                        <div class="club-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+
+                        <h2>Conquistadores</h2>
+
+                        <span class="age-range">
+                            <i class="fas fa-user"></i> 10 - 15 años
+                        </span>
+
+                        <p>
+                            Programa integral que desarrolla habilidades prácticas, espirituales
+                            y sociales a través de especialidades, campamentos y servicio comunitario.
+                        </p>
+
+                        <div class="club-features">
+                            <span><i class="fas fa-medal"></i> Especialidades y honores</span>
+                            <span><i class="fas fa-campground"></i> Campamentos y caminatas</span>
+                            <span><i class="fas fa-hands-helping"></i> Servicio comunitario</span>
+                            <span><i class="fas fa-futbol"></i> Deportes y recreación</span>
+                            <span><i class="fas fa-leaf"></i> Estudio de la naturaleza</span>
+                            <span><i class="fas fa-user-tie"></i> Desarrollo de liderazgo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="club-footer">
+                    <i class="far fa-clock"></i>
+                    <strong>Reuniones: Sábados 5:00 PM</strong>
+                </div>
+            </div>
+
+            <div class="club-card cadetes">
+                <div class="club-bg">
+                    <img src="/img/Clubes/Cadetes.png" alt="Cadetes" />
+                    <div class="club-overlay"></div>
+
+                    <div class="club-info">
+                        <div class="club-icon">
+                            <i class="fas fa-flag"></i>
+                        </div>
+
+                        <h2>Cadetes</h2>
+
+                        <span class="age-range">
+                            <i class="fas fa-users"></i> 16+ años
+                        </span>
+
+                        <p>
+                            Programa avanzado para jóvenes que buscan desarrollar liderazgo cristiano
+                            y prepararse para el servicio en la iglesia y la comunidad.
+                        </p>
+
+                        <div class="club-features">
+                            <span><i class="fas fa-user-tie"></i> Liderazgo y mentoría</span>
+                            <span><i class="fas fa-cross"></i> Proyectos misioneros</span>
+                            <span><i class="fas fa-book-open"></i> Estudio bíblico avanzado</span>
+                            <span><i class="fas fa-church"></i> Capacitación ministerial</span>
+                            <span><i class="fas fa-hands-helping"></i> Servicio en la iglesia</span>
+                            <span><i class="fas fa-briefcase"></i> Desarrollo profesional</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="club-footer">
+                    <i class="far fa-clock"></i>
+                    <strong>Reuniones: Sábados 5:00 PM</strong>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    @if (leaders != null && leaders.Any())
+    {
+        <section class="clubes-leadership">
+            <div class="leadership-container">
+
+                <div class="leadership-title-card">
+                    <div class="leadership-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+
+                    <div>
+                        <h3>Liderazgo<br />de los Clubes</h3>
+                        <span></span>
+                    </div>
+                </div>
+
+                @foreach (var leader in leaders)
+                {
+                    <div class="leader-item">
+                        <div class="leader-photo">
+                            <img src="@leader.DisplayPhoto" alt="@leader.FullName" />
+                        </div>
+
+                        <div class="leader-info">
+                            <h3>@leader.FullName</h3>
+                            <p>@leader.Position</p>
+                            <span></span>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </section>
+    }
+
+</div>
+
+@code {
+    private List<Leadership> leaders = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allLeaders = await LeadershipService.GetAllLeadershipAsync();
+
+        leaders = allLeaders
+            .Where(l => l.IsActive &&
+                       !string.IsNullOrEmpty(l.Position) &&
+                       (l.Position.Contains("Aventureros", StringComparison.OrdinalIgnoreCase) ||
+                        l.Position.Contains("Conquistadores", StringComparison.OrdinalIgnoreCase) ||
+                        l.Position.Contains("Cadetes", StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(l => l.DisplayOrder)
+            .ToList();
+    }
+}

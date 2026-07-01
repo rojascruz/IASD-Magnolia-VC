@@ -1,0 +1,475 @@
+@page "/admin/liderazgo"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Admin
+@inject LeadershipService LeadershipService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@inject ILogger<Index> Logger
+
+<PageTitle>Gestión de Liderazgo - IASD Magnolia</PageTitle>
+
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })">
+    <div class="admin-page">
+        <div class="eventos-admin-container">
+            <!-- Header -->
+            <div class="page-header">
+                 <div class="title-section">
+                    <h1>Gestión de Liderazgo</h1>
+                    <p>Administra los líderes y servidores de la iglesia</p>
+                </div>
+                <button class="btn-create" @onclick="GoToCreate">
+                    <i class="fas fa-user-plus"></i>
+                    Crear nuevo líder
+                </button>
+              
+            </div>
+
+            <!-- Stats Cards -->
+            @if (!isLoading)
+            {
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@totalLeaders</h3>
+                            <p>Total líderes</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon active">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@activeLeaders</h3>
+                            <p>Activos</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon featured">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@leadersWithPhotos</h3>
+                            <p>Con fotos</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon upcoming">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@uniqueDepartments</h3>
+                            <p>Departamentos</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" 
+                           placeholder="Buscar líder..." 
+                           @bind="searchTerm" 
+                           @bind:event="oninput"
+                           @bind:after="OnFilterChanged" />
+                </div>
+
+                <select class="filter-select" @bind="statusFilter" @bind:after="OnFilterChanged">
+                    <option value="">Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
+                </select>
+
+                <select class="filter-select" @bind="departmentFilter" @bind:after="OnFilterChanged">
+                    <option value="">Todos los departamentos</option>
+                    @foreach (var dept in GetUniqueDepartments())
+                    {
+                        <option value="@dept">@dept</option>
+                    }
+                </select>
+
+                <button class="btn-clear-filters" @onclick="ClearFilters">
+                    <i class="fas fa-sync-alt"></i> Limpiar filtros
+                </button>
+            </div>
+
+            <!-- Table -->
+            @if (isLoading)
+            {
+                <div class="loading-container">
+                    <div class="spinner-border" role="status"></div>
+                    <p>Cargando líderes...</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-container">
+                    <table class="eventos-table">
+                        <thead>
+                            <tr>
+                                <th>FOTO</th>
+                                <th>LÍDER</th>
+                                <th>CARGO</th>
+                                <th>DEPARTAMENTO</th>
+                                <th>CONTACTO</th>
+                                <th>ESTADO</th>
+                                <th>Orden</th>
+                                <th>ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (PaginatedLeaders.Any())
+                            {
+                                @foreach (var leader in PaginatedLeaders)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(leader.PhotoUrl))
+                                            {
+                                                <img src="@leader.DisplayPhoto" alt="@leader.FullName" class="event-thumbnail" style="border-radius: 50%;" />
+                                            }
+                                            else
+                                            {
+                                                <div class="event-thumbnail" style="background: #6c757d; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                                    <i class="fas fa-user text-white"></i>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="event-info">
+                                                <div class="event-title">@leader.FullName</div>
+                                                @if (leader.StartDate.HasValue)
+                                                {
+                                                    <div class="event-short-desc">Desde: @leader.StartDate.Value.ToString("MMM yyyy")</div>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge-type" style="background-color: #0066cc">
+                                                @leader.Position
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge-type" style="background-color: #6c757d">
+                                                @leader.DepartmentName
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="event-short-desc">
+                                                @if (!string.IsNullOrEmpty(leader.PublicEmail))
+                                                {
+                                                    <div><i class="fas fa-envelope me-1"></i>@leader.PublicEmail</div>
+                                                }
+                                                @if (!string.IsNullOrEmpty(leader.PublicPhone))
+                                                {
+                                                    <div><i class="fas fa-phone me-1"></i>@leader.PublicPhone</div>
+                                                }
+                                                @if (string.IsNullOrEmpty(leader.PublicEmail) && string.IsNullOrEmpty(leader.PublicPhone))
+                                                {
+                                                    <span>—</span>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (leader.IsActive)
+                                            {
+                                                <span class="badge-active"><i class="fas fa-check-circle"></i> Activo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge-inactive"><i class="fas fa-times-circle"></i> Inactivo</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="badge-type" style="background-color: lightskyblue">
+                                                @leader.DisplayOrder
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn-action btn-edit" @onclick="@(() => GoToEdit(leader.Id))" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-action btn-delete" @onclick="@(() => ShowDeleteConfirmation(leader))" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="no-data">
+                                        <i class="fas fa-users-slash"></i>
+                                        <p>No hay líderes que coincidan con los filtros</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (FilteredLeaders.Any())
+                {
+                    <div class="pagination-section">
+                        <div class="pagination-info">
+                            Mostrando @FirstItemIndex a @LastItemIndex de @FilteredLeaders.Count líderes
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="btn-pagination" 
+                                    @onclick="PreviousPage" 
+                                    disabled="@(currentPage == 1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+
+                            @foreach (var pageNum in GetPageNumbers())
+                            {
+                                <button class="btn-pagination @(pageNum == currentPage ? "active" : "")" 
+                                        @onclick="@(() => GoToPage(pageNum))">
+                                    @pageNum
+                                </button>
+                            }
+
+                            <button class="btn-pagination" 
+                                    @onclick="NextPage" 
+                                    disabled="@(currentPage == TotalPages)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</AdminAuthRequired>
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal && leaderToDelete != null)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDeleteModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar a <strong>@leaderToDelete.FullName</strong>?</p>
+                    <p class="text-danger mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Esta acción también eliminará su foto si tiene una.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmDelete" disabled="@isDeleting">
+                        @if (isDeleting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        <span>Eliminar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Leadership> leaders = new();
+    private bool isLoading = true;
+    private bool showDeleteModal = false;
+    private bool isDeleting = false;
+    private Leadership? leaderToDelete = null;
+
+    // Filtros
+    private string searchTerm = "";
+    private string statusFilter = "";
+    private string departmentFilter = "";
+
+    // Paginación
+    private int currentPage = 1;
+    private int pageSize = 10;
+
+    // Estadísticas
+    private int totalLeaders => leaders.Count;
+    private int activeLeaders => leaders.Count(l => l.IsActive);
+    private int leadersWithPhotos => leaders.Count(l => !string.IsNullOrEmpty(l.PhotoUrl));
+    private int uniqueDepartments => leaders.Select(l => l.DepartmentName).Distinct().Count();
+
+    private List<Leadership> FilteredLeaders
+    {
+        get
+        {
+            var filtered = leaders.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var search = searchTerm.ToLower();
+                filtered = filtered.Where(l =>
+                    l.FullName.ToLower().Contains(search) ||
+                    l.Position.ToLower().Contains(search) ||
+                    (l.DepartmentName ?? "").ToLower().Contains(search)
+                );
+            }
+
+            if (!string.IsNullOrWhiteSpace(statusFilter))
+            {
+                if (statusFilter == "active")
+                    filtered = filtered.Where(l => l.IsActive);
+                else if (statusFilter == "inactive")
+                    filtered = filtered.Where(l => !l.IsActive);
+            }
+
+            if (!string.IsNullOrWhiteSpace(departmentFilter))
+            {
+                filtered = filtered.Where(l => l.DepartmentName == departmentFilter);
+            }
+
+            return filtered.ToList();
+        }
+    }
+
+    private int TotalPages => (int)Math.Ceiling(FilteredLeaders.Count / (double)pageSize);
+
+    private List<Leadership> PaginatedLeaders
+    {
+        get
+        {
+            var filtered = FilteredLeaders ?? new List<Leadership>();
+            return filtered
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+    }
+
+    private int FirstItemIndex => FilteredLeaders.Any() ? ((currentPage - 1) * pageSize) + 1 : 0;
+    private int LastItemIndex => Math.Min(currentPage * pageSize, FilteredLeaders.Count);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        try
+        {
+            leaders = await LeadershipService.GetAllLeadershipAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading leaders.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private List<string> GetUniqueDepartments()
+    {
+        return leaders
+            .Select(l => l.DepartmentName)
+            .Distinct()
+            .OrderBy(d => d)
+            .ToList();
+    }
+
+    private void GoToCreate() => Navigation.NavigateTo("/admin/liderazgo/crear");
+    private void GoToEdit(Guid leaderId) => Navigation.NavigateTo($"/admin/liderazgo/editar/{leaderId}");
+
+    private void ShowDeleteConfirmation(Leadership leader)
+    {
+        leaderToDelete = leader;
+        showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        showDeleteModal = false;
+        leaderToDelete = null;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (leaderToDelete == null) return;
+
+        isDeleting = true;
+        try
+        {
+            var success = await LeadershipService.DeleteLeadershipAsync(leaderToDelete.Id);
+            if (success)
+            {
+                await LoadData();
+                CloseDeleteModal();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error deleting leader.");
+        }
+        finally
+        {
+            isDeleting = false;
+        }
+    }
+
+    private void OnFilterChanged()
+    {
+        currentPage = 1;
+    }
+
+    private void ClearFilters()
+    {
+        searchTerm = "";
+        statusFilter = "";
+        departmentFilter = "";
+        currentPage = 1;
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+            currentPage--;
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < TotalPages)
+            currentPage++;
+    }
+
+    private void GoToPage(int page)
+    {
+        currentPage = page;
+    }
+
+    private List<int> GetPageNumbers()
+    {
+        var pages = new List<int>();
+        var startPage = Math.Max(1, currentPage - 2);
+        var endPage = Math.Min(TotalPages, currentPage + 2);
+
+        for (int i = startPage; i <= endPage; i++)
+        {
+            pages.Add(i);
+        }
+
+        return pages;
+    }
+}

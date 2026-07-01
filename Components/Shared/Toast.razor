@@ -1,0 +1,100 @@
+@if (IsVisible)
+{
+    <div class="toast-container @GetToastClass()" @onclick="Hide">
+        <div class="toast-content">
+            <div class="toast-icon">
+                @if (Type == ToastType.Success)
+                {
+                    <i class="fas fa-check-circle"></i>
+                }
+                else if (Type == ToastType.Error)
+                {
+                    <i class="fas fa-exclamation-circle"></i>
+                }
+                else if (Type == ToastType.Info)
+                {
+                    <i class="fas fa-info-circle"></i>
+                }
+                else if (Type == ToastType.Warning)
+                {
+                    <i class="fas fa-exclamation-triangle"></i>
+                }
+            </div>
+            <div class="toast-message">
+                <div class="toast-title">@Title</div>
+                @if (!string.IsNullOrEmpty(Message))
+                {
+                    <div class="toast-text">@Message</div>
+                }
+            </div>
+            <button class="toast-close" @onclick="Hide" @onclick:stopPropagation="true">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="toast-progress" style="animation-duration: @(Duration)ms;"></div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string Message { get; set; } = "";
+    [Parameter] public ToastType Type { get; set; } = ToastType.Success;
+    [Parameter] public int Duration { get; set; } = 3000;
+    [Parameter] public EventCallback OnHide { get; set; }
+
+    private System.Threading.Timer? _timer;
+
+    protected override void OnParametersSet()
+    {
+        if (IsVisible)
+        {
+            StartTimer();
+        }
+    }
+
+    private void StartTimer()
+    {
+        _timer?.Dispose();
+        _timer = new System.Threading.Timer(async _ =>
+        {
+            await InvokeAsync(async () =>
+            {
+                await Hide();
+            });
+        }, null, Duration, System.Threading.Timeout.Infinite);
+    }
+
+    private async Task Hide()
+    {
+        IsVisible = false;
+        _timer?.Dispose();
+        await OnHide.InvokeAsync();
+        StateHasChanged();
+    }
+
+    private string GetToastClass()
+    {
+        return Type switch
+        {
+            ToastType.Success => "toast-success",
+            ToastType.Error => "toast-error",
+            ToastType.Info => "toast-info",
+            ToastType.Warning => "toast-warning",
+            _ => "toast-success"
+        };
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    public enum ToastType
+    {
+        Success,
+        Error,
+        Info,
+        Warning
+    }
+}

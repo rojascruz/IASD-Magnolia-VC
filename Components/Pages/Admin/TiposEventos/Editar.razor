@@ -1,0 +1,357 @@
+@page "/admin/tipos-eventos/editar/{Id:int}"
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Components.Admin
+@using IASD_Magnolia.Components.Shared
+@inject EventTypesService EventTypesService
+@inject NavigationManager Navigation
+@inject AuthStateService AuthState
+@rendermode InteractiveServer
+@inject ILogger<Editar> Logger
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })" />
+
+<div class="evento-create-page">
+    <!-- Header -->
+    <div class="evento-page-header">
+        <button class="btn-volver" @onclick="@(() => Navigation.NavigateTo("/admin/tipos-eventos"))">
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver</span>
+        </button>
+        <div class="header-icon-circle">
+            <i class="fa-regular fa-calendar-days"></i>
+        </div>
+        <div class="header-text">
+            <h1 class="evento-page-title">Editar tipo de evento</h1>
+            <p class="evento-page-subtitle">
+                Actualiza la información para el tipo de evento.
+            </p>
+        </div>
+    </div>
+
+
+    @if (isLoading)
+    {
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Cargando tipo de evento...</p>
+        </div>
+    }
+    else if (eventType == null)
+    {
+        <div class="error-container">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Tipo de evento no encontrado</h3>
+            <button class="btn-primary" @onclick="GoBack">Volver al listado</button>
+        </div>
+    }
+    else
+    {
+        <div class="evento-form-wrapper">
+            <EditForm Model="@eventType" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+
+                <div class="form-section">
+                    <h3 class="section-title">Información Básica</h3>
+
+                    <div class="form-group">
+                        <label for="name">
+                            Nombre <span class="required">*</span>
+                        </label>
+                        <InputText id="name" 
+                                   @bind-Value="eventType.Name" 
+                                   class="form-control"
+                                   placeholder="Ej: Servicio de Alabanza" />
+                        <ValidationMessage For="@(() => eventType.Name)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Descripción</label>
+                        <InputTextArea id="description" 
+                                       @bind-Value="eventType.Description" 
+                                       class="form-control"
+                                       rows="4"
+                                       placeholder="Descripción del tipo de evento..." />
+                        <ValidationMessage For="@(() => eventType.Description)" />
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">Apariencia</h3>
+
+                    <div class="form-group">
+                        <label for="color">
+                            Color
+                            <small>(Hexadecimal o nombre)</small>
+                        </label>
+                        <div class="color-input-wrapper">
+                            <input type="color" 
+                                   id="colorPicker"
+                                   @bind="colorPickerValue"
+                                   @bind:event="oninput"
+                                   class="color-picker" />
+                            <InputText id="color" 
+                                       @bind-Value="eventType.Color" 
+                                       class="form-control"
+                                       placeholder="Ej: #6366f1" />
+                            @if (!string.IsNullOrEmpty(eventType.Color))
+                            {
+                                <div class="color-preview" style="background-color: @eventType.Color"></div>
+                            }
+                        </div>
+                        <ValidationMessage For="@(() => eventType.Color)" />
+                    </div>
+
+                    <div class="preview-card">
+                        <h4>Vista Previa</h4>
+                        <div class="event-type-preview">
+                            <div class="preview-content">
+                                <h5>@(string.IsNullOrEmpty(eventType.Name) ? "Nombre del Tipo" : eventType.Name)</h5>
+                                <p>@(string.IsNullOrEmpty(eventType.Description) ? "Descripción del tipo de evento..." : eventType.Description)</p>
+                            </div>
+                            @if (!string.IsNullOrEmpty(eventType.Color))
+                            {
+                                <span class="preview-color-badge" style="background-color: @eventType.Color"></span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section estado-section">
+                    <h3 class="section-title">Estado</h3>
+
+                    <div class="estado-toggle-wrapper">
+                        <div class="estado-icon">
+                            <i class="fas fa-power-off"></i>
+                        </div>
+                        <div class="estado-content">
+                            <div class="estado-title">Tipo de Evento Activo</div>
+                            <p class="estado-description">
+                                Los tipos inactivos no se mostrarán en la selección al crear eventos
+                            </p>
+                        </div>
+                        <label class="switch-simple">
+                            <InputCheckbox @bind-Value="eventType.IsActive" />
+                            <span class="slider-simple"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions-simple">
+                    <button type="button" class="btn-delete-simple" @onclick="ShowDeleteModal">
+                        <i class="fas fa-trash me-2"></i>Eliminar tipo de evento
+                    </button>
+                    <div class="actions-right">
+                        <button type="button" class="btn-cancel-simple" @onclick="GoBack">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn-submit-simple" disabled="@isSubmitting">
+                            @if (isSubmitting)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-save me-2"></i>
+                            }
+                            Guardar cambios
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    }
+
+    @if (showDeleteModal)
+    {
+        <div class="modal-overlay" @onclick="CloseDeleteModal">
+            <div class="modal-content" @onclick:stopPropagation="true">
+                <div class="modal-header">
+                    <h3>Confirmar Eliminación</h3>
+                    <button class="btn-close" @onclick="CloseDeleteModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <p>¿Estás seguro de que deseas eliminar el tipo de evento <strong>@eventType?.Name</strong>?</p>
+                    <p class="warning-text">Esta acción no se puede deshacer y puede afectar eventos existentes.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" @onclick="CloseDeleteModal">Cancelar</button>
+                    <button class="btn-danger" @onclick="ConfirmDelete" disabled="@isDeleting">
+                        @if (isDeleting)
+                        {
+                            <span class="spinner-small"></span>
+                            <span>Eliminando...</span>
+                        }
+                        else
+                        {
+                            <span>Eliminar</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<Toast IsVisible="@showToast" 
+       Title="@toastTitle" 
+       Message="@toastMessage" 
+       Type="@toastType" 
+       OnHide="@(() => showToast = false)" />
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private EventTypeAdmin? eventType = null;
+    private bool isLoading = true;
+    private bool isSubmitting = false;
+    private bool isDeleting = false;
+    private bool showDeleteModal = false;
+    private string colorPickerValue = "#6366f1";
+
+    private bool showToast = false;
+    private string toastTitle = "";
+    private string toastMessage = "";
+    private Toast.ToastType toastType = Toast.ToastType.Success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEventType();
+    }
+
+    private async Task LoadEventType()
+    {
+        try
+        {
+            isLoading = true;
+            eventType = await EventTypesService.GetEventTypeByIdAsync(Id);
+
+            if (eventType != null)
+            {
+                colorPickerValue = eventType.Color ?? "#6366f1";
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading event type.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender && eventType != null && colorPickerValue != eventType.Color)
+        {
+            eventType.Color = colorPickerValue;
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (isSubmitting || eventType == null) return;
+
+        try
+        {
+            isSubmitting = true;
+
+            if (string.IsNullOrWhiteSpace(eventType.Name))
+            {
+                ShowToast("Error", "El nombre es obligatorio", Toast.ToastType.Error);
+                return;
+            }
+
+            var nameExists = await EventTypesService.NameExistsAsync(eventType.Name, eventType.Id);
+            if (nameExists)
+            {
+                ShowToast("Error", "Ya existe un tipo de evento con ese nombre", Toast.ToastType.Error);
+                return;
+            }
+
+            var success = await EventTypesService.UpdateEventTypeAsync(eventType);
+
+            if (success)
+            {
+                ShowToast("¡Éxito!", "Tipo de evento actualizado correctamente", Toast.ToastType.Success);
+                await Task.Delay(1500);
+                Navigation.NavigateTo("/admin/tipos-eventos");
+            }
+            else
+            {
+                ShowToast("Error", "No se pudo actualizar el tipo de evento", Toast.ToastType.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error saving event type.");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void ShowDeleteModal()
+    {
+        showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        showDeleteModal = false;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (isDeleting || eventType == null) return;
+
+        try
+        {
+            isDeleting = true;
+            var success = await EventTypesService.DeleteEventTypeAsync(eventType.Id);
+
+            if (success)
+            {
+                ShowToast("¡Éxito!", "Tipo de evento eliminado correctamente", Toast.ToastType.Success);
+                await Task.Delay(1500);
+                Navigation.NavigateTo("/admin/tipos-eventos");
+            }
+            else
+            {
+                ShowToast("Error", "No se pudo eliminar el tipo de evento", Toast.ToastType.Error);
+                CloseDeleteModal();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error deleting event type.");
+            CloseDeleteModal();
+        }
+        finally
+        {
+            isDeleting = false;
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/admin/tipos-eventos");
+    }
+
+    private void ShowToast(string title, string message, Toast.ToastType type)
+    {
+        toastTitle = title;
+        toastMessage = message;
+        toastType = type;
+        showToast = true;
+        StateHasChanged();
+    }
+}

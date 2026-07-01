@@ -1,0 +1,412 @@
+@page "/admin/eventos/crear"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Shared
+@using IASD_Magnolia.Components.Admin
+@inject EventsServiceNew EventsService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject ILogger<Crear> Logger
+
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })" />
+
+<PageTitle>Crear nuevo evento - IASD Magnolia</PageTitle>
+
+<!-- Toast Notification -->
+<Toast IsVisible="@showToast" 
+       Title="@toastTitle" 
+       Message="@toastMessage" 
+       Type="@toastType" 
+       OnHide="@(() => showToast = false)" />
+
+<div class="evento-create-page">
+    <!-- Header -->
+    <div class="evento-page-header">
+        <button class="btn-volver" @onclick="@(() => Navigation.NavigateTo("/admin/eventos"))">
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver</span>
+        </button>
+        <div class="header-icon-circle">
+            <i class="fa-regular fa-calendar-days"></i>
+        </div>
+        <div class="header-text">
+            <h1 class="evento-page-title">Crear nuevo evento</h1>
+            <p class="evento-page-subtitle">Completa la información para crear un nuevo evento.</p>
+        </div>
+    </div>
+
+    <div class="evento-form-wrapper">
+        <EditForm Model="@newEvent" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+
+            <!-- Información básica -->
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Información básica</h3>
+                <div class="form-row-2col">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Tipo de evento <span class="required-mark">*</span></label>
+                        <InputSelect class="form-control-simple" @bind-Value="newEvent.EventTypeId">
+                            <option value="0">Selecciona un tipo</option>
+                            @if (eventTypes != null)
+                            {
+                                @foreach (var type in eventTypes)
+                                {
+                                    <option value="@type.Id">@type.Name</option>
+                                }
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => newEvent.EventTypeId)" class="text-danger" />
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Título del evento <span class="required-mark">*</span></label>
+                        <InputText class="form-control-simple" @bind-Value="newEvent.Title" placeholder="Ej. Concierto de Alabanza" />
+                        <ValidationMessage For="@(() => newEvent.Title)" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-row-2col mt-3">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Descripción corta <span class="required-mark">*</span></label>
+                        <InputTextArea class="form-control-simple textarea-simple" @bind-Value="newEvent.ShortDescription" 
+                                      placeholder="Breve descripción del evento" rows="3" maxlength="100" />
+                        <div class="char-counter-simple">@(newEvent.ShortDescription?.Length ?? 0)/100</div>
+                        <ValidationMessage For="@(() => newEvent.ShortDescription)" class="text-danger" />
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Descripción completa <span class="required-mark">*</span></label>
+                        <InputTextArea class="form-control-simple textarea-simple" @bind-Value="newEvent.FullDescription" 
+                                      placeholder="Describe tu evento en detalle..." rows="3" maxlength="2000" />
+                        <div class="char-counter-simple">@(newEvent.FullDescription?.Length ?? 0)/2000</div>
+                        <ValidationMessage For="@(() => newEvent.FullDescription)" class="text-danger" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fecha y hora -->
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Fecha y hora</h3>
+                <div class="form-row-3col">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Fecha del evento <span class="required-mark">*</span></label>
+                        <InputDate class="form-control-simple" @bind-Value="eventDate" />
+                        <ValidationMessage For="@(() => eventDate)" class="text-danger" />
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Hora de inicio <span class="required-mark">*</span></label>
+                        <InputDate Type="InputDateType.Time" class="form-control-simple" @bind-Value="startTime" />
+                        <ValidationMessage For="@(() => startTime)" class="text-danger" />
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Hora de fin <span class="required-mark">*</span></label>
+                        <InputDate Type="InputDateType.Time" class="form-control-simple" @bind-Value="endTime" />
+                        <ValidationMessage For="@(() => endTime)" class="text-danger" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Ubicación</h3>
+                <div class="form-row-2col">
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Lugar <span class="required-mark">*</span></label>
+                        <InputText class="form-control-simple" @bind-Value="newEvent.Location" placeholder="Ej. Templo Principal" />
+                        <ValidationMessage For="@(() => newEvent.Location)" class="text-danger" />
+                    </div>
+                    <div class="form-group-simple">
+                        <label class="form-label-simple">Dirección <span class="required-mark">*</span></label>
+                        <InputText class="form-control-simple" @bind-Value="newEvent.Address" placeholder="Ej. Urbanización Magnolia, Bayamón PR" />
+                        <ValidationMessage For="@(() => newEvent.Address)" class="text-danger" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Imagen del evento -->
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Imagen del evento</h3>
+
+                <!-- Información sobre las especificaciones de imagen -->
+                <div class="alert alert-info mb-3" style="background-color: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 8px; padding: 12px;">
+                    <div style="display: flex; align-items: start; gap: 10px;">
+                        <i class="fas fa-info-circle" style="color: #0066cc; margin-top: 2px;"></i>
+                        <div style="flex: 1;">
+                            <strong style="color: #003d7a;">Especificaciones de imagen:</strong>
+                            <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #004d99;">
+                                <li><strong>Formato:</strong> PNG, JPG o WEBP</li>
+                                <li><strong>Tamaño máximo:</strong> 10 MB</li>
+                                <li><strong>Dimensiones recomendadas:</strong> 1200x630 píxeles (relación 16:9)</li>
+                                <li><strong>Dimensiones mínimas:</strong> 800x450 píxeles</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="image-upload-simple">
+                    @if (string.IsNullOrEmpty(imagePreview))
+                    {
+                        <div class="upload-area-simple">
+                            <i class="fas fa-cloud-upload-alt upload-icon-simple"></i>
+                            <p class="upload-text-simple">Subir imagen del evento</p>
+                            <p class="upload-hint-simple">PNG, JPG o WEBP • Máx. 10MB • 1200x630px recomendado</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="image-preview-simple">
+                            <img src="@imagePreview" alt="Preview" class="preview-img-simple" />
+                            <button type="button" class="btn-remove-preview" @onclick="RemoveImage">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+                <InputFile OnChange="HandleImageUpload" accept="image/png,image/jpeg,image/webp" class="file-input-hidden" id="imageUpload" />
+                <label for="imageUpload" class="btn-select-image">
+                    <i class="fas fa-upload me-2"></i>
+                    @(string.IsNullOrEmpty(imagePreview) ? "Seleccionar imagen" : "Cambiar imagen")
+                </label>
+            </div>
+
+            <!-- Configuración -->
+            <div class="form-section-simple">
+                <h3 class="section-title-simple">Configuración</h3>
+                <div class="config-list-simple">
+                    <div class="config-item-simple">
+                        <div class="config-info-simple">
+                            <div class="config-icon-simple">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <label class="config-label-simple">Evento destacado</label>
+                                <p class="config-desc-simple">Mostrar en la sección de eventos destacados</p>
+                            </div>
+                        </div>
+                        <label class="switch-simple">
+                            <InputCheckbox @bind-Value="newEvent.IsFeatured" />
+                            <span class="slider-simple"></span>
+                        </label>
+                    </div>
+                    <div class="config-item-simple">
+                        <div class="config-info-simple">
+                            <div class="config-icon-simple active-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <label class="config-label-simple">Activo</label>
+                                <p class="config-desc-simple">El evento será visible en el sitio</p>
+                            </div>
+                        </div>
+                        <label class="switch-simple active-switch">
+                            <InputCheckbox @bind-Value="newEvent.IsActive" />
+                            <span class="slider-simple"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-actions-simple">
+                <button type="button" class="btn-cancel-simple" @onclick="GoBack">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+                <button type="submit" class="btn-submit-simple" disabled="@isSubmitting">
+                    @if (isSubmitting)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-save me-2"></i>
+                    }
+                    Guardar evento
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private EventCreateModel newEvent = new();
+    private List<EventType> eventTypes = new();
+    private DateTime eventDate = DateTime.Today.AddDays(1);
+    private DateTime startTime = DateTime.Today.AddHours(19);
+    private DateTime endTime = DateTime.Today.AddHours(21);
+
+    private string? imagePreview;
+    private IBrowserFile? selectedImage;
+    private bool isSubmitting;
+
+    // Toast notification
+    private bool showToast = false;
+    private string toastTitle = "";
+    private string toastMessage = "";
+    private Toast.ToastType toastType = Toast.ToastType.Success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Inicializar estado de autenticación
+        await AuthState.InitializeAsync();
+
+        eventTypes = await EventsService.GetEventTypesAsync();
+        newEvent.IsActive = true;
+        newEvent.IsFeatured = false;
+
+       
+    }
+
+    private void ShowToast(string title, string message, Toast.ToastType type)
+    {
+        toastTitle = title;
+        toastMessage = message;
+        toastType = type;
+        showToast = true;
+        StateHasChanged();
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        selectedImage = e.File;
+
+        if (selectedImage != null)
+        {
+            // Validar tamaño (máximo 10MB)
+            if (selectedImage.Size > 10 * 1024 * 1024)
+            {
+                var sizeMB = Math.Round(selectedImage.Size / (1024.0 * 1024.0), 2);
+                ShowToast("Imagen demasiado grande", 
+                    $"La imagen seleccionada pesa {sizeMB}MB. El tamaño máximo permitido es 10MB.", 
+                    Toast.ToastType.Error);
+                selectedImage = null;
+                return;
+            }
+
+            try
+            {
+                // Leer todo el archivo en memoria primero (compatible con Blazor)
+                using var stream = selectedImage.OpenReadStream(10 * 1024 * 1024);
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                var buffer = memoryStream.ToArray();
+
+                imagePreview = $"data:{selectedImage.ContentType};base64,{Convert.ToBase64String(buffer)}";
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error loading image.");
+                selectedImage = null;
+                imagePreview = null;
+            }
+        }
+    }
+
+    private void RemoveImage()
+    {
+        selectedImage = null;
+        imagePreview = null;
+    }
+
+    private async Task HandleSubmit()
+    {
+        isSubmitting = true;
+
+        try
+        {
+            // Obtener el ID del usuario actual
+            var currentUserId = AuthState.UserId;
+
+            if (currentUserId == Guid.Empty)
+            {
+                ShowToast("Error de autenticación", "No se pudo obtener el ID del usuario actual.", Toast.ToastType.Error);
+                return;
+            }
+
+            // Upload image
+            string? imagePath = null;
+            if (selectedImage != null)
+            {
+                imagePath = await SaveImageAsync(selectedImage);
+            }
+
+            // Create event
+            var (success, message, eventId) = await EventsService.CreateEventAsync(
+                newEvent.EventTypeId,
+                newEvent.Title,
+                newEvent.ShortDescription,
+                newEvent.FullDescription,
+                eventDate.Date,
+                startTime.TimeOfDay,
+                endTime.TimeOfDay,
+                newEvent.Location,
+                newEvent.Address,
+                imagePath,
+                newEvent.IsFeatured,
+                newEvent.IsActive,
+                currentUserId  // ? Pasar el ID del usuario actual
+            );
+
+            if (!success)
+            {
+                ShowToast("Error", message, Toast.ToastType.Error);
+                return;
+            }
+
+            // Mostrar toast de éxito
+            ShowToast("¡Evento creado exitosamente!", "El evento se ha guardado correctamente.", Toast.ToastType.Success);
+
+            // Esperar un momento antes de navegar
+            await Task.Delay(1500);
+            Navigation.NavigateTo("/admin/eventos");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error creating event.");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private async Task<string> SaveImageAsync(IBrowserFile file)
+    {
+        var uploadsPath = Path.Combine("wwwroot", "uploads", "eventos");
+        Directory.CreateDirectory(uploadsPath);
+
+        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.Name)}";
+        var filePath = Path.Combine(uploadsPath, fileName);
+
+        // IMPORTANTE: Leer todo el archivo en memoria primero (compatible con Blazor)
+        byte[] fileData;
+        using (var stream = file.OpenReadStream(10 * 1024 * 1024))
+        using (var memoryStream = new MemoryStream())
+        {
+            await stream.CopyToAsync(memoryStream);
+            fileData = memoryStream.ToArray();
+        }
+
+        // Ahora escribir desde la memoria al disco
+        await File.WriteAllBytesAsync(filePath, fileData);
+
+        return $"/uploads/eventos/{fileName}";
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/admin/eventos");
+    }
+
+    public class EventCreateModel
+    {
+        public string Title { get; set; } = string.Empty;
+        public string ShortDescription { get; set; } = string.Empty;
+        public string FullDescription { get; set; } = string.Empty;
+        public DateTime EventDate { get; set; }
+        public DateTime EndTime { get; set; }
+        public string Location { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public int EventTypeId { get; set; }
+        public bool IsFeatured { get; set; }
+        public bool IsActive { get; set; }
+    }
+}

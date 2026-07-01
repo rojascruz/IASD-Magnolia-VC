@@ -1,0 +1,138 @@
+@using IASD_Magnolia.Services
+@rendermode InteractiveServer
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@implements IDisposable
+@inject ILogger<AdminAuthRequired> Logger
+
+@if (!isLoading)
+{
+    @if (AuthState.IsAuthenticated && IsUserAuthorized())
+    {
+        @ChildContent
+    }
+    else if (AuthState.IsAuthenticated && !IsUserAuthorized())
+    {
+        <div class="unauthorized-message">
+            <div class="unauthorized-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h2>Acceso Denegado</h2>
+            <p>No tienes permisos para acceder a esta página.</p>
+            <p>@GetUnauthorizedMessage()</p>
+            <button class="btn-volver" @onclick="@(() => Navigation.NavigateTo("/"))">
+                <i class="fas fa-arrow-left"></i> Volver al inicio
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="loading-container">
+            <p>Redirigiendo al login...</p>
+        </div>
+    }
+}
+else
+{
+    <div class="loading-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p>Verificando autenticación...</p>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public int[]? AllowedRoles { get; set; }
+
+    private bool isLoading = true;
+    private bool hasChecked = false;
+
+    private bool IsUserAuthorized()
+    {
+        if (AllowedRoles == null || AllowedRoles.Length == 0)
+        {
+            // Si no se especifican roles, solo se permite admin (comportamiento por defecto)
+            return AuthState.IsAdmin;
+        }
+
+        // Verificar si el role_id del usuario está en los roles permitidos
+        var userRoleId = AuthState.CurrentUser?.RoleId ?? 0;
+        return AllowedRoles.Contains(userRoleId);
+    }
+
+    private string GetUnauthorizedMessage()
+    {
+        if (AllowedRoles == null || AllowedRoles.Length == 0)
+        {
+            return "Solo los administradores pueden acceder a esta sección.";
+        }
+
+        var roleNames = new List<string>();
+        foreach (var roleId in AllowedRoles)
+        {
+            roleNames.Add(roleId switch
+            {
+                1 => "administradores",
+                2 => "editores",
+                _ => "usuarios autorizados"
+            });
+        }
+
+        return $"Solo {string.Join(" y ", roleNames)} pueden acceder a esta sección.";
+    }
+
+    protected override void OnInitialized()
+    {
+        AuthState.OnAuthStateChanged += OnAuthStateChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            try
+            {
+                await AuthState.InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error initializing authentication state.");
+            }
+            finally
+            {
+                isLoading = false;
+                hasChecked = true;
+            }
+
+            StateHasChanged();
+
+            if (!AuthState.IsAuthenticated)
+            {
+                Navigation.NavigateTo("/admin/login", forceLoad: false);
+            }
+        }
+    }
+
+    private void OnAuthStateChanged()
+    {
+        isLoading = false;
+        hasChecked = true;
+        InvokeAsync(StateHasChanged);
+
+        if (!AuthState.IsAuthenticated && hasChecked)
+        {
+            Navigation.NavigateTo("/admin/login", forceLoad: false);
+        }
+    }
+
+    public void Dispose()
+    {
+        AuthState.OnAuthStateChanged -= OnAuthStateChanged;
+    }
+}

@@ -1,0 +1,457 @@
+@page "/admin/eventos"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Admin
+@inject EventsServiceNew EventsService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@inject ILogger<Index> Logger
+<PageTitle>Gestión de Eventos - IASD Magnolia</PageTitle>
+
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })">
+    <div class="admin-page">
+        <div class="eventos-admin-container">
+            <!-- Header -->
+            <div class="page-header">
+                <div class="title-section">
+                    <h1>Gestión de Eventos</h1>
+                    <p>Administra todos los eventos de la iglesia</p>
+                </div>
+                <button class="btn-create" @onclick="GoToCreate">
+                    <i class="fa-solid fa-calendar-plus"></i> Crear nuevo usuario
+                </button>
+             
+            </div>
+
+            <!-- Stats Cards -->
+            @if (!isLoading)
+            {
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@totalEvents</h3>
+                            <p>Total eventos</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon active">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@activeEvents</h3>
+                            <p>Activos</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon featured">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@featuredEvents</h3>
+                            <p>Destacados</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon upcoming">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@upcomingEvents</h3>
+                            <p>Próximos</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" 
+                           placeholder="Buscar evento..." 
+                           @bind="searchTerm" 
+                           @bind:event="oninput"
+                           @bind:after="OnFilterChanged" />
+                </div>
+
+                <select class="filter-select" @bind="statusFilter" @bind:after="OnFilterChanged">
+                    <option value="">Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
+                </select>
+
+                <select class="filter-select" @bind="typeFilter" @bind:after="OnFilterChanged">
+                    <option value="">Todos los tipos</option>
+                    @foreach (var type in eventTypes)
+                    {
+                        <option value="@type.Id">@type.Name</option>
+                    }
+                </select>
+
+                <button class="btn-clear-filters" @onclick="ClearFilters">
+                    <i class="fas fa-sync-alt"></i> Limpiar filtros
+                </button>
+            </div>
+
+            <!-- Table -->
+            @if (isLoading)
+            {
+                <div class="loading-container">
+                    <div class="spinner-border" role="status"></div>
+                    <p>Cargando eventos...</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-container">
+                    <table class="eventos-table">
+                        <thead>
+                            <tr>
+                                <th>EVENTO</th>
+                                <th>TIPO</th>
+                                <th>FECHA</th>
+                                <th>UBICACIÓN</th>
+                                <th>ESTADO</th>
+                                <th>ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (PaginatedEvents.Any())
+                            {
+                                @foreach (var evt in PaginatedEvents)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="event-cell">
+                                                <img src="@evt.DisplayImage" alt="@evt.Title" class="event-thumbnail" />
+                                                <div class="event-info">
+                                                    <div class="event-title">@evt.Title</div>
+                                                    <div class="event-short-desc">@evt.ShortDescription</div>
+                                                    @if (evt.IsFeatured)
+                                                    {
+                                                        <span class="badge-featured"><i class="fas fa-star"></i> Destacado</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge-type" style="background-color: @evt.TypeColorClass">
+                                                @evt.EventTypeName
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="date-cell">
+                                                <div class="date">@evt.EventDate.ToString("dd/MM/yyyy")</div>
+                                                @if (evt.StartTime.HasValue)
+                                                {
+                                                    <div class="time">@evt.FormattedTime</div>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>@evt.DisplayLocation</td>
+                                        <td>
+                                            @if (evt.IsActive)
+                                            {
+                                                <span class="badge-active"><i class="fas fa-check-circle"></i> Activo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge-inactive"><i class="fas fa-times-circle"></i> Inactivo</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn-action btn-edit" @onclick="@(() => GoToEdit(evt.Id))" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-action btn-delete" @onclick="@(() => ShowDeleteConfirmation(evt))" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="no-data">
+                                        <i class="fas fa-calendar-times"></i>
+                                        <p>No hay eventos que coincidan con los filtros</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (FilteredEvents.Any())
+                {
+                    <div class="pagination-section">
+                        <div class="pagination-info">
+                            Mostrando @FirstItemIndex a @LastItemIndex de @FilteredEvents.Count eventos
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="btn-pagination" 
+                                    @onclick="PreviousPage" 
+                                    disabled="@(currentPage == 1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+
+                            @foreach (var pageNum in GetPageNumbers())
+                            {
+                                <button class="btn-pagination @(pageNum == currentPage ? "active" : "")" 
+                                        @onclick="@(() => GoToPage(pageNum))">
+                                    @pageNum
+                                </button>
+                            }
+
+                            <button class="btn-pagination" 
+                                    @onclick="NextPage" 
+                                    disabled="@(currentPage == TotalPages)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</AdminAuthRequired>
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal && eventToDelete != null)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDeleteModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar el evento <strong>@eventToDelete.Title</strong>?</p>
+                    <p class="text-danger mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Esta acción no se puede deshacer.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmDelete" disabled="@isDeleting">
+                        @if (isDeleting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        <span>Eliminar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<EventWithType> events = new();
+    private List<EventType> eventTypes = new();
+    private bool isLoading = true;
+    private bool showDeleteModal = false;
+    private bool isDeleting = false;
+    private EventWithType? eventToDelete = null;
+
+    // Filtros
+    private string searchTerm = "";
+    private string statusFilter = "";
+    private string typeFilter = "";
+
+    // Paginación
+    private int currentPage = 1;
+    private int pageSize = 10;
+
+    // Estadísticas
+    private int totalEvents => events.Count;
+    private int activeEvents => events.Count(e => e.IsActive);
+    private int featuredEvents => events.Count(e => e.IsFeatured);
+    private int upcomingEvents => events.Count(e => e.EventDate >= DateTime.Today);
+
+    private List<EventWithType> FilteredEvents
+    {
+        get
+        {
+            var filtered = events.AsEnumerable();
+
+            // Filtro de búsqueda
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var search = searchTerm.ToLower();
+                filtered = filtered.Where(e =>
+                    e.Title.ToLower().Contains(search) ||
+                    (e.ShortDescription ?? "").ToLower().Contains(search) ||
+                    (e.EventTypeName ?? "").ToLower().Contains(search) ||
+                    (e.Location ?? "").ToLower().Contains(search)
+                );
+            }
+
+            // Filtro de estado
+            if (!string.IsNullOrWhiteSpace(statusFilter))
+            {
+                if (statusFilter == "active")
+                    filtered = filtered.Where(e => e.IsActive);
+                else if (statusFilter == "inactive")
+                    filtered = filtered.Where(e => !e.IsActive);
+            }
+
+            // Filtro de tipo
+            if (!string.IsNullOrWhiteSpace(typeFilter) && int.TryParse(typeFilter, out int typeId))
+            {
+                filtered = filtered.Where(e => e.EventTypeId == typeId);
+            }
+
+            return filtered.ToList();
+        }
+    }
+
+    private int TotalPages => (int)Math.Ceiling(FilteredEvents.Count / (double)pageSize);
+
+    private List<EventWithType> PaginatedEvents
+    {
+        get
+        {
+            var filtered = FilteredEvents ?? new List<EventWithType>();
+            return filtered
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+    }
+
+    private int FirstItemIndex => FilteredEvents.Any() ? ((currentPage - 1) * pageSize) + 1 : 0;
+    private int LastItemIndex => Math.Min(currentPage * pageSize, FilteredEvents.Count);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        try
+        {
+            events = await EventsService.GetAllEventsForAdminAsync();
+            eventTypes = await EventsService.GetEventTypesAsync();
+        }
+        catch (Exception ex)
+        { 
+            Logger.LogError(ex, "Error loading events or event types."); 
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void GoToCreate() => Navigation.NavigateTo("/admin/eventos/crear");
+    private void GoToEdit(Guid eventId) => Navigation.NavigateTo($"/admin/eventos/editar/{eventId}");
+
+    private void ShowDeleteConfirmation(EventWithType evt)
+    {
+        eventToDelete = evt;
+        showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        showDeleteModal = false;
+        eventToDelete = null;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (eventToDelete == null) return;
+
+        isDeleting = true;
+        try
+        {
+            var (success, message) = await EventsService.DeleteEventAsync(eventToDelete.Id);
+            if (success)
+            {
+                await LoadData();
+                CloseDeleteModal();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error deleting event.");
+        }
+        finally
+        {
+            isDeleting = false;
+        }
+    }
+
+    private void OnFilterChanged()
+    {
+        currentPage = 1;
+    }
+
+    private void ClearFilters()
+    {
+        searchTerm = "";
+        statusFilter = "";
+        typeFilter = "";
+        currentPage = 1;
+    }
+
+    private void GoToPage(int page)
+    {
+        if (page >= 1 && page <= TotalPages)
+            currentPage = page;
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < TotalPages)
+            currentPage++;
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+            currentPage--;
+    }
+
+    private List<int> GetPageNumbers()
+    {
+        var pages = new List<int>();
+        var totalPages = TotalPages;
+
+        if (totalPages <= 5)
+        {
+            for (int i = 1; i <= totalPages; i++)
+                pages.Add(i);
+        }
+        else
+        {
+            if (currentPage <= 3)
+                pages.AddRange(new[] { 1, 2, 3, 4, 5 });
+            else if (currentPage >= totalPages - 2)
+            {
+                for (int i = totalPages - 4; i <= totalPages; i++)
+                    pages.Add(i);
+            }
+            else
+                pages.AddRange(new[] { currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2 });
+        }
+
+        return pages;
+    }
+}

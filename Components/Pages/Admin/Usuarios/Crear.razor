@@ -1,0 +1,334 @@
+@page "/admin/usuarios/crear"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Admin
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject ILogger<Crear> Logger
+
+<PageTitle>Crear Usuario - IASD Magnolia</PageTitle>
+
+<AdminAuthRequired>
+    <div class="admin-page">
+        <div class="container py-4" style="max-width: 800px;">
+            <!-- Header -->
+            <div class="evento-page-header">
+                <button class="btn-volver" @onclick="@(() => Navigation.NavigateTo("/admin/usuarios"))">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Volver</span>
+                </button>
+                <div class="header-icon-circle">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="header-text">
+                    <h1 class="evento-page-title">Crear nuevo usuario</h1>
+                    <p class="evento-page-subtitle">Completa la información para crear un nuevo usuario.</p>
+                </div>
+            </div>
+
+        <!-- Form Card -->
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>@errorMessage
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(successMessage))
+                {
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>@successMessage
+                    </div>
+                }
+
+                <EditForm Model="createModel" OnValidSubmit="HandleCreate" FormName="createUserForm">
+                    <DataAnnotationsValidator />
+
+                    <!-- Información básica -->
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">Información básica</h5>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="fullName" class="form-label required">Nombre completo</label>
+                                <InputText id="fullName" 
+                                          class="form-control" 
+                                          @bind-Value="createModel.FullName" 
+                                          placeholder="Ej. Juan Pérez" />
+                                <ValidationMessage For="@(() => createModel.FullName)" class="text-danger" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label required">Correo electrónico</label>
+                                <InputText id="email" 
+                                          type="email"
+                                          class="form-control" 
+                                          @bind-Value="createModel.Email" 
+                                          placeholder="ejemplo@iasdmagnolia.org" />
+                                <ValidationMessage For="@(() => createModel.Email)" class="text-danger" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="username" class="form-label required">Nombre de usuario</label>
+                                <InputText id="username" 
+                                          class="form-control" 
+                                          @bind-Value="createModel.Username" 
+                                          placeholder="ej. juanperez" />
+                                <small class="form-text text-muted">Este será el nombre de usuario para iniciar sesión.</small>
+                                <ValidationMessage For="@(() => createModel.Username)" class="text-danger" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Teléfono (opcional)</label>
+                                <InputText id="phone" 
+                                          class="form-control" 
+                                          @bind-Value="createModel.Phone" 
+                                          placeholder="Ej. (787) 123-4567" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seguridad -->
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">Seguridad</h5>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label required">Contraseña</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <InputText id="password" 
+                                              type="@(showPassword ? "text" : "password")"
+                                              class="form-control border-start-0" 
+                                              @bind-Value="createModel.Password" 
+                                              placeholder="••••••••••••" />
+                                    <button type="button" 
+                                            class="btn btn-outline-secondary"
+                                            @onclick="TogglePasswordVisibility">
+                                        <i class="fas @(showPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">Mínimo 8 caracteres.</small>
+                                <ValidationMessage For="@(() => createModel.Password)" class="text-danger" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="confirmPassword" class="form-label required">Confirmar contraseña</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <InputText id="confirmPassword" 
+                                              type="@(showConfirmPassword ? "text" : "password")"
+                                              class="form-control border-start-0" 
+                                              @bind-Value="createModel.ConfirmPassword" 
+                                              placeholder="••••••••••••" />
+                                    <button type="button" 
+                                            class="btn btn-outline-secondary"
+                                            @onclick="ToggleConfirmPasswordVisibility">
+                                        <i class="fas @(showConfirmPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">Repite la contraseña.</small>
+                                <ValidationMessage For="@(() => createModel.ConfirmPassword)" class="text-danger" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rol y permisos -->
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">Rol y permisos</h5>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="role" class="form-label required">Rol</label>
+                                <InputSelect id="role" class="form-select" @bind-Value="createModel.RoleId">
+                                    <option value="">Selecciona un rol</option>
+                                    @foreach (var role in roles)
+                                    {
+                                        <option value="@role.Id">@role.Name</option>
+                                    }
+                                </InputSelect>
+                                <small class="form-text text-muted">Define el nivel de acceso del usuario en el sistema.</small>
+                                <ValidationMessage For="@(() => createModel.RoleId)" class="text-danger" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Estado</label>
+                                <div class="form-check form-switch mt-2">
+                                    <InputCheckbox id="isActive" class="form-check-input" @bind-Value="createModel.IsActive" />
+                                    <label class="form-check-label" for="isActive">
+                                        @(createModel.IsActive ? "Activo" : "Inactivo")
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted">El usuario podrá acceder al sistema.</small>
+                            </div>
+                        </div>
+
+                        <!-- Info de roles -->
+                        <div class="alert alert-info mt-3 mb-0">
+                            <div class="small">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Roles disponibles:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li><strong>Administrador:</strong> Acceso completo al sistema.</li>
+                                    <li><strong>Editor:</strong> Puede gestionar eventos y contenido.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="form-actions-simple">
+                        <button type="button" class="btn-cancel-simple" @onclick="GoBack">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn-submit-simple" disabled="@isSaving">
+                            @if (isSaving)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-save me-2"></i>
+                            }
+                            Guardar usuario
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+</AdminAuthRequired>
+
+@code {
+    private CreateUserModel createModel = new() { IsActive = true };
+    private List<Role> roles = new();
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private bool isSaving = false;
+    private bool showPassword = false;
+    private bool showConfirmPassword = false;
+
+    private class CreateUserModel
+    {
+        [Required(ErrorMessage = "El nombre completo es requerido")]
+        public string FullName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "El nombre de usuario es requerido")]
+        [MinLength(3, ErrorMessage = "El nombre de usuario debe tener al menos 3 caracteres")]
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "El correo electrónico es requerido")]
+        [EmailAddress(ErrorMessage = "Ingresa un correo electrónico válido")]
+        public string Email { get; set; } = string.Empty;
+
+        public string? Phone { get; set; }
+
+        [Required(ErrorMessage = "La contraseña es requerida")]
+        [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres")]
+        public string Password { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Debes confirmar la contraseña")]
+        [Compare(nameof(Password), ErrorMessage = "Las contraseñas no coinciden")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Debes seleccionar un rol")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un rol válido")]
+        public int RoleId { get; set; }
+
+        public bool IsActive { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRoles();
+    }
+
+    private async Task LoadRoles()
+    {
+        try
+        {
+            roles = await AuthService.GetRolesAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error al cargar los roles";
+            Logger.LogError(ex, "Error loading roles.");
+        }
+    }
+
+    private async Task HandleCreate()
+    {
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+        isSaving = true;
+
+        try
+        {
+            var (success, message, userId) = await AuthService.RegisterAsync(
+                fullName: createModel.FullName,
+                email: createModel.Email,
+                password: createModel.Password,
+                username: createModel.Username,
+                roleId: createModel.RoleId
+            );
+
+            if (success)
+            {
+                // Actualizar el campo phone y is_active si es necesario
+                if (!string.IsNullOrWhiteSpace(createModel.Phone) || !createModel.IsActive)
+                {
+                    await AuthService.UpdateUserAsync(
+                        userId: userId!.Value,
+                        fullName: createModel.FullName,
+                        username: createModel.Username,
+                        email: createModel.Email,
+                        phone: createModel.Phone,
+                        roleId: createModel.RoleId,
+                        isActive: createModel.IsActive
+                    );
+                }
+
+                successMessage = "Usuario creado exitosamente";
+                await Task.Delay(1500);
+                Navigation.NavigateTo("/admin/usuarios");
+            }
+            else
+            {
+                errorMessage = message;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error al crear el usuario. Por favor, intenta nuevamente.";
+            Logger.LogError(ex, "Error creating user.");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/admin/usuarios");
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+    private void ToggleConfirmPasswordVisibility()
+    {
+        showConfirmPassword = !showConfirmPassword;
+    }
+}

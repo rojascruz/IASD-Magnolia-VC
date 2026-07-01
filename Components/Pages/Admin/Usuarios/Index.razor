@@ -1,0 +1,530 @@
+@page "/admin/usuarios"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Admin
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject ILogger<Index> Logger
+
+<PageTitle>Usuarios - IASD Magnolia</PageTitle>
+
+<AdminAuthRequired>
+    <div class="admin-usuarios-page">
+        <div class="usuarios-container">
+            <div class="page-header">
+                <div>
+                    <h1 class="usuarios-title">Usuarios</h1>
+                    <p class="usuarios-subtitle">Gestiona los usuarios del sistema</p>
+                </div>
+                <button class="btn-create" @onclick="GoToCreateUser">
+                    <i class="fas fa-user-plus"></i> Crear nuevo usuario
+                </button>
+            </div>
+           
+
+            <!-- Stats Cards -->
+            @if (!isLoading)
+            {
+                <div class="usuarios-stats">
+                    <div class="stat-card stat-total">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 class="stat-number">@totalUsers</h3>
+                            <p class="stat-label">Total usuarios</p>
+                            <small class="stat-detail">En el sistema</small>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-activos">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 class="stat-number">@activeUsers</h3>
+                            <p class="stat-label">Activos</p>
+                            <small class="stat-detail">Usuarios habilitados</small>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-admin">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 class="stat-number">@adminUsers</h3>
+                            <p class="stat-label">Administradores</p>
+                            <small class="stat-detail">Con acceso completo</small>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-editores">
+                        <div class="stat-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 class="stat-number">@editorUsers</h3>
+                            <p class="stat-label">Editores</p>
+                            <small class="stat-detail">Con permisos limitados</small>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-inactivos">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 class="stat-number">@inactiveUsers</h3>
+                            <p class="stat-label">Inactivos</p>
+                            <small class="stat-detail">Usuarios deshabilitados</small>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Filters -->
+            <div class="usuarios-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar usuario, nombre o email..." @bind="searchTerm" @bind:event="oninput" @bind:after="OnFilterChanged" />
+                </div>
+
+                <div class="filter-dropdown">
+                    <select @bind="roleFilter" @bind:after="OnFilterChanged">
+                        <option value="">Todos los roles</option>
+                        <option value="1">Admin</option>
+                        <option value="2">Editor</option>
+                    </select>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+
+                <div class="filter-dropdown">
+                    <select @bind="statusFilter" @bind:after="OnFilterChanged">
+                        <option value="">Todos los estados</option>
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+
+                <button class="btn-limpiar-filtros" @onclick="ClearFilters">
+                    <i class="fas fa-sync-alt"></i> Limpiar filtros
+                </button>
+            </div>
+
+            <!-- Loading -->
+            @if (isLoading)
+            {
+                <div class="loading-container">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p>Cargando usuarios...</p>
+                </div>
+            }
+            else
+            {
+                <!-- Users Table -->
+                <div class="usuarios-table-container">
+                    <table class="usuarios-table">
+                        <thead>
+                            <tr>
+                                <th>USUARIO</th>
+                                <th>EMAIL</th>
+                                <th>TELÉFONO</th>
+                                <th>ROL</th>
+                                <th>ESTADO</th>
+                                <th>ÚLTIMO ACCESO</th>
+                                <th>ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (FilteredUsers.Any())
+                            {
+                                @foreach (var user in PaginatedUsers)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="user-avatar">@GetInitials(user.FullName)</div>
+                                                <div class="user-info">
+                                                    <div class="user-name">@user.FullName</div>
+                                                    <div class="user-username">@@@(user.Username ?? "sin usuario")</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>@user.Email</td>
+                                        <td>@(user.Phone ?? "(787) 555-1234")</td>
+                                        <td>
+                                            <span class="badge badge-@GetRoleBadgeClass(user.RoleId)">
+                                                @user.RoleName
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (user.IsActive)
+                                            {
+                                                <span class="badge badge-activo">
+                                                    <i class="fas fa-circle"></i> Activo
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-inactivo">
+                                                    <i class="fas fa-circle"></i> Inactivo
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.LastLoginAt.HasValue)
+                                            {
+                                                <span>@user.LastLoginAt.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Nunca</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn-action btn-edit" @onclick="@(() => GoToEditUser(user.Id))" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-action btn-delete" @onclick="@(() => ShowDeleteConfirmation(user))" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                               
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="no-data">
+                                        <i class="fas fa-users"></i>
+                                        <p>No hay usuarios que coincidan con los filtros</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (FilteredUsers.Any())
+                {
+                    <div class="usuarios-pagination">
+                        <div class="pagination-info">
+                            Mostrando @FirstItemIndex a @LastItemIndex de @FilteredUsers.Count usuarios
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="btn-pagination" 
+                                    @onclick="PreviousPage" 
+                                    disabled="@(currentPage == 1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+
+                            @foreach (var pageNum in GetPageNumbers())
+                            {
+                                <button class="btn-pagination @(pageNum == currentPage ? "active" : "")" 
+                                        @onclick="@(() => GoToPage(pageNum))">
+                                    @pageNum
+                                </button>
+                            }
+
+                            <button class="btn-pagination" 
+                                    @onclick="NextPage" 
+                                    disabled="@(currentPage == TotalPages)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</AdminAuthRequired>
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal && userToDelete != null)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDeleteModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar al usuario <strong>@userToDelete.FullName</strong>?</p>
+                    <p class="text-danger mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Esta acción no se puede deshacer.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmDelete" disabled="@isDeleting">
+                        @if (isDeleting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        <span>Eliminar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<User> users = new();
+    private bool isLoading = true;
+    private bool showDeleteModal = false;
+    private bool isDeleting = false;
+    private User? userToDelete = null;
+
+    // Filtros
+    private string searchTerm = "";
+    private string roleFilter = "";
+    private string statusFilter = "";
+
+    // Paginación
+    private int currentPage = 1;
+    private int pageSize = 5;
+
+    // Estadísticas
+    private int totalUsers => users.Count;
+    private int activeUsers => users.Count(u => u.IsActive);
+    private int adminUsers => users.Count(u => u.RoleId == 1);
+    private int editorUsers => users.Count(u => u.RoleId == 2);
+    private int inactiveUsers => users.Count(u => !u.IsActive);
+
+    private List<User> FilteredUsers
+    {
+        get
+        {
+            var filtered = users.AsEnumerable();
+
+            // Filtro de búsqueda
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var search = searchTerm.ToLower();
+                filtered = filtered.Where(u =>
+                    u.FullName.ToLower().Contains(search) ||
+                    u.Email.ToLower().Contains(search) ||
+                    (u.Username ?? "").ToLower().Contains(search)
+                );
+            }
+
+            // Filtro de rol
+            if (!string.IsNullOrWhiteSpace(roleFilter) && int.TryParse(roleFilter, out int roleId))
+            {
+                filtered = filtered.Where(u => u.RoleId == roleId);
+            }
+
+            // Filtro de estado
+            if (!string.IsNullOrWhiteSpace(statusFilter) && bool.TryParse(statusFilter, out bool isActive))
+            {
+                filtered = filtered.Where(u => u.IsActive == isActive);
+            }
+
+            return filtered.ToList();
+        }
+    }
+
+    // Paginación
+    private int TotalPages => (int)Math.Ceiling(FilteredUsers.Count / (double)pageSize);
+
+    private List<User> PaginatedUsers
+    {
+        get
+        {
+            return FilteredUsers
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+    }
+
+    private int FirstItemIndex => FilteredUsers.Any() ? ((currentPage - 1) * pageSize) + 1 : 0;
+    private int LastItemIndex => Math.Min(currentPage * pageSize, FilteredUsers.Count);
+
+    private void GoToPage(int page)
+    {
+        if (page >= 1 && page <= TotalPages)
+        {
+            currentPage = page;
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < TotalPages)
+        {
+            currentPage++;
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+        }
+    }
+
+    private List<int> GetPageNumbers()
+    {
+        var pages = new List<int>();
+        var totalPages = TotalPages;
+
+        if (totalPages <= 5)
+        {
+            // Si hay 5 páginas o menos, mostrar todas
+            for (int i = 1; i <= totalPages; i++)
+            {
+                pages.Add(i);
+            }
+        }
+        else
+        {
+            // Si hay más de 5 páginas, mostrar las relevantes
+            if (currentPage <= 3)
+            {
+                // Inicio: 1, 2, 3, 4, 5
+                pages.AddRange(new[] { 1, 2, 3, 4, 5 });
+            }
+            else if (currentPage >= totalPages - 2)
+            {
+                // Final: últimas 5 páginas
+                for (int i = totalPages - 4; i <= totalPages; i++)
+                {
+                    pages.Add(i);
+                }
+            }
+            else
+            {
+                // Medio: página actual y 2 a cada lado
+                pages.AddRange(new[] 
+                { 
+                    currentPage - 2, 
+                    currentPage - 1, 
+                    currentPage, 
+                    currentPage + 1, 
+                    currentPage + 2 
+                });
+            }
+        }
+
+        return pages;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        isLoading = true;
+        try
+        {
+            users = await AuthService.GetAllUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading users.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void GoToCreateUser()
+    {
+        Navigation.NavigateTo("/admin/usuarios/crear");
+    }
+
+    private void GoToEditUser(Guid userId)
+    {
+        Navigation.NavigateTo($"/admin/usuarios/editar/{userId}");
+    }
+
+    private void ShowDeleteConfirmation(User user)
+    {
+        userToDelete = user;
+        showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        showDeleteModal = false;
+        userToDelete = null;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (userToDelete == null) return;
+
+        isDeleting = true;
+        try
+        {
+            var (success, message) = await AuthService.DeleteUserAsync(userToDelete.Id);
+            if (success)
+            {
+                await LoadUsers();
+                CloseDeleteModal();
+            }
+            else
+            {
+                Logger.LogError("Error: {Message}", message);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error deleting user.");
+        }
+        finally
+        {
+            isDeleting = false;
+        }
+    }
+
+    private void ClearFilters()
+    {
+        searchTerm = "";
+        roleFilter = "";
+        statusFilter = "";
+        currentPage = 1; // Resetear a la primera página
+    }
+
+    private void OnFilterChanged()
+    {
+        currentPage = 1; // Resetear a la primera página cuando cambia un filtro
+    }
+
+    private string GetInitials(string fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName)) return "?";
+
+        var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1) return parts[0].Substring(0, Math.Min(2, parts[0].Length)).ToUpper();
+
+        return (parts[0][0].ToString() + parts[^1][0].ToString()).ToUpper();
+    }
+
+    private string GetRoleBadgeClass(int roleId)
+    {
+        return roleId switch
+        {
+            1 => "admin",
+            2 => "editor",
+            _ => "viewer"
+        };
+    }
+}

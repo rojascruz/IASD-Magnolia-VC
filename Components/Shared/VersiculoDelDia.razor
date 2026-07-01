@@ -1,0 +1,95 @@
+@*
+    COMPONENTE: Versículo del Día
+    DESCRIPCIÓN: Muestra el versículo bíblico diario obtenido desde verseoftheday.com
+    USO: <VersiculoDelDia /> en cualquier página Blazor
+
+    MANTENIMIENTO:
+    - Para cambiar estilos visuales, edita wwwroot/css/site.css (busca .versiculo-card)
+    - Para cambiar la fuente de versículos, edita Services/VerseOfTheDayService.cs
+    - Para cambiar el mensaje de carga, edita la línea <p>Cargando versículo del día...</p>
+    - Para cambiar el versículo por defecto, edita las líneas del bloque @else
+
+    ESTADOS:
+    1. isLoading = true ? Muestra "Cargando..."
+    2. verse != null ? Muestra versículo obtenido
+    3. verse = null ? Muestra versículo por defecto (Juan 3:16)
+
+    CREADO: 2025-01-XX | AUTOR: Equipo IASD Magnolia
+*@
+
+@using IASD_Magnolia.Models
+@inject IASD_Magnolia.Services.VerseOfTheDayService VerseService
+
+<div class="versiculo-card">
+    @* Header con ícono de libro *@
+    <div class="versiculo-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z"/>
+        </svg>
+        VERSÍCULO DEL DÍA
+    </div>
+
+    @* ESTADO 1: Cargando versículo desde el servicio *@
+    @if (isLoading)
+    {
+        <div class="versiculo-loading">
+            <p>Cargando versículo del día...</p>
+        </div>
+    }
+    @* ESTADO 2: Versículo obtenido exitosamente *@
+    else if (verse != null)
+    {
+        <p class="versiculo-text">
+            @verse.Text
+        </p>
+        <p class="versiculo-reference">@verse.Reference</p>
+    }
+    @* ESTADO 3: Fallback - Mostrar versículo por defecto *@
+    else
+    {
+        <p class="versiculo-text">
+            Porque de tal manera amó Dios al mundo, que ha dado a su Hijo 
+            unigénito, para que todo aquel que en él cree, no se pierda, mas tenga 
+            vida eterna.
+        </p>
+        <p class="versiculo-reference">Juan 3:16</p>
+    }
+</div>
+
+@code {
+    // Variable para almacenar el versículo obtenido
+    private DailyVerse? verse;
+
+    // Variable para controlar el estado de carga
+    private bool isLoading = true;
+
+    /// <summary>
+    /// Se ejecuta automáticamente cuando el componente se inicializa
+    /// Obtiene el versículo del día de forma asíncrona
+    /// </summary>
+    /// <remarks>
+    /// MANTENIMIENTO:
+    /// - Este método se ejecuta UNA VEZ al cargar la página
+    /// - Si necesitas refrescar el versículo, agrega un botón que llame nuevamente al servicio
+    /// - Los errores se manejan silenciosamente (verse queda null y se muestra el versículo por defecto)
+    /// </remarks>
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Llamar al servicio para obtener el versículo
+            verse = await VerseService.GetDailyVerseAsync();
+        }
+        catch (Exception)
+        {
+            // Si hay cualquier error, verse quedará null
+            // El template mostrará automáticamente el versículo por defecto (Juan 3:16)
+            // No se muestra error al usuario para mantener la experiencia limpia
+        }
+        finally
+        {
+            // Siempre desactivar el estado de carga, con error o sin error
+            isLoading = false;
+        }
+    }
+}

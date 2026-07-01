@@ -1,0 +1,387 @@
+/* ========================================
+   RECURSOS - HERO SECTION
+   ======================================== */
+
+
+
+.recursos-hero-section {
+    position: relative;
+    height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+    .recursos-hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('/img/home/IASD.png');
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+    }
+
+.recursos-hero-overlay {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, rgba(26, 54, 93, 0.95) 0%, rgba(26, 54, 93, 0.85) 50%, rgba(26, 54, 93, 0.3) 100%);
+}
+
+
+.recursos-hero-content {
+    text-align: center;
+    color: white;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.recursos-hero-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 184, 28, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 184, 28, 0.4);
+}
+
+.recursos-hero-icon img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.recursos-hero-icon i {
+    font-size: 2.5rem;
+    color: #FFB81C;
+}
+
+.recursos-hero-content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.recursos-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+/* ========================================
+   FILTER SECTION
+   ======================================== */
+
+.recursos-filter-section {
+    background: #f8f9fa;
+    padding: 25px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.recursos-filter-section .input-group-text {
+    border-right: none;
+}
+
+.recursos-filter-section .form-control {
+    border-left: none;
+}
+
+.recursos-filter-section .form-control:focus,
+.recursos-filter-section .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 48, 87, 0.15);
+    border-color: #003057;
+}
+
+/* ========================================
+   RECURSOS GRID
+   ======================================== */
+
+.recursos-grid-section {
+    background: white;
+    min-height: 60vh;
+}
+
+.recurso-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.recurso-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.recurso-photo-container {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* Aspect ratio 1:1 */
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.recurso-photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.recurso-card:hover .recurso-photo {
+    transform: scale(1.05);
+}
+
+.recurso-department-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 48, 87, 0.9);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.recurso-body {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.recurso-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #003057;
+    margin-bottom: 5px;
+}
+
+.recurso-position {
+    font-size: 0.95rem;
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.recurso-bio {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.recurso-contact {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.recurso-contact-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #003057;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.recurso-contact-item:hover {
+    background: #003057;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.recurso-contact-item i {
+    font-size: 1rem;
+}
+
+/* ========================================
+   EMPTY STATE
+   ======================================== */
+
+.empty-state i {
+    opacity: 0.3;
+}
+
+.empty-state h3 {
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* ========================================
+   PAGINATION
+   ======================================== */
+
+.pagination-container {
+    margin-top: 40px;
+}
+
+.pagination .page-link {
+    color: #003057;
+    border-color: #dee2e6;
+    padding: 8px 12px;
+    margin: 0 2px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #f0f0f0;
+    border-color: #003057;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #003057;
+    border-color: #003057;
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .recursos-hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .recursos-subtitle {
+        font-size: 1rem;
+    }
+
+    .recursos-hero-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .recursos-hero-icon i {
+        font-size: 2rem;
+    }
+
+    .recursos-filter-section .col-12 {
+        margin-bottom: 10px;
+    }
+
+    .recurso-card {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .recursos-hero-section {
+        padding: 50px 0 40px;
+    }
+
+    .recursos-hero-content h1 {
+        font-size: 1.75rem;
+    }
+
+    .recurso-name {
+        font-size: 1.1rem;
+    }
+
+    .recurso-position {
+        font-size: 0.85rem;
+    }
+
+    .recurso-bio {
+        font-size: 0.85rem;
+    }
+}
+
+/* ========================================
+   VALUES SECTION
+   ======================================== */
+
+.recursos-values-section {
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+}
+
+.value-card {
+    padding: 30px 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.value-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #003057 0%, #005a9c 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.value-icon i {
+    font-size: 1.8rem;
+    color: white;
+}
+
+.value-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #003057;
+    margin-bottom: 10px;
+}
+
+.value-description {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+@media (max-width: 991px) {
+    .value-card {
+        margin-bottom: 20px;
+    }
+}

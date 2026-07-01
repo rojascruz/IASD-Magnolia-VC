@@ -1,0 +1,527 @@
+﻿/* ============================================
+   PÁGINA: SOBRE NOSOTROS
+   ============================================ */
+
+/* Hero Section con imagen de fondo */
+.about-hero-section {
+    position: relative;
+    height: 450px;
+    background-image: url('/img/home/IASD.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(26, 54, 93, 0.95) 0%, rgba(26, 54, 93, 0.85) 50%, rgba(26, 54, 93, 0.3) 100%);
+    display: flex;
+    align-items: center;
+}
+
+.about-hero-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 80px;
+    color: white;
+    z-index: 2;
+}
+
+.about-hero-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+    color: #F7941D;
+}
+
+.about-hero-content h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.about-subtitle {
+    font-size: 20px;
+    color: #F7941D;
+    margin: 0 0 20px 0;
+    font-weight: 500;
+}
+
+.about-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: white;
+    margin: 0;
+}
+
+/* Sección de Pilares (Misión, Visión, Propósito, Lema) */
+.pillars-section {
+    background-color: white;
+    padding: 0;
+    margin-top: -50px;
+    position: relative;
+    z-index: 3;
+}
+
+.pillars-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 80px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+}
+
+.pillar-card {
+    background-color: white;
+    padding: 40px 30px;
+    text-align: center;
+    border-right: 1px solid #e0e0e0;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .pillar-card:last-child {
+        border-right: none;
+    }
+
+    .pillar-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+.pillar-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-color: #1A365D;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+    .pillar-icon i {
+        font-size: 40px;
+        color: white;
+    }
+
+.pillar-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1A365D;
+    margin: 0 0 15px 0;
+    letter-spacing: 1px;
+}
+
+.pillar-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+}
+
+.pillar-verse {
+    color: #F7941D !important;
+    font-weight: 600;
+    font-size: 15px !important;
+    margin-top: 10px !important;
+}
+
+/* Nuestra Historia */
+.history-section {
+    max-width: 1400px;
+    margin: 80px auto;
+    padding: 0 80px;
+    text-align: center;
+}
+
+    .history-section h2 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1A365D;
+        margin: 0 0 20px 0;
+    }
+
+.history-intro {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    margin: 0 0 60px 0;
+}
+
+.timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    position: relative;
+}
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 35px;
+        left: 12.5%;
+        right: 12.5%;
+        height: 2px;
+        background: linear-gradient(to right, #1A365D 0%, #F7941D 50%, #1A365D 100%);
+        z-index: 0;
+    }
+
+.timeline-item {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.timeline-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-color: #1A365D;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+    z-index: 2;
+    border: 4px solid white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+    .timeline-icon i {
+        font-size: 40px;
+        color: white;
+    }
+
+.timeline-item h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #F7941D;
+    margin: 0 0 10px 0;
+}
+
+.timeline-item p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+}
+
+/* Nuestras Creencias */
+.beliefs-section {
+    background-color: #f8f9fa;
+    padding: 80px 0;
+}
+
+.beliefs-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.beliefs-content h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1A365D;
+    margin: 0 0 20px 0;
+}
+
+.beliefs-intro {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    margin: 0 0 40px 0;
+}
+
+.beliefs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.belief-item {
+    text-align: center;
+}
+
+.belief-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #1A365D; /* mismo azul que los demás */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,.15);
+}
+
+    .belief-icon img {
+        width: 52px; /* ajusta entre 50-60px según prefieras */
+        height: 52px;
+        object-fit: contain;
+    }
+
+.belief-item:hover .belief-icon {
+    transform: translateY(-3px) scale(1.08);
+}
+
+.belief-item p {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+}
+
+.beliefs-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+
+    .beliefs-image img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+/* Ministerios y Servicio */
+.ministries-section {
+    max-width: 1400px;
+    margin: 80px auto;
+    padding: 0 80px;
+    text-align: center;
+}
+
+    .ministries-section h2 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1A365D;
+        margin: 0 0 20px 0;
+    }
+
+.ministries-intro {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    margin: 0 0 60px 0;
+}
+
+.ministries-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 30px;
+}
+
+.ministry-card {
+    background-color: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 30px 15px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+    .ministry-card:hover {
+        border-color: #F7941D;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
+    }
+
+.ministry-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1A365D;
+}
+
+.ministry-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A365D;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* Call to Action */
+.cta-section {
+    background: linear-gradient(135deg, #1A365D 0%, #2C5282 100%);
+    padding: 0;
+}
+
+.cta-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    min-height: 400px;
+}
+
+.cta-image {
+    width: 100%;
+    height: 100%;
+}
+
+    .cta-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.cta-text {
+    padding: 60px 80px;
+    text-align: left;
+    color: white;
+}
+
+    .cta-text h2 {
+        font-size: 36px;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 20px 0;
+        line-height: 1.3;
+    }
+
+    .cta-text p {
+        font-size: 18px;
+        line-height: 1.6;
+        color: white;
+        margin: 0 0 30px 0;
+    }
+
+.btn-cta {
+    display: inline-block;
+    background-color: #F7941D;
+    color: white;
+    padding: 15px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(247, 148, 29, 0.3);
+}
+
+    .btn-cta:hover {
+        background-color: #E67E0D;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(247, 148, 29, 0.4);
+        color: white;
+    }
+
+/* Responsive: Sobre Nosotros */
+@media (max-width: 1200px) {
+    .pillars-container {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 40px;
+    }
+
+    .pillar-card {
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+        .pillar-card:nth-child(2n) {
+            border-right: none;
+        }
+
+        .pillar-card:last-child {
+            border-bottom: none;
+        }
+
+    .timeline {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+        .timeline::before {
+            display: none;
+        }
+
+    .beliefs-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .ministries-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .about-hero-section {
+        height: auto;
+        min-height: 400px;
+    }
+
+    .about-hero-content {
+        padding: 40px 30px;
+    }
+
+        .about-hero-content h1 {
+            font-size: 32px;
+        }
+
+    .about-subtitle {
+        font-size: 18px;
+    }
+
+    .pillars-container {
+        grid-template-columns: 1fr;
+        padding: 0 30px;
+    }
+
+    .timeline {
+        grid-template-columns: 1fr;
+    }
+
+    .beliefs-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ministries-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cta-content {
+        grid-template-columns: 1fr;
+    }
+
+    .cta-image {
+        height: 300px;
+    }
+
+    .cta-text {
+        padding: 40px 30px;
+    }
+
+        .cta-text h2 {
+            font-size: 28px;
+        }
+}

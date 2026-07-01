@@ -1,0 +1,355 @@
+@page "/eventos"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@inject EventsServiceNew EventsService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@inject ILogger<Eventos> Logger
+<PageTitle>Eventos - IASD Magnolia</PageTitle>
+
+<div class="events-page">
+    <!-- Hero Section -->
+    <section class="events-hero-section">
+        <div class="events-hero-overlay">
+            <div class="events-hero-content">
+               
+                <h1>Eventos</h1>
+                <p class="events-subtitle">Conéctate, participa y forma parte de todo lo que<br />Dios está haciendo en nuestra iglesia y comunidad.</p>
+
+        
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="events-filter-section">
+        <div class="container">
+            <div class="row g-3 align-items-center">
+                <!-- Search -->
+                <div class="col-12 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control border-start-0" 
+                               placeholder="Buscar eventos..." 
+                               @bind="searchTerm"
+                               @bind:event="oninput"
+                               @onkeyup="OnSearchChanged" />
+                    </div>
+                </div>
+
+                <!-- Fixed Filter Buttons -->
+                <div class="col-12 col-md-5">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" 
+                                class="btn @(currentFilter == "todos" ? "btn-primary" : "btn-outline-primary")"
+                                @onclick="@(() => FilterByCategory("todos"))">
+                            Todos los eventos
+                        </button>
+                        <button type="button" 
+                                class="btn @(currentFilter == "proximos" ? "btn-primary" : "btn-outline-primary")"
+                                @onclick="@(() => FilterByCategory("proximos"))">
+                            Próximos eventos
+                        </button>
+                        <button type="button" 
+                                class="btn @(currentFilter == "especiales" ? "btn-primary" : "btn-outline-primary")"
+                                @onclick="@(() => FilterByCategory("especiales"))">
+                            Eventos Especiales
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Event Type Dropdown -->
+                <div class="col-12 col-md-3">
+                    <select class="form-select" @onchange="OnEventTypeChanged">
+                        <option value="">Todos los tipos</option>
+                        @if (eventTypes != null)
+                        {
+                            @foreach (var type in eventTypes)
+                            {
+                                <option value="@type.Id">@type.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Grid -->
+    <section class="events-grid-section py-5">
+        <div class="container">
+            @if (isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            }
+            else if (pagedEvents == null || !pagedEvents.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No se encontraron eventos</p>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var evt in pagedEvents)
+                    {
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="event-card h-100">
+                                <div class="event-card-image">
+                                    @* Debug: @evt.DisplayImage *@
+                                    <img src="@evt.DisplayImage" 
+                                         alt="@evt.Title" 
+                                         loading="lazy"
+                                         onerror="console.error('Error loading:', this.src); this.onerror=null; this.src='/img/eventos/default-event.png';" />
+                                    <div class="event-date-badge">
+                                        <div class="day">@evt.Day</div>
+                                        <div class="month">@evt.Month</div>
+                                    </div>
+                                </div>
+                                <div class="event-card-body">
+                                    @if (!string.IsNullOrEmpty(evt.EventTypeName))
+                                    {
+                                        <span class="evento-tipo" style="background-color: @evt.TypeColorClass">
+                                            @evt.EventTypeName.ToUpper()
+                                        </span>
+                                    }
+                                    <h3 class="event-title">@evt.Title</h3>
+                                    <div class="event-meta">
+                                        <div class="event-meta-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>@evt.FormattedTime</span>
+                                        </div>
+                                        <div class="event-meta-item">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>@evt.DisplayLocation</span>
+                                        </div>
+                                    </div>
+                                    <p class="event-description">@evt.ShortDescription</p>
+                                    @* <a href="/eventos/@evt.Slug" class="btn btn-outline-primary w-100">
+                                        Ver detalles <i class="fas fa-arrow-right ms-2"></i>
+                                    </a> *@
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                @if (totalPages > 1)
+                {
+                    <div class="pagination-section mt-5">
+                        <nav aria-label="Navegación de eventos">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                    <button class="page-link" @onclick="PreviousPage" disabled="@(currentPage == 1)">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                </li>
+
+                                @for (int i = 1; i <= totalPages; i++)
+                                {
+                                    int pageNumber = i;
+                                    <li class="page-item @(currentPage == pageNumber ? "active" : "")">
+                                        <button class="page-link" @onclick="@(() => GoToPage(pageNumber))">
+                                            @pageNumber
+                                        </button>
+                                    </li>
+                                }
+
+                                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                    <button class="page-link" @onclick="NextPage" disabled="@(currentPage == totalPages)">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                }
+            }
+        </div>
+    </section>
+
+@*     <!-- CTA Section -->
+    <section class="events-cta-section">
+        <div class="container text-center">
+            <h2 class="mb-3">¿Tienes alguna pregunta?</h2>
+            <p class="mb-4">Estamos aquí para ayudarte. Contáctanos para más información sobre nuestros eventos.</p>
+            <a href="/contacto" class="btn btn-light btn-lg">
+                Contáctanos <i class="fas fa-envelope ms-2"></i>
+            </a>
+        </div>
+    </section> *@
+</div>
+
+@code {
+    private List<EventWithType> allEvents = new();
+    private List<EventWithType> filteredEvents = new();
+    private List<EventWithType> pagedEvents = new();
+    private List<EventType> eventTypes = new();
+
+    private string searchTerm = string.Empty;
+    private string currentFilter = "todos";
+    private int? selectedTypeId = null;
+
+    private int currentPage = 1;
+    private int itemsPerPage = 6;
+    private int totalPages = 0;
+
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Inicializar autenticación
+        await AuthState.InitializeAsync();
+
+        try
+        {
+            allEvents = await EventsService.GetUpcomingEventsWithTypeAsync(500);
+
+            eventTypes = await EventsService.GetEventTypesAsync();
+
+            ApplyFilters();
+        }
+        catch (Exception ex)
+        {
+            allEvents = new List<EventWithType>();
+            Logger.LogError(ex, "Error loading events.");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged(); // Forzar actualización del UI
+        }
+    }
+
+    private void FilterByCategory(string filter)
+    {
+        currentFilter = filter;
+        currentPage = 1;
+        ApplyFilters();
+        StateHasChanged();
+    }
+
+    private void OnEventTypeChanged(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        selectedTypeId = string.IsNullOrEmpty(value) ? null : int.Parse(value);
+        currentPage = 1;
+        ApplyFilters();
+        StateHasChanged();
+    }
+
+    private void OnSearchChanged(KeyboardEventArgs e)
+    {
+        currentPage = 1;
+        ApplyFilters();
+        StateHasChanged();
+    }
+
+    private void ApplyFilters()
+    {
+        filteredEvents = allEvents;
+
+        // Apply category filter
+        if (currentFilter == "proximos")
+        {
+            var nextWeek = DateTime.Now.AddDays(7);
+            filteredEvents = filteredEvents
+                .Where(e => e.EventDate <= nextWeek)
+                .ToList();
+        }
+        else if (currentFilter == "especiales")
+        {
+            filteredEvents = filteredEvents
+                .Where(e => e.IsFeatured)
+                .ToList();
+        }
+
+        // Apply event type filter
+        if (selectedTypeId.HasValue)
+        {
+            filteredEvents = filteredEvents
+                .Where(e => e.EventTypeId == selectedTypeId.Value)
+                .ToList();
+        }
+
+        // Apply search filter
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var search = searchTerm.ToLower();
+            filteredEvents = filteredEvents
+                .Where(e => 
+                    e.Title.ToLower().Contains(search) ||
+                    (e.ShortDescription != null && e.ShortDescription.ToLower().Contains(search)) ||
+                    (e.EventTypeName != null && e.EventTypeName.ToLower().Contains(search)) ||
+                    (e.Location != null && e.Location.ToLower().Contains(search)))
+                .ToList();
+        }
+
+        // Calculate pagination
+        totalPages = (int)Math.Ceiling(filteredEvents.Count / (double)itemsPerPage);
+        if (totalPages < 1) totalPages = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+
+        UpdatePagedEvents();
+    }
+
+    private void UpdatePagedEvents()
+    {
+       
+        pagedEvents = filteredEvents
+            .Skip((currentPage - 1) * itemsPerPage)
+            .Take(itemsPerPage)
+            .ToList();
+
+
+        if (pagedEvents?.Any() == true)
+        {
+            Logger.LogInformation("UpdatePagedEvents: Primer evento = {Title}", pagedEvents[0].Title);
+        }
+
+        StateHasChanged();
+    }
+
+    private void GoToPage(int page)
+    {
+        if (page >= 1 && page <= totalPages)
+        {
+            currentPage = page;
+            UpdatePagedEvents();
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            UpdatePagedEvents();
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            UpdatePagedEvents();
+        }
+    }
+
+    private void GoToAdminEvents()
+    {
+        Navigation.NavigateTo("/admin/eventos");
+    }
+}

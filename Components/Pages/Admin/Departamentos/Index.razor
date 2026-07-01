@@ -1,0 +1,420 @@
+@page "/admin/departamentos"
+@rendermode InteractiveServer
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Models
+@using IASD_Magnolia.Components.Admin
+@inject DepartmentsService DepartmentsService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@inject ILogger<Index> Logger
+<PageTitle>Gestión de Departamentos - IASD Magnolia</PageTitle>
+
+<AdminAuthRequired AllowedRoles="@(new[] { 1, 2 })">
+    <div class="admin-page">
+        <div class="eventos-admin-container">
+            <!-- Header -->
+            <div class="page-header">
+                <div class="title-section">
+                    <h1>Gestión de Departamentos</h1>
+                    <p>Administra todos los ministerios de la iglesia</p>
+                </div>
+                <button class="btn-create" @onclick="GoToCreate">
+                    <i class="fas fa-plus"></i>
+                    Crear nuevo departamento
+                </button>
+                
+            </div>
+
+            <!-- Stats Cards -->
+            @if (!isLoading)
+            {
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@totalDepartments</h3>
+                            <p>Total departamentos</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon active">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@activeDepartments</h3>
+                            <p>Activos</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon upcoming">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@departmentsWithLeaders</h3>
+                            <p>Con líderes</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon featured">
+                            <i class="fas fa-eye-slash"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>@inactiveDepartments</h3>
+                            <p>Inactivos</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" 
+                           placeholder="Buscar departamento..." 
+                           @bind="searchTerm" 
+                           @bind:event="oninput"
+                           @bind:after="OnFilterChanged" />
+                </div>
+
+                <select class="filter-select" @bind="statusFilter" @bind:after="OnFilterChanged">
+                    <option value="">Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
+                </select>
+
+                <button class="btn-clear-filters" @onclick="ClearFilters">
+                    <i class="fas fa-sync-alt"></i> Limpiar filtros
+                </button>
+            </div>
+
+            <!-- Table -->
+            @if (isLoading)
+            {
+                <div class="loading-container">
+                    <div class="spinner-border" role="status"></div>
+                    <p>Cargando departamentos...</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-container">
+                    <table class="eventos-table">
+                        <thead>
+                            <tr>
+                                <th>ORDEN</th>
+                                <th>DEPARTAMENTO</th>
+                                <th>DESCRIPCIÓN</th>
+                                <th>ESTADO</th>
+                                <th>FECHA CREACIÓN</th>
+                                <th>ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (PaginatedDepartments.Any())
+                            {
+                                @foreach (var dept in PaginatedDepartments)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="badge-type" style="background-color: #6c757d">
+                                                @dept.DisplayOrder
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="event-info">
+                                                <div class="event-title">@dept.Name</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="event-short-desc">
+                                                @(string.IsNullOrEmpty(dept.Description) ? "—" : 
+                                                  dept.Description.Length > 80 ? dept.Description.Substring(0, 80) + "..." : dept.Description)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (dept.IsActive)
+                                            {
+                                                <span class="badge-active"><i class="fas fa-check-circle"></i> Activo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge-inactive"><i class="fas fa-times-circle"></i> Inactivo</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="date-cell">
+                                                <div class="date">@dept.CreatedAt.ToString("dd/MM/yyyy")</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn-action btn-edit" @onclick="@(() => GoToEdit(dept.Id))" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-action btn-delete" @onclick="@(() => ShowDeleteConfirmation(dept))" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="no-data">
+                                        <i class="fas fa-sitemap"></i>
+                                        <p>No hay departamentos que coincidan con los filtros</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (FilteredDepartments.Any())
+                {
+                    <div class="pagination-section">
+                        <div class="pagination-info">
+                            Mostrando @FirstItemIndex a @LastItemIndex de @FilteredDepartments.Count departamentos
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="btn-pagination" 
+                                    @onclick="PreviousPage" 
+                                    disabled="@(currentPage == 1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+
+                            @foreach (var pageNum in GetPageNumbers())
+                            {
+                                <button class="btn-pagination @(pageNum == currentPage ? "active" : "")" 
+                                        @onclick="@(() => GoToPage(pageNum))">
+                                    @pageNum
+                                </button>
+                            }
+
+                            <button class="btn-pagination" 
+                                    @onclick="NextPage" 
+                                    disabled="@(currentPage == TotalPages)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</AdminAuthRequired>
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal && departmentToDelete != null)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDeleteModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar el departamento <strong>@departmentToDelete.Name</strong>?</p>
+                    <p class="text-danger mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Esta acción no se puede deshacer. Solo se puede eliminar si no tiene líderes asociados.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmDelete" disabled="@isDeleting">
+                        @if (isDeleting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        <span>Eliminar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Department> departments = new();
+    private bool isLoading = true;
+    private bool showDeleteModal = false;
+    private bool isDeleting = false;
+    private Department? departmentToDelete = null;
+
+    // Filtros
+    private string searchTerm = "";
+    private string statusFilter = "";
+
+    // Paginación
+    private int currentPage = 1;
+    private int pageSize = 10;
+
+    // Estadísticas
+    private int totalDepartments => departments.Count;
+    private int activeDepartments => departments.Count(d => d.IsActive);
+    private int inactiveDepartments => departments.Count(d => !d.IsActive);
+    private int departmentsWithLeaders = 0;
+
+    private List<Department> FilteredDepartments
+    {
+        get
+        {
+            var filtered = departments.AsEnumerable();
+
+            // Filtro de búsqueda
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var search = searchTerm.ToLower();
+                filtered = filtered.Where(d =>
+                    d.Name.ToLower().Contains(search) ||
+                    (d.Description ?? "").ToLower().Contains(search)
+                );
+            }
+
+            // Filtro de estado
+            if (!string.IsNullOrWhiteSpace(statusFilter))
+            {
+                if (statusFilter == "active")
+                    filtered = filtered.Where(d => d.IsActive);
+                else if (statusFilter == "inactive")
+                    filtered = filtered.Where(d => !d.IsActive);
+            }
+
+            return filtered.ToList();
+        }
+    }
+
+    private int TotalPages => (int)Math.Ceiling(FilteredDepartments.Count / (double)pageSize);
+
+    private List<Department> PaginatedDepartments
+    {
+        get
+        {
+            var filtered = FilteredDepartments ?? new List<Department>();
+            return filtered
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+    }
+
+    private int FirstItemIndex => FilteredDepartments.Any() ? ((currentPage - 1) * pageSize) + 1 : 0;
+    private int LastItemIndex => Math.Min(currentPage * pageSize, FilteredDepartments.Count);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        try
+        {
+            departments = await DepartmentsService.GetAllDepartmentsAsync();
+            departmentsWithLeaders = departments.Count(d => d.IsActive);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading departments.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void GoToCreate() => Navigation.NavigateTo("/admin/departamentos/crear");
+    private void GoToEdit(int deptId) => Navigation.NavigateTo($"/admin/departamentos/editar/{deptId}");
+
+    private void ShowDeleteConfirmation(Department dept)
+    {
+        departmentToDelete = dept;
+        showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        showDeleteModal = false;
+        departmentToDelete = null;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (departmentToDelete == null) return;
+
+        isDeleting = true;
+        try
+        {
+            var success = await DepartmentsService.DeleteDepartmentAsync(departmentToDelete.Id);
+            if (success)
+            {
+                await LoadData();
+                CloseDeleteModal();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error deleting department.");
+        }
+        finally
+        {
+            isDeleting = false;
+        }
+    }
+
+    private void OnFilterChanged()
+    {
+        currentPage = 1;
+    }
+
+    private void ClearFilters()
+    {
+        searchTerm = "";
+        statusFilter = "";
+        currentPage = 1;
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+            currentPage--;
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < TotalPages)
+            currentPage++;
+    }
+
+    private void GoToPage(int page)
+    {
+        currentPage = page;
+    }
+
+    private List<int> GetPageNumbers()
+    {
+        var pages = new List<int>();
+        var startPage = Math.Max(1, currentPage - 2);
+        var endPage = Math.Min(TotalPages, currentPage + 2);
+
+        for (int i = startPage; i <= endPage; i++)
+        {
+            pages.Add(i);
+        }
+
+        return pages;
+    }
+}

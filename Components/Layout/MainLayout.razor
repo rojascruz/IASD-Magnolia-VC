@@ -1,0 +1,127 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Routing
+@using IASD_Magnolia.Services
+@using IASD_Magnolia.Components.Shared
+
+<header class="header">
+    <div class="header-container">
+        <div class="logo-container">
+            <a href="/">
+                <img src="/img/Logo2.png" alt="Iglesia Adventista del Séptimo Día - Magnolia" class="logo-image" />
+            </a>
+        </div>
+        <nav>
+            <ul class="nav-menu">
+                <li><NavLink href="/" Match="NavLinkMatch.All" ActiveClass="active">INICIO</NavLink></li>
+                <li><NavLink href="/sobre-nosotros" ActiveClass="active">SOBRE NOSOTROS</NavLink></li>
+                <li><NavLink href="/ministerios" ActiveClass="active">MINISTERIOS</NavLink></li>
+                <li><NavLink href="/recursos" ActiveClass="active">RECURSOS</NavLink></li>
+                <li><NavLink href="/eventos" ActiveClass="active">EVENTOS</NavLink></li>
+                <li><NavLink href="/clubes" ActiveClass="active">CLUB</NavLink></li>
+            </ul>
+        </nav>
+        <UserMenu />
+    </div>
+</header>
+
+<main>
+    @Body
+</main>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <img src="/img/FooterLogo.png" alt="IASD Magnolia" class="footer-logo" />
+            <h2>Iglesia Adventista<br />del Séptimo Día</h2>
+            <p class="footer-location">MAGNOLIA, BAYAMÓN</p>
+            <p class="footer-description">
+                Somos una comunidad y preparamos<br />
+                un pueblo dispuesto para el próximo<br />
+                regreso de Cristo.
+            </p>
+            <div class="footer-social">
+                <a href="https://www.facebook.com/people/IASDMagnolia/100083356866181/" target="_blank" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/magnolias_youth/" target="_blank" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.youtube.com/@@iasdmagnolia2437/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://wa.me/17875053830" target="_blank" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-links-section">
+            <h3>ENLACES RÁPIDOS</h3>
+            <ul>
+                <li><a href="/"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                <li><a href="/sobre-nosotros"><i class="fas fa-chevron-right"></i> Sobre Nosotros</a></li>
+                <li><a href="/ministerios"><i class="fas fa-chevron-right"></i> Ministerios</a></li>
+                <li><a href="/eventos"><i class="fas fa-chevron-right"></i> Eventos</a></li>
+                <li><a href="/recursos"><i class="fas fa-chevron-right"></i> Recursos</a></li>
+                <li><a href="/clubes"><i class="fas fa-chevron-right"></i> Club</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-contact-section">
+            <h3>CONTÁCTANOS</h3>
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <span>787-505-3830</span>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <span>info@@iasdmagnolia.org</span>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <span>Urbanización Magnolia</span><br />
+                    <span>Bayamón, PR 00959</span>
+                </div>
+            </div>
+            <a href="https://maps.google.com/?q=18.380254272796076,-66.16873116802577" target="_blank" class="btn-map">
+                <i class="fas fa-map-marked-alt"></i> VER EN GOOGLE MAPS
+            </a>
+        </div>
+
+        <div class="footer-map-section">
+            <h3>UBICACIÓN</h3>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps?q=18.380254272796076,-66.16873116802577&z=17&output=embed"
+                        width="100%"
+                        height="200"
+                        style="border:0; border-radius:10px;"
+                        allowfullscreen
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <p class="map-text">
+                Encuéntranos fácilmente en Google Maps<br />
+                ¡Te esperamos! <i class="fas fa-map-pin"></i>
+            </p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2025 Iglesia Adventista del Séptimo Día Magnolia. Todos los derechos reservados.</p>
+        <p class="footer-love"><i class="fas fa-heart"></i> Con amor y esperanza</p>
+    </div>
+</footer>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">✖</a>
+</div>

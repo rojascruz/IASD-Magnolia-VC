@@ -1,0 +1,537 @@
+/* =====================================================
+   CLUBES PAGE
+   Página de Nuestros Clubes
+   ===================================================== */
+
+/* Fondo general de toda la página */
+.clubes-page {
+    background: #f5f8fc;
+    overflow-x: hidden;
+}
+/* =====================================================
+   CLUBES - HERO SECTION
+   Mismo formato que Recursos
+   ===================================================== */
+
+.clubes-hero {
+    position: relative;
+    height: 450px;
+    background-image: url('/img/home/IASD.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .clubes-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+.clubes-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(26, 54, 93, 0.95) 0%, rgba(26, 54, 93, 0.85) 50%, rgba(26, 54, 93, 0.3) 100%);
+    display: flex;
+    align-items: center;
+}
+
+.clubes-hero-content {
+    text-align: center;
+    color: white;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+    .clubes-hero-content h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+.clubes-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+/* Botón dentro del hero */
+.club-register-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 34px;
+    border-radius: 40px;
+    background: linear-gradient(135deg, #1779ff, #0066f5);
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0, 102, 245, .35);
+    transition: all .3s ease;
+}
+
+    .club-register-btn:hover {
+        transform: translateY(-3px);
+        color: white;
+        box-shadow: 0 12px 25px rgba(0, 102, 245, .45);
+    }
+
+    .club-register-btn i {
+        font-size: 1.2rem;
+    }
+
+/* =====================================================
+   SECCIÓN DE TARJETAS DE CLUBES
+   ===================================================== */
+
+.clubs-section {
+    margin-top: 30px;
+    padding: 0 35px 45px;
+    position: relative;
+    z-index: 5;
+}
+
+/* Contenedor de las 3 tarjetas */
+.clubs-container {
+    max-width: 1780px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+/* Tarjeta individual */
+.club-card {
+    border-radius: 18px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 14px 35px rgba(0,0,0,.13);
+    transition: .3s ease;
+}
+
+    /* Efecto al pasar el mouse */
+    .club-card:hover {
+        transform: translateY(-7px);
+    }
+
+/* Parte superior de la tarjeta con imagen */
+.club-bg {
+    position: relative;
+    height: 620px;
+    overflow: hidden;
+}
+
+    /* Imagen de cada club */
+    .club-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 0%;
+    }
+
+/* Capa de color encima de la imagen */
+.club-overlay {
+    position: absolute;
+    inset: 0;
+}
+
+/* Overlay Aventureros */
+.aventureros .club-overlay {
+    background: linear-gradient( 90deg, rgba(233,30,99,.95) 0%, rgba(233,30,99,.78) 48%, rgba(0,0,0,.08) 100% );
+}
+
+/* Overlay Conquistadores */
+.conquistadores .club-overlay {
+    background: linear-gradient( 90deg, rgba(0,102,245,.95) 0%, rgba(0,102,245,.78) 50%, rgba(0,0,0,.08) 100% );
+}
+
+/* Overlay Cadetes */
+.cadetes .club-overlay {
+    background: linear-gradient( 90deg, rgba(0,150,120,.95) 0%, rgba(0,150,120,.78) 50%, rgba(0,0,0,.08) 100% );
+}
+
+/* Contenido dentro de la imagen */
+.club-info {
+    position: absolute;
+    inset: 0;
+    padding: 70px 24px;
+    color: white;
+    width: 78%;
+    z-index: 2;
+}
+
+/* Ícono circular de cada club */
+.club-icon {
+    width: 72px;
+    height: 72px;
+    background: rgba(255,255,255,.92);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    font-size: 2rem;
+}
+
+/* Color del ícono por club */
+.aventureros .club-icon {
+    color: #e91e63;
+}
+
+.conquistadores .club-icon {
+    color: #0066f5;
+}
+
+.cadetes .club-icon {
+    color: #009678;
+}
+
+
+.club-info p {
+    font-size: .9rem;
+    line-height: 1.5;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+/* Nombre del club */
+.club-info h2 {
+    font-size: 1.9rem;
+    margin-bottom: 10px;
+}
+
+/* Rango de edad */
+.age-range {
+    margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #003057;
+    font-weight: 800;
+    font-size: .95rem;
+    background: rgba(255,255,255,.65);
+    padding: 8px 16px;
+    border-radius: 24px;
+    margin-bottom: 20px;
+}
+
+/* Descripción del club */
+.club-info p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Lista de beneficios/actividades */
+.club-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+    /* Cada etiqueta de actividad */
+    .club-features span {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(255,255,255,.92);
+        color: #003057;
+        padding: 7px 11px;
+        border-radius: 24px;
+        font-weight: 800;
+        font-size: .82rem;
+        line-height: 1.15;
+    }
+
+/* Color de los íconos dentro de las etiquetas */
+.aventureros .club-features i {
+    color: #e91e63;
+}
+
+.conquistadores .club-features i {
+    color: #0066f5;
+}
+
+.cadetes .club-features i {
+    color: #009678;
+}
+
+/* Footer de cada tarjeta */
+.club-footer {
+    height: 82px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: white;
+    font-size: 1.28rem;
+    font-weight: 900;
+}
+
+    /* Ícono del reloj */
+    .club-footer i {
+        font-size: 1.8rem;
+    }
+
+/* Color del footer por club */
+.aventureros .club-footer {
+    color: #e91e63;
+}
+
+.conquistadores .club-footer {
+    color: #0066f5;
+}
+
+.cadetes .club-footer {
+    color: #009678;
+}
+
+/* =====================================================
+   SECCIÓN DE LIDERAZGO
+   ===================================================== */
+
+.clubes-leadership {
+    padding: 0 35px 70px;
+}
+
+/* Contenedor principal de liderazgo */
+.leadership-container {
+    max-width: 1780px;
+    margin: 0 auto;
+    min-height: 150px;
+    background: white;
+    border-radius: 22px;
+    box-shadow: 0 14px 35px rgba(0,0,0,.10);
+    display: grid;
+    grid-template-columns: 1.1fr repeat(3, 1fr);
+    align-items: center;
+    gap: 20px;
+    padding: 4px 45px;
+}
+
+/* Bloque del título Liderazgo */
+.leadership-title-card {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* Ícono de liderazgo */
+.leadership-icon {
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    background: #eaf3ff;
+    color: #003f91;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.6rem;
+}
+
+/* Texto Liderazgo de los Clubes */
+.leadership-title-card h2 {
+    color: #002b5c;
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1.25;
+    margin: 0;
+}
+
+/* Línea azul debajo del título */
+.leadership-title-card span {
+    display: block;
+    width: 55px;
+    height: 4px;
+    background: #0066f5;
+    border-radius: 10px;
+    margin-top: 16px;
+}
+
+/* Tarjeta de cada líder */
+.leader-item {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    border-left: 2px solid #d9e1ec;
+    padding-left: 38px;
+}
+
+/* Foto del líder */
+.leader-photo {
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex: none;
+    border: 4px solid #0066f5;
+}
+
+    /* Imagen del líder */
+    .leader-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+/* Nombre del líder */
+.leader-info h3 {
+    color: #002b5c;
+    font-size: 1.45rem;
+    font-weight: 900;
+    margin: 0 0 8px;
+}
+
+/* Posición del líder */
+.leader-info p {
+    color: #0066f5;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Eliminamos la línea/rectángulo que tapaba texto */
+.leader-info span {
+    display: none;
+}
+
+/* Colores por líder según el orden */
+.leader-item:nth-child(2) .leader-photo {
+    border-color: #e91e63;
+}
+
+.leader-item:nth-child(2) .leader-info p {
+    color: #e91e63;
+}
+
+.leader-item:nth-child(3) .leader-photo {
+    border-color: #0066f5;
+}
+
+.leader-item:nth-child(3) .leader-info p {
+    color: #0066f5;
+}
+
+.leader-item:nth-child(4) .leader-photo {
+    border-color: #009678;
+}
+
+.leader-item:nth-child(4) .leader-info p {
+    color: #009678;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1200px) {
+    .clubs-container {
+        grid-template-columns: 1fr;
+        max-width: 720px;
+    }
+
+    .leadership-container {
+        grid-template-columns: 1fr;
+        max-width: 720px;
+    }
+
+    .leader-item {
+        border-left: none;
+        border-top: 2px solid #d9e1ec;
+        padding-left: 0;
+        padding-top: 25px;
+    }
+}
+
+/* Celulares */
+@media (max-width: 768px) {
+    .clubes-hero {
+        min-height: 380px;
+        padding: 70px 18px 95px;
+    }
+
+        .clubes-hero h1 {
+            font-size: 3rem;
+        }
+
+        .clubes-hero p {
+            font-size: 1.05rem;
+        }
+
+    .club-register-btn {
+        font-size: 1.1rem;
+        padding: 16px 28px;
+    }
+
+    .clubs-section {
+        padding: 0 18px 40px;
+    }
+
+    .club-bg {
+        height: 560px;
+    }
+
+    .club-info {
+        width: 78%;
+        padding: 28px 22px;
+    }
+
+        .club-info h2 {
+            font-size: 1.7rem;
+        }
+
+
+
+    .club-footer {
+        font-size: 1rem;
+    }
+
+    .leadership-container {
+        padding: 30px 24px;
+    }
+
+    .leader-item {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* Celulares pequeños */
+@media (max-width: 480px) {
+    .clubes-hero h1 {
+        font-size: 2.4rem;
+    }
+
+    .club-bg {
+        height: 620px;
+    }
+
+    .club-info {
+        width: 88%;
+    }
+
+    .club-features span {
+        font-size: .74rem;
+    }
+
+    .plane,
+    .dots {
+        display: none;
+    }
+}
