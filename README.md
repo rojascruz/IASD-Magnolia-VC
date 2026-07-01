@@ -243,6 +243,11 @@ Separación de responsabilidades correcta.
 
 Proyecto preparado para continuar creciendo mediante nuevos módulos y funcionalidades.
 
+# Rutas importantes
+
+- `/` - Página principal
+- `/admin/login` - Inicio de sesión administrativo
+
 # Cómo agregar un nuevo módulo
 
 Para crear un nuevo módulo, seguir esta estructura:
