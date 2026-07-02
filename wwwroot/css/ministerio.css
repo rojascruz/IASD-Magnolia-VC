@@ -1,26 +1,23 @@
 ﻿/* ============================================
-   PÁGINA: MINISTERIOS Y DEPARTAMENTOS
+   PÁGINA: MINISTERIOS - RESPONSIVE COMPLETO
    ============================================ */
 
-/* Hero Section */
 .ministry-hero-section {
     position: relative;
-    height: 450px;
+    min-height: 450px;
     background-image: url('/img/home/IASD.png');
     background-size: cover;
     background-position: center;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .ministry-hero-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to right, rgba(26, 54, 93, 0.95) 0%, rgba(26, 54, 93, 0.85) 50%, rgba(26, 54, 93, 0.3) 100%);
+    inset: 0;
+    background: linear-gradient(to right, rgba(26,54,93,.95), rgba(26,54,93,.85), rgba(26,54,93,.35));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,112 +27,101 @@
     text-align: center;
     color: white;
     z-index: 2;
-    padding: 0 30px;
+    padding: 0 24px;
+    max-width: 900px;
 }
 
-.ministry-hero-icon {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #FFB84D;
-}
-
-    .ministry-hero-icon i {
-        font-size: 90px;
+    .ministry-hero-content h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        margin: 0 0 20px;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
-
-.ministry-hero-content h1 {
-    font-size: 48px;
-    font-weight: 700;
-    margin: 0 0 20px 0;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
 .ministry-subtitle {
-    font-size: 18px;
+    font-size: clamp(1rem, 2.2vw, 1.15rem);
     line-height: 1.8;
     color: white;
     margin: 0;
-    opacity: 0.95;
+    opacity: .95;
 }
 
-/* Sección de Grid de Ministerios */
+/* GRID */
 .ministries-section {
     max-width: 1400px;
     margin: 80px auto;
-    padding: 0 80px;
+    padding: 0 60px;
+    overflow-x: hidden;
 }
 
 .ministries-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 30px;
 }
 
 .ministry-card {
-    background-color: white;
-    border-radius: 15px;
+    background: white;
+    border-radius: 16px;
     padding: 40px 30px;
     text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    transition: .3s ease;
     border: 2px solid transparent;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 350px;
+    min-width: 0;
 }
 
     .ministry-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,.15);
         border-color: #FFB84D;
     }
 
 .ministry-icon-circle {
-    width: 110px;
-    height: 110px;
+    width: 105px;
+    height: 105px;
     margin: 0 auto 25px;
-    background-color: #003057;
+    background: #003057;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    box-shadow: 0 4px 15px rgba(0, 48, 87, 0.2);
-    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0,48,87,.2);
+    transition: .3s ease;
+    flex-shrink: 0;
 }
 
     .ministry-icon-circle i {
-        font-size: 30px;
+        font-size: 32px;
     }
 
 .ministry-card:hover .ministry-icon-circle {
-    background-color: #FFB84D;
+    background: #FFB84D;
     color: #003057;
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
 .ministry-card h3 {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 21px;
+    font-weight: 800;
     color: #003057;
-    margin: 0 0 15px 0;
+    margin: 0 0 15px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: .5px;
 }
 
 .ministry-card p {
     font-size: 15px;
     line-height: 1.7;
     color: #6C757D;
-    margin: 0 0 25px 0;
+    margin: 0 0 25px;
     flex-grow: 1;
 }
 
@@ -144,13 +130,13 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 15px 20px;
-    background-color: #f8f9fa;
+    padding: 15px 18px;
+    background: #f8f9fa;
     border-radius: 10px;
     border-left: 4px solid #FFB84D;
 }
 
-    .ministry-schedule svg {
+    .ministry-schedule i {
         color: #003057;
         flex-shrink: 0;
     }
@@ -159,15 +145,16 @@
         font-size: 14px;
         color: #333;
         text-align: left;
+        line-height: 1.4;
     }
 
     .ministry-schedule strong {
         color: #003057;
     }
 
-/* Call to Action Section */
+/* CTA SI LO ACTIVAS LUEGO */
 .ministry-cta-section {
-    background: linear-gradient(135deg, #003057 0%, #004a7f 100%);
+    background: linear-gradient(135deg, #003057, #004a7f);
     padding: 0;
     margin-top: 80px;
 }
@@ -200,82 +187,90 @@
     color: white;
 }
 
-.ministry-cta-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 0 30px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #FFB84D;
-}
+    .ministry-cta-text h2 {
+        font-size: clamp(1.9rem, 4vw, 2.7rem);
+        font-weight: 800;
+        color: white;
+        margin: 0 0 20px;
+        line-height: 1.2;
+    }
 
-.ministry-cta-text h2 {
-    font-size: 42px;
-    font-weight: 700;
-    color: white;
-    margin: 0 0 20px 0;
-    line-height: 1.2;
-}
-
-.ministry-cta-text p {
-    font-size: 18px;
-    line-height: 1.7;
-    color: white;
-    margin: 0 0 35px 0;
-    opacity: 0.95;
-}
+    .ministry-cta-text p {
+        font-size: 18px;
+        line-height: 1.7;
+        color: white;
+        margin: 0 0 35px;
+        opacity: .95;
+    }
 
 .btn-join-ministry {
     display: inline-block;
-    background-color: #FFB84D;
+    background: #FFB84D;
     color: #003057;
     padding: 16px 40px;
     border-radius: 30px;
     text-decoration: none;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(255, 184, 77, 0.3);
+    transition: .3s ease;
+    box-shadow: 0 4px 15px rgba(255,184,77,.3);
 }
 
     .btn-join-ministry:hover {
-        background-color: #e5a43d;
+        background: #e5a43d;
         transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(255, 184, 77, 0.5);
         color: #003057;
     }
 
-/* Responsive: Ministerios */
+/* TABLET */
 @media (max-width: 1200px) {
-    .ministries-container {
-        grid-template-columns: repeat(2, 1fr);
+    .ministries-section {
         padding: 0 40px;
+    }
+
+    .ministries-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
+/* TABLET PEQUEÑA / CELULAR */
 @media (max-width: 768px) {
     .ministry-hero-section {
-        height: auto;
-        min-height: 450px;
+        min-height: 390px;
     }
 
-    .ministry-hero-content h1 {
-        font-size: 32px;
+    .ministry-hero-overlay {
+        background: rgba(26,54,93,.88);
     }
 
-    .ministry-subtitle {
-        font-size: 16px;
+    .ministry-subtitle br {
+        display: none;
     }
 
     .ministries-section {
-        padding: 0 30px;
+        margin: 55px auto;
+        padding: 0 22px;
     }
 
     .ministries-container {
         grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .ministry-card {
+        min-height: auto;
+        padding: 35px 24px;
+    }
+
+        .ministry-card:hover {
+            transform: none;
+        }
+
+    .ministry-icon-circle {
+        width: 92px;
+        height: 92px;
     }
 
     .ministry-cta-content {
@@ -288,33 +283,68 @@
     }
 
     .ministry-cta-text {
-        padding: 40px 30px;
+        padding: 40px 28px;
         order: 2;
+        text-align: center;
     }
 
-        .ministry-cta-text h2 {
-            font-size: 28px;
-        }
-
-        .ministry-cta-text p {
-            font-size: 16px;
+        .ministry-cta-text p br {
+            display: none;
         }
 }
 
-/* Estilos adicionales para badges de eventos en Home */
-.evento-tipo {
-    display: inline-block;
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 11px;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 10px;
-    letter-spacing: 0.5px;
-}
+/* CELULAR PEQUEÑO */
+@media (max-width: 480px) {
+    .ministry-hero-section {
+        min-height: 360px;
+    }
 
-.evento-card .ubicacion {
-    font-size: 14px;
-    color: rgba(255,255,255,0.9);
-    margin: 5px 0;
+    .ministry-hero-content {
+        padding: 0 18px;
+    }
+
+        .ministry-hero-content h1 {
+            font-size: 1.9rem;
+        }
+
+    .ministry-subtitle {
+        font-size: .98rem;
+    }
+
+    .ministries-section {
+        padding: 0 16px;
+        margin: 45px auto;
+    }
+
+    .ministry-card {
+        padding: 30px 20px;
+        border-radius: 15px;
+    }
+
+    .ministry-icon-circle {
+        width: 82px;
+        height: 82px;
+        margin-bottom: 20px;
+    }
+
+        .ministry-icon-circle i {
+            font-size: 27px;
+        }
+
+    .ministry-card h3 {
+        font-size: 18px;
+    }
+
+    .ministry-card p {
+        font-size: 14.5px;
+    }
+
+    .ministry-schedule {
+        align-items: flex-start;
+        padding: 14px;
+    }
+
+        .ministry-schedule span {
+            font-size: 13.5px;
+        }
 }
