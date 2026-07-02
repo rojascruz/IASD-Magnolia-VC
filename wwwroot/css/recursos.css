@@ -1,12 +1,17 @@
 /* ========================================
-   RECURSOS - HERO SECTION
+   RECURSOS - RESPONSIVE COMPLETO
    ======================================== */
 
+.recursos-page {
+    background: #fff;
+    overflow-x: hidden;
+    width: 100%;
+}
 
-
+/* HERO */
 .recursos-hero-section {
     position: relative;
-    height: 450px;
+    min-height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -16,10 +21,7 @@
     .recursos-hero-section::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
         background-image: url('/img/home/IASD.png');
         background-size: cover;
         background-position: center;
@@ -30,145 +32,136 @@
     position: relative;
     z-index: 1;
     width: 100%;
-    height: 100%;
+    min-height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to right, rgba(26, 54, 93, 0.95) 0%, rgba(26, 54, 93, 0.85) 50%, rgba(26, 54, 93, 0.3) 100%);
+    background: linear-gradient(to right, rgba(26,54,93,.95), rgba(26,54,93,.85), rgba(26,54,93,.35));
 }
-
 
 .recursos-hero-content {
     text-align: center;
     color: white;
-    max-width: 800px;
+    max-width: 850px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
 }
 
-.recursos-hero-icon {
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 184, 28, 0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 184, 28, 0.4);
-}
-
-.recursos-hero-icon img {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-}
-
-.recursos-hero-icon i {
-    font-size: 2.5rem;
-    color: #FFB81C;
-}
-
-.recursos-hero-content h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
+    .recursos-hero-content h1 {
+        font-size: clamp(2.2rem, 5vw, 3rem);
+        font-weight: 800;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,.25);
+    }
 
 .recursos-subtitle {
-    font-size: 1.2rem;
-    opacity: 0.95;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    opacity: .95;
     line-height: 1.6;
+    margin: 0;
 }
 
-/* ========================================
-   FILTER SECTION
-   ======================================== */
-
+/* FILTER */
 .recursos-filter-section {
     background: #f8f9fa;
     padding: 25px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
 }
 
-.recursos-filter-section .input-group-text {
-    border-right: none;
-}
+    .recursos-filter-section .container {
+        max-width: 1400px;
+    }
 
-.recursos-filter-section .form-control {
-    border-left: none;
-}
+    .recursos-filter-section .input-group {
+        border-radius: 14px;
+        overflow: hidden;
+    }
 
-.recursos-filter-section .form-control:focus,
-.recursos-filter-section .form-select:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0, 48, 87, 0.15);
-    border-color: #003057;
-}
+    .recursos-filter-section .input-group-text,
+    .recursos-filter-section .form-control,
+    .recursos-filter-section .form-select {
+        min-height: 48px;
+    }
 
-/* ========================================
-   RECURSOS GRID
-   ======================================== */
+    .recursos-filter-section .input-group-text {
+        border-right: none;
+    }
 
+    .recursos-filter-section .form-control {
+        border-left: none;
+    }
+
+        .recursos-filter-section .form-control:focus,
+        .recursos-filter-section .form-select:focus {
+            box-shadow: 0 0 0 .2rem rgba(0,48,87,.15);
+            border-color: #003057;
+        }
+
+/* GRID */
 .recursos-grid-section {
     background: white;
     min-height: 60vh;
 }
 
+    .recursos-grid-section .container {
+        max-width: 1400px;
+    }
+
 .recurso-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    transition: .3s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
-.recurso-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
+    .recurso-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 24px rgba(0,0,0,.15);
+    }
 
 .recurso-photo-container {
     position: relative;
     width: 100%;
-    padding-top: 100%; /* Aspect ratio 1:1 */
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background: #f0f0f0;
 }
 
 .recurso-photo {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: .3s ease;
 }
 
 .recurso-card:hover .recurso-photo {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 .recurso-department-badge {
     position: absolute;
     bottom: 10px;
     left: 10px;
-    background: rgba(0, 48, 87, 0.9);
+    right: 10px;
+    width: fit-content;
+    max-width: calc(100% - 20px);
+    background: rgba(0,48,87,.92);
     color: white;
-    padding: 5px 12px;
+    padding: 6px 13px;
     border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: .75rem;
+    font-weight: 700;
     backdrop-filter: blur(10px);
+    line-height: 1.2;
 }
 
 .recurso-body {
-    padding: 20px;
+    padding: 22px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -176,22 +169,24 @@
 
 .recurso-name {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 800;
     color: #003057;
     margin-bottom: 5px;
+    line-height: 1.25;
 }
 
 .recurso-position {
-    font-size: 0.95rem;
+    font-size: .95rem;
     color: #666;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 12px;
+    line-height: 1.4;
 }
 
 .recurso-bio {
-    font-size: 0.9rem;
+    font-size: .9rem;
     color: #555;
-    line-height: 1.5;
+    line-height: 1.55;
     margin-bottom: 15px;
     flex: 1;
 }
@@ -213,147 +208,87 @@
     align-items: center;
     justify-content: center;
     color: #003057;
-    transition: all 0.3s ease;
+    transition: .3s ease;
     text-decoration: none;
+    flex-shrink: 0;
 }
 
-.recurso-contact-item:hover {
-    background: #003057;
-    color: white;
-    transform: translateY(-2px);
-}
+    .recurso-contact-item:hover {
+        background: #003057;
+        color: white;
+        transform: translateY(-2px);
+    }
 
-.recurso-contact-item i {
-    font-size: 1rem;
-}
-
-/* ========================================
-   EMPTY STATE
-   ======================================== */
-
+/* EMPTY */
 .empty-state i {
-    opacity: 0.3;
+    opacity: .3;
 }
 
 .empty-state h3 {
     color: #666;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 10px;
 }
 
-/* ========================================
-   PAGINATION
-   ======================================== */
-
+/* PAGINATION */
 .pagination-container {
     margin-top: 40px;
+    overflow-x: auto;
 }
 
-.pagination .page-link {
-    color: #003057;
-    border-color: #dee2e6;
-    padding: 8px 12px;
-    margin: 0 2px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
+.pagination {
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.pagination .page-link:hover {
-    background-color: #f0f0f0;
-    border-color: #003057;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #003057;
-    border-color: #003057;
-    color: white;
-}
-
-.pagination .page-item.disabled .page-link {
-    color: #ccc;
-    cursor: not-allowed;
-}
-
-/* ========================================
-   RESPONSIVE
-   ======================================== */
-
-@media (max-width: 768px) {
-    .recursos-hero-content h1 {
-        font-size: 2rem;
+    .pagination .page-link {
+        color: #003057;
+        border-color: #dee2e6;
+        padding: 8px 13px;
+        border-radius: 8px !important;
+        transition: .3s ease;
+        font-weight: 700;
     }
 
-    .recursos-subtitle {
-        font-size: 1rem;
+        .pagination .page-link:hover {
+            background: #f0f0f0;
+            border-color: #003057;
+        }
+
+    .pagination .page-item.active .page-link {
+        background: #003057;
+        border-color: #003057;
+        color: white;
     }
 
-    .recursos-hero-icon {
-        width: 60px;
-        height: 60px;
-    }
-
-    .recursos-hero-icon i {
-        font-size: 2rem;
-    }
-
-    .recursos-filter-section .col-12 {
-        margin-bottom: 10px;
-    }
-
-    .recurso-card {
-        margin-bottom: 20px;
-    }
-}
-
-@media (max-width: 576px) {
-    .recursos-hero-section {
-        padding: 50px 0 40px;
-    }
-
-    .recursos-hero-content h1 {
-        font-size: 1.75rem;
-    }
-
-    .recurso-name {
-        font-size: 1.1rem;
-    }
-
-    .recurso-position {
-        font-size: 0.85rem;
-    }
-
-    .recurso-bio {
-        font-size: 0.85rem;
-    }
-}
-
-/* ========================================
-   VALUES SECTION
-   ======================================== */
-
+/* VALUES */
 .recursos-values-section {
     background: #f8f9fa;
     border-top: 1px solid #e0e0e0;
 }
 
+    .recursos-values-section .container {
+        max-width: 1400px;
+    }
+
 .value-card {
     padding: 30px 20px;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.08);
+    transition: .3s ease;
     height: 100%;
 }
 
-.value-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-}
+    .value-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,.12);
+    }
 
 .value-icon {
     width: 70px;
     height: 70px;
-    background: linear-gradient(135deg, #003057 0%, #005a9c 100%);
+    background: linear-gradient(135deg, #003057, #005a9c);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -361,27 +296,98 @@
     margin: 0 auto;
 }
 
-.value-icon i {
-    font-size: 1.8rem;
-    color: white;
-}
+    .value-icon i {
+        font-size: 1.8rem;
+        color: white;
+    }
 
 .value-title {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 800;
     color: #003057;
     margin-bottom: 10px;
 }
 
 .value-description {
-    font-size: 0.9rem;
+    font-size: .9rem;
     color: #666;
     line-height: 1.5;
     margin-bottom: 0;
 }
 
-@media (max-width: 991px) {
+/* TABLET */
+@media (max-width: 768px) {
+    .recursos-hero-section,
+    .recursos-hero-overlay {
+        min-height: 390px;
+    }
+
+    .recursos-hero-overlay {
+        background: rgba(26,54,93,.88);
+    }
+
+    .recursos-subtitle br {
+        display: none;
+    }
+
+    .recursos-filter-section .container {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .recursos-grid-section .container,
+    .recursos-values-section .container {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .recurso-card:hover,
+    .value-card:hover {
+        transform: none;
+    }
+
+    .recurso-name {
+        font-size: 1.15rem;
+    }
+}
+
+/* CELULAR */
+@media (max-width: 576px) {
+    .recursos-hero-section,
+    .recursos-hero-overlay {
+        min-height: 350px;
+    }
+
+    .recursos-hero-content {
+        padding: 0 18px;
+    }
+
+        .recursos-hero-content h1 {
+            font-size: 2rem;
+        }
+
+    .recursos-subtitle {
+        font-size: .98rem;
+    }
+
+    .recursos-filter-section {
+        padding: 22px 0;
+    }
+
+    .recurso-body {
+        padding: 20px;
+    }
+
+    .recurso-position,
+    .recurso-bio {
+        font-size: .88rem;
+    }
+
     .value-card {
-        margin-bottom: 20px;
+        padding: 26px 18px;
+    }
+
+    .pagination .page-link {
+        padding: 7px 11px;
     }
 }
