@@ -14,8 +14,8 @@ public class DepartmentsService
 
     public DepartmentsService(IConfiguration configuration, ILogger<DepartmentsService> logger)
     {
-        _connectionString = configuration.GetConnectionString("PostgreSQL")
-            ?? throw new InvalidOperationException("Connection string 'PostgreSQL' no encontrada");
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' no encontrada");
         _logger = logger;
     }
 

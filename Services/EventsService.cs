@@ -48,7 +48,7 @@ public class EventsService
     public EventsService(IConfiguration configuration, ILogger<EventsService> logger)
     {
         // Obtener connection string desde appsettings.json
-        _connectionString = configuration.GetConnectionString("PostgreSQL")
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException(
                 "Connection string 'PostgreSQL' no encontrada en appsettings.json");
 

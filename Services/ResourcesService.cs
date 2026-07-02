@@ -14,8 +14,8 @@ public class ResourcesService
 
     public ResourcesService(IConfiguration configuration, ILogger<ResourcesService> logger)
     {
-        _connectionString = configuration.GetConnectionString("PostgreSQL")
-            ?? throw new InvalidOperationException("Connection string 'PostgreSQL' no encontrada");
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' no encontrada");
         _logger = logger;
     }
 

@@ -20,8 +20,8 @@ public class LeadershipService
         ILogger<LeadershipService> logger,
         IWebHostEnvironment environment)
     {
-        _connectionString = configuration.GetConnectionString("PostgreSQL")
-            ?? throw new InvalidOperationException("Connection string 'PostgreSQL' no encontrada");
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' no encontrada");
         _logger = logger;
         _environment = environment;
     }

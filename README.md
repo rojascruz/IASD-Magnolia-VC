@@ -1,4 +1,4 @@
-﻿# IASD Magnolia
+﻿﻿# IASD Magnolia
 
 Sistema web desarrollado en **Blazor Server (.NET 8)** para la administración y publicación del sitio web de la **Iglesia Adventista del Séptimo Día Magnolia**.
 
@@ -243,4 +243,22 @@ Separación de responsabilidades correcta.
 
 Proyecto preparado para continuar creciendo mediante nuevos módulos y funcionalidades.
 
-/admin/login
+# Rutas importantes
+
+- `/` - Página principal
+- `/admin/login` - Inicio de sesión administrativo
+
+# Cómo agregar un nuevo módulo
+
+Para crear un nuevo módulo, seguir esta estructura:
+
+1. Crear el modelo en `Models`.
+2. Crear el servicio en `Services`.
+3. Registrar el servicio en `Program.cs`.
+4. Crear las páginas o componentes en `Components`.
+5. El Component debe llamar al Service.
+6. El Service debe manejar la lógica y el acceso a PostgreSQL.
+
+Ejemplo de flujo:
+
+Component → Service → PostgreSQL

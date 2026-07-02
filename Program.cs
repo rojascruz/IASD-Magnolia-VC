@@ -1,5 +1,7 @@
 using IASD_Magnolia.Components;
 using IASD_Magnolia.Services;
+using IASDMagnolia.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,8 @@ builder.Services.AddScoped<AuthService>();
 // Para multi-usuario, se debe usar una solución diferente como cookies o JWT
 builder.Services.AddScoped<AuthStateService>();
 
+builder.Services.AddScoped<DatabaseService>();
+builder.Services.AddScoped<TestService>();
 // Agregar servicios de sesión protegida
 builder.Services.AddHttpContextAccessor();
 

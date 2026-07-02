@@ -1,0 +1,34 @@
+﻿@page "/test-connection"
+@using IASDMagnolia.Services
+
+@inject TestService TestService
+
+<PageTitle>Prueba de Conexión</PageTitle>
+
+<h3>Prueba de conexión a Supabase</h3>
+
+@if (_loading)
+{
+    <p>Conectando...</p>
+}
+else
+{
+    <div class="alert alert-success">
+        ✅ Conexión exitosa.
+        <br />
+        Cantidad de roles: <strong>@_roles</strong>
+    </div>
+}
+
+@code {
+
+    private bool _loading = true;
+    private int _roles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _roles = await TestService.TestConnectionAsync();
+        _loading = false;
+    }
+
+}
