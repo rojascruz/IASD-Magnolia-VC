@@ -14,14 +14,27 @@
     box-sizing: border-box;
 }
 
+html,
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--color-dark);
+    width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
 }
 
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--color-dark);
+}
+
+img,
+svg,
+video,
+iframe {
+    max-width: 100%;
+}
+
 /* =========================
-   HEADER MODERNO
+   HEADER MODERNO RESPONSIVE
 ========================= */
 
 .header {
@@ -29,24 +42,34 @@ body {
     box-shadow: 0 4px 18px rgba(0,0,0,0.08);
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 3000;
+    overflow: visible;
 }
 
 .header-container {
     max-width: 1400px;
     margin: 0 auto;
-    min-height: 86px;
-    padding: 12px 35px;
-    display: flex;
+    min-height: 92px;
+    padding: 10px 35px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    justify-content: space-between;
+    gap: 30px;
+    overflow: visible;
+    width: 100%;
 }
 
-.logo-container a {
+.logo-container {
     display: flex;
     align-items: center;
-    text-decoration: none;
+    flex-shrink: 0;
 }
+
+    .logo-container a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
 
 .logo-image {
     width: 250px;
@@ -57,10 +80,12 @@ body {
 .nav-menu {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 34px;
     list-style: none;
     margin: 0;
     padding: 0;
+    min-width: 0;
 }
 
     .nav-menu li {
@@ -77,6 +102,7 @@ body {
         letter-spacing: .2px;
         padding: 32px 0;
         transition: .3s ease;
+        white-space: nowrap;
     }
 
         .nav-menu a:hover,
@@ -102,47 +128,14 @@ body {
             width: 100%;
         }
 
-/* Tablet */
-@media (max-width: 1100px) {
-    .header-container {
-        min-height: auto;
-        flex-direction: column;
-        gap: 18px;
-        padding: 18px 25px;
-    }
-
-    .logo-image {
-        width: 230px;
-    }
-
-    .nav-menu {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 22px;
-    }
-
-        .nav-menu a {
-            padding: 8px 0 14px;
-        }
-
-            .nav-menu a::after {
-                bottom: 5px;
-            }
+.header .user-menu-container {
+    justify-self: end;
+    position: relative;
+    z-index: 4000;
 }
 
-/* Celular */
-@media (max-width: 600px) {
-    .logo-image {
-        width: 210px;
-    }
-
-    .nav-menu {
-        gap: 14px 20px;
-    }
-
-        .nav-menu a {
-            font-size: 12px;
-        }
+.header .user-dropdown {
+    z-index: 5000;
 }
 
 /* Hero Section */
@@ -156,17 +149,16 @@ body {
     display: flex;
     align-items: center;
     color: var(--color-white);
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
-}
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+    }
 
 .hero-container {
     max-width: 1400px;
@@ -178,29 +170,31 @@ body {
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    gap: 40px;
 }
 
 .hero-content {
     max-width: 600px;
+    min-width: 0;
 }
 
-.hero-content h1 {
-    font-size: 52px;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 20px;
-}
+    .hero-content h1 {
+        font-size: 52px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
 
-.hero-content h1 .highlight {
-    color: var(--color-secondary);
-}
+        .hero-content h1 .highlight {
+            color: var(--color-secondary);
+        }
 
-.hero-content p {
-    font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 30px;
-    opacity: 0.95;
-}
+    .hero-content p {
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        opacity: 0.95;
+    }
 
 .hero-buttons {
     display: flex;
@@ -217,14 +211,15 @@ body {
     font-weight: 600;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 184, 77, 0.4);
-}
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 184, 77, 0.4);
+    }
 
 .hero-btn-secondary {
     background-color: transparent;
@@ -235,10 +230,18 @@ body {
     text-decoration: none;
     font-weight: 600;
     transition: background-color 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.hero-btn-secondary:hover {
-    background-color: rgba(255,255,255,0.1);
+    .hero-btn-secondary:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
+
+.hero-verse-wrapper {
+    width: 100%;
+    max-width: 450px;
 }
 
 /* Versículo del Día Card */
@@ -261,10 +264,10 @@ body {
     font-weight: 600;
 }
 
-.versiculo-header svg {
-    width: 20px;
-    height: 20px;
-}
+    .versiculo-header svg {
+        width: 20px;
+        height: 20px;
+    }
 
 .versiculo-text {
     font-size: 16px;
@@ -285,10 +288,10 @@ body {
     opacity: 0.8;
 }
 
-.versiculo-loading p {
-    font-size: 14px;
-    font-style: italic;
-}
+    .versiculo-loading p {
+        font-size: 14px;
+        font-style: italic;
+    }
 
 .versiculo-dots {
     display: flex;
@@ -306,9 +309,9 @@ body {
     transition: background-color 0.3s;
 }
 
-.dot.active {
-    background-color: var(--color-white);
-}
+    .dot.active {
+        background-color: var(--color-white);
+    }
 
 /* Sección de Iconos */
 .icons-section {
@@ -317,16 +320,19 @@ body {
     margin-top: -50px;
     position: relative;
     z-index: 10;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .icons-container {
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     background-color: var(--color-white);
     border-radius: 15px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0;
 }
 
@@ -335,18 +341,20 @@ body {
     padding: 40px 20px;
     border-right: 1px solid #e0e0e0;
     transition: transform 0.3s, box-shadow 0.3s;
+    min-width: 0;
 }
 
-.icon-item:last-child {
-    border-right: none;
-}
+    .icon-item:last-child {
+        border-right: none;
+    }
 
-.icon-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-}
+    .icon-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
 
-.icon-circle {
+.icon-circle,
+.pillar-icon {
     width: 70px;
     height: 70px;
     margin: 0 auto 20px;
@@ -356,12 +364,13 @@ body {
     background-color: var(--color-primary);
     border-radius: 50%;
     color: var(--color-white);
+    font-size: 32px;
 }
 
-.icon-circle svg {
-    width: 35px;
-    height: 35px;
-}
+    .icon-circle svg {
+        width: 35px;
+        height: 35px;
+    }
 
 .icon-item h3 {
     font-size: 16px;
@@ -380,8 +389,10 @@ body {
 /* Próximos Eventos */
 .eventos-section {
     max-width: 1400px;
+    width: 100%;
     margin: 80px auto;
     padding: 0 30px;
+    overflow-x: hidden;
 }
 
 .section-header {
@@ -389,14 +400,15 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 40px;
+    gap: 20px;
 }
 
-.section-header h2 {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--color-dark);
-    text-transform: uppercase;
-}
+    .section-header h2 {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--color-dark);
+        text-transform: uppercase;
+    }
 
 .link-ver-todos {
     color: var(--color-primary);
@@ -408,13 +420,13 @@ body {
     transition: gap 0.3s;
 }
 
-.link-ver-todos:hover {
-    gap: 10px;
-}
+    .link-ver-todos:hover {
+        gap: 10px;
+    }
 
 .eventos-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 30px;
 }
 
@@ -433,26 +445,23 @@ body {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.evento-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
-    z-index: 1;
-}
+    .evento-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
+        z-index: 1;
+    }
 
-.evento-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-}
+    .evento-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
 
-.evento-card > * {
-    position: relative;
-    z-index: 2;
-}
+    .evento-card > * {
+        position: relative;
+        z-index: 2;
+    }
 
 .evento-fecha {
     background-color: rgba(255,255,255,0.2);
@@ -463,18 +472,29 @@ body {
     width: fit-content;
 }
 
-.evento-fecha .dia {
-    font-size: 36px;
-    font-weight: 700;
-    display: block;
-    line-height: 1;
-}
+    .evento-fecha .dia {
+        font-size: 36px;
+        font-weight: 700;
+        display: block;
+        line-height: 1;
+    }
 
-.evento-fecha .mes {
-    font-size: 14px;
-    text-transform: uppercase;
-    margin-top: 5px;
-    display: block;
+    .evento-fecha .mes {
+        font-size: 14px;
+        text-transform: uppercase;
+        margin-top: 5px;
+        display: block;
+    }
+
+.evento-tipo {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
 }
 
 .evento-info h3 {
@@ -483,7 +503,8 @@ body {
     margin-bottom: 10px;
 }
 
-.evento-info .hora {
+.evento-info .hora,
+.evento-info .ubicacion {
     font-size: 14px;
     margin-bottom: 10px;
     opacity: 0.9;
@@ -507,11 +528,10 @@ body {
     transition: background-color 0.3s;
 }
 
-.evento-icon:hover {
-    background-color: rgba(255,255,255,0.3);
-}
+    .evento-icon:hover {
+        background-color: rgba(255,255,255,0.3);
+    }
 
-/* Estados de eventos: loading y empty */
 .eventos-loading,
 .eventos-empty {
     grid-column: 1 / -1;
@@ -521,34 +541,36 @@ body {
     border-radius: 15px;
 }
 
-.eventos-loading p {
-    font-size: 18px;
-    color: var(--color-gray);
-    font-style: italic;
-}
+    .eventos-loading p {
+        font-size: 18px;
+        color: var(--color-gray);
+        font-style: italic;
+    }
 
-.eventos-empty p {
-    font-size: 18px;
-    color: var(--color-gray);
-    margin: 10px 0;
-}
+    .eventos-empty p {
+        font-size: 18px;
+        color: var(--color-gray);
+        margin: 10px 0;
+    }
 
-.eventos-empty p:first-child {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--color-primary);
-}
+        .eventos-empty p:first-child {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
 
 /* Días de Culto */
 .culto-section {
     max-width: 1400px;
+    width: 100%;
     margin: 80px auto;
     padding: 0 30px;
+    overflow-x: hidden;
 }
 
 .culto-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 30px;
 }
 
@@ -561,10 +583,10 @@ body {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.culto-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
+    .culto-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
 
 .culto-dia {
     font-size: 14px;
@@ -583,11 +605,11 @@ body {
     justify-content: center;
 }
 
-.culto-icon svg {
-    width: 50px;
-    height: 50px;
-    color: var(--color-primary);
-}
+    .culto-icon svg {
+        width: 50px;
+        height: 50px;
+        color: var(--color-primary);
+    }
 
 .culto-nombre {
     font-size: 18px;
@@ -619,20 +641,20 @@ body {
     min-height: 400px;
     display: flex;
     align-items: center;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
-.familia-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.4));
-}
+    .familia-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.4));
+    }
 
 .familia-container {
     max-width: 1400px;
+    width: 100%;
     margin: 0 auto;
     padding: 80px 30px;
     position: relative;
@@ -644,37 +666,38 @@ body {
     max-width: 600px;
 }
 
-.familia-content h2 {
-    font-size: 42px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    line-height: 1.3;
-}
+    .familia-content h2 {
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.3;
+    }
 
-.familia-content h2 .highlight {
-    color: var(--color-secondary);
-}
+        .familia-content h2 .highlight {
+            color: var(--color-secondary);
+        }
 
-.familia-content p {
-    font-size: 18px;
-    line-height: 1.7;
-    margin-bottom: 30px;
-    opacity: 0.95;
-}
-
+    .familia-content p {
+        font-size: 18px;
+        line-height: 1.7;
+        margin-bottom: 30px;
+        opacity: 0.95;
+    }
 
 /* =========================
    FOOTER MODERNO RESPONSIVE
 ========================= */
-
 .footer {
     background: radial-gradient(circle at top, #063866 0%, #00213d 45%, #001529 100%);
     color: #fff;
     padding: 80px 30px 0;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .footer-container {
     max-width: 1350px;
+    width: 100%;
     margin: 0 auto 55px;
     display: grid;
     grid-template-columns: 1.3fr 1fr 1.15fr 1.25fr;
@@ -887,6 +910,7 @@ body {
 
 .footer-bottom {
     max-width: 1350px;
+    width: 100%;
     margin: 0 auto;
     border-top: 1px solid rgba(255,255,255,0.15);
     padding: 28px 0;
@@ -914,6 +938,23 @@ body {
 
 /* Laptop / Tablet grande */
 @media (max-width: 1200px) {
+    .eventos-grid,
+    .culto-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .icons-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-container {
+        gap: 35px;
+    }
+
+    .versiculo-card {
+        max-width: 390px;
+    }
+
     .footer-container {
         grid-template-columns: 1fr 1fr;
         gap: 45px;
@@ -928,6 +969,41 @@ body {
 }
 
 /* Tablet */
+@media (max-width: 1100px) {
+    .header-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 16px;
+        padding: 18px 22px 22px;
+        min-height: auto;
+    }
+
+    .logo-image {
+        width: 230px;
+    }
+
+    .nav-menu {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 18px 26px;
+    }
+
+        .nav-menu a {
+            padding: 8px 0 12px;
+        }
+
+            .nav-menu a::after {
+                bottom: 4px;
+            }
+
+    .header .user-menu-container {
+        width: auto;
+        justify-content: center;
+    }
+}
+
 @media (max-width: 900px) {
     .footer {
         padding: 65px 25px 0;
@@ -945,6 +1021,212 @@ body {
 
 /* Celular */
 @media (max-width: 768px) {
+    .header {
+        position: sticky;
+        top: 0;
+    }
+
+    .header-container {
+        padding: 16px 14px 20px;
+        gap: 14px;
+    }
+
+    .logo-image {
+        width: min(235px, 86vw);
+    }
+
+    .nav-menu {
+        gap: 14px 18px;
+    }
+
+        .nav-menu a {
+            font-size: 12px;
+            padding: 6px 0 10px;
+        }
+
+            .nav-menu a::after {
+                bottom: 2px;
+            }
+
+    .hero-section {
+        min-height: auto;
+        align-items: stretch;
+        background-position: center top;
+    }
+
+        .hero-section::before {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.62), rgba(0,0,0,0.38));
+        }
+
+    .hero-container {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        gap: 28px;
+        padding: 70px 24px 55px;
+        max-width: 100%;
+    }
+
+    .hero-content,
+    .hero-verse-wrapper {
+        max-width: 100%;
+    }
+
+        .hero-content h1 {
+            font-size: clamp(38px, 11vw, 56px);
+            line-height: 1.05;
+            margin-bottom: 18px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            line-height: 1.55;
+            max-width: 100%;
+        }
+
+    .hero-buttons {
+        width: 100%;
+        gap: 16px;
+    }
+
+    .btn-primary,
+    .hero-btn-secondary {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .versiculo-card {
+        width: 100%;
+        max-width: 100%;
+        padding: 26px 22px;
+        margin: 0;
+        border-radius: 18px;
+    }
+
+    .versiculo-text {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .icons-section {
+        padding: 40px 18px;
+        margin-top: 0;
+    }
+
+    .icons-container {
+        grid-template-columns: 1fr;
+        border-radius: 18px;
+    }
+
+    .icon-item {
+        padding: 34px 20px;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+        .icon-item:last-child {
+            border-bottom: none;
+        }
+
+    .eventos-section,
+    .culto-section {
+        margin: 60px auto;
+        padding: 0 18px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+        .section-header h2 {
+            font-size: clamp(30px, 9vw, 44px);
+            line-height: 1.1;
+        }
+
+    .link-ver-todos {
+        font-size: 15px;
+        line-height: 1.25;
+        flex-shrink: 0;
+    }
+
+    .eventos-grid,
+    .culto-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .evento-card {
+        min-height: 280px;
+        padding: 26px;
+    }
+
+        .evento-card:hover,
+        .culto-card:hover,
+        .icon-item:hover,
+        .footer-social a:hover,
+        .btn-primary:hover,
+        .btn-map:hover {
+            transform: none;
+        }
+
+    .eventos-loading,
+    .eventos-empty {
+        padding: 50px 24px;
+    }
+
+        .eventos-empty p:first-child {
+            font-size: 26px;
+            line-height: 1.35;
+        }
+
+        .eventos-empty p {
+            font-size: 18px;
+            line-height: 1.45;
+        }
+
+    .culto-card {
+        width: 100%;
+        padding: 38px 26px;
+    }
+
+    .culto-dia {
+        font-size: 16px;
+        letter-spacing: .5px;
+    }
+
+    .culto-nombre {
+        font-size: 24px;
+        line-height: 1.15;
+    }
+
+    .culto-hora {
+        font-size: 20px;
+    }
+
+    .familia-section {
+        min-height: auto;
+        margin: 60px 0;
+    }
+
+    .familia-container {
+        padding: 65px 24px;
+    }
+
+    .familia-content {
+        max-width: 100%;
+    }
+
+        .familia-content h2 {
+            font-size: 34px;
+        }
+
+        .familia-content p {
+            font-size: 17px;
+        }
+
     .footer {
         padding: 55px 22px 0;
         text-align: left;
@@ -979,6 +1261,57 @@ body {
 
 /* Celular pequeño */
 @media (max-width: 480px) {
+    .hero-container {
+        padding: 60px 18px 48px;
+    }
+
+    .hero-content h1 {
+        font-size: clamp(36px, 12vw, 48px);
+    }
+
+    .hero-content p {
+        font-size: 16px;
+    }
+
+    .btn-primary,
+    .hero-btn-secondary {
+        padding: 14px 18px;
+        font-size: 15px;
+    }
+
+    .versiculo-card {
+        padding: 24px 20px;
+    }
+
+    .versiculo-header {
+        font-size: 15px;
+    }
+
+    .icons-section {
+        padding: 34px 14px;
+    }
+
+    .eventos-section,
+    .culto-section {
+        padding: 0 14px;
+    }
+
+    .section-header {
+        flex-direction: column;
+    }
+
+    .link-ver-todos {
+        font-size: 18px;
+    }
+
+    .culto-card {
+        padding: 36px 22px;
+    }
+
+    .familia-container {
+        padding: 55px 18px;
+    }
+
     .footer {
         padding: 45px 18px 0;
     }
@@ -1009,76 +1342,21 @@ body {
     }
 }
 
-
-
-/* Responsive */
-/*@media (max-width: 1200px) {
-    .eventos-grid,
-    .culto-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .icons-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .footer-container {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        gap: 20px;
-    }
-
+/* iPhone muy estrecho */
+@media (max-width: 390px) {
     .nav-menu {
-        flex-direction: column;
-        gap: 15px;
+        gap: 12px 14px;
     }
 
-    .hero-container {
-        flex-direction: column;
-        gap: 40px;
-    }
+        .nav-menu a {
+            font-size: 11.5px;
+        }
 
     .hero-content h1 {
-        font-size: 36px;
+        font-size: 34px;
     }
 
-    .versiculo-card {
-        max-width: 100%;
+    .culto-nombre {
+        font-size: 22px;
     }
-
-    .icons-container {
-        grid-template-columns: 1fr;
-    }
-
-    .icon-item {
-        border-right: none;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .icon-item:last-child {
-        border-bottom: none;
-    }
-
-    .eventos-grid,
-    .culto-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .footer-container {
-        grid-template-columns: 1fr;
-    }
-
-    .familia-content h2 {
-        font-size: 32px;
-    }
-}*/
-
-
-
-
-
+}

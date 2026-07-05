@@ -8,35 +8,42 @@
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="hero-container">
+
         <div class="hero-content">
             <h1>
-                Vive la esperanza.<br/>
+                Vive la esperanza.<br />
                 <span class="highlight">Comparte el amor.</span>
             </h1>
+
             <p>
-                Somos una comunidad que busca honrar a Dios, 
-                servir a los demás y preparar corazones para 
+                Somos una comunidad que busca honrar a Dios,
+                servir a los demás y preparar corazones para
                 el próximo regreso de Jesús.
             </p>
+
             <div class="hero-buttons">
                 <a href="/eventos" class="btn-primary">
                     <i class="fa-regular fa-calendar"></i>
                     PRÓXIMOS EVENTOS
                 </a>
-                <a href="/clubes" class="btn-secondary">
-                       CLUB   
-                </a> 
+
+                <a href="/clubes" class="hero-btn-secondary">
+                    CLUB
+                </a>
             </div>
         </div>
 
-        <!-- Componente del Versículo del Día -->
-        <VersiculoDelDia />
+        <div class="hero-verse-wrapper">
+            <VersiculoDelDia />
+        </div>
+
     </div>
 </section>
 
 <!-- Sección de Iconos -->
 <section class="icons-section">
     <div class="icons-container">
+
         <div class="icon-item">
             <div class="pillar-icon">
                 <i class="fa-solid fa-users"></i>
@@ -76,31 +83,30 @@
             <h3>Esperanza</h3>
             <p>Preparados para su próximo regreso</p>
         </div>
+
     </div>
 </section>
 
-<!-- Próximos Eventos - DINÁMICO DESDE POSTGRESQL -->
+<!-- Próximos Eventos -->
 <section class="eventos-section">
     <div class="section-header">
         <h2>Próximos Eventos</h2>
+
         <a href="/eventos" class="link-ver-todos">
-            VER TODOS LOS EVENTOS 
+            VER TODOS LOS EVENTOS
             <i class="fa-solid fa-arrow-right-long"></i>
         </a>
     </div>
 
     <div class="eventos-grid">
-        @* ESTADO 1: Cargando eventos desde PostgreSQL *@
         @if (isLoadingEvents)
         {
             <div class="eventos-loading">
                 <p>Cargando eventos...</p>
             </div>
         }
-        @* ESTADO 2: Mostrar eventos obtenidos de la base de datos *@
         else if (eventos != null && eventos.Any())
         {
-            @* Máximo 4 eventos con información de tipo *@
             @foreach (var evento in eventos)
             {
                 <div class="evento-card" style="background-image: url('@evento.DisplayImage');">
@@ -108,6 +114,7 @@
                         <span class="dia">@evento.Day</span>
                         <span class="mes">@evento.Month</span>
                     </div>
+
                     <div class="evento-info">
                         @if (!string.IsNullOrEmpty(evento.EventTypeName))
                         {
@@ -115,29 +122,33 @@
                                 @evento.EventTypeName.ToUpper()
                             </span>
                         }
+
                         <h3>@evento.Title</h3>
+
                         @if (!string.IsNullOrEmpty(evento.FormattedTime))
                         {
-
-                            <p class="hora"><i class="fas fa-clock"></i> @evento.FormattedTime</p>
+                            <p class="hora">
+                                <i class="fa-regular fa-clock"></i>
+                                @evento.FormattedTime
+                            </p>
                         }
+
                         @if (!string.IsNullOrEmpty(evento.DisplayLocation))
                         {
                             <p class="ubicacion">
-                                <i class="fas fa-map-marker-alt"></i>
+                                <i class="fa-solid fa-location-dot"></i>
                                 @evento.DisplayLocation
                             </p>
                         }
+
                         @if (!string.IsNullOrEmpty(evento.ShortDescription))
                         {
                             <p>@evento.ShortDescription</p>
                         }
                     </div>
-                  
                 </div>
             }
         }
-        @* ESTADO 3: No hay eventos en la base de datos *@
         else
         {
             <div class="eventos-empty">
@@ -155,12 +166,11 @@
     </div>
 
     <div class="culto-grid">
+
         <div class="culto-card">
             <p class="culto-dia">LUNES</p>
-            <div class="culto-icon">
-                <div class="pillar-icon">
-                    <i class="fa-solid fa-hands-praying"></i>
-                </div>
+            <div class="pillar-icon">
+                <i class="fa-solid fa-hands-praying"></i>
             </div>
             <h3 class="culto-nombre">Noche de Oración</h3>
             <div class="culto-separator"></div>
@@ -195,35 +205,31 @@
             <h3 class="culto-nombre">Escuela Sabática</h3>
             <div class="culto-separator"></div>
             <p class="culto-hora">9:30 AM</p>
-            <h3 class="culto-nombre">Culto divino</h3>
+
+            <h3 class="culto-nombre culto-nombre-second">Culto Divino</h3>
             <div class="culto-separator"></div>
             <p class="culto-hora">11:00 AM</p>
         </div>
+
     </div>
 </section>
 
 @code {
-    // Variable para almacenar los eventos obtenidos de PostgreSQL con tipos
     private List<EventWithType>? eventos;
-
-    // Variable para controlar el estado de carga
     private bool isLoadingEvents = true;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Llamar al nuevo servicio para obtener máximo 4 eventos con tipos
             eventos = await EventsService.GetUpcomingEventsWithTypeAsync(limit: 4);
         }
         catch (Exception)
         {
-            // Si hay cualquier error, eventos quedará vacío
             eventos = new List<EventWithType>();
         }
         finally
         {
-            // Siempre desactivar el estado de carga
             isLoadingEvents = false;
         }
     }
