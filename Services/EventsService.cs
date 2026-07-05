@@ -34,7 +34,6 @@ public class EventsService
                     e.event_type_id AS EventTypeId,
                     e.title AS Title,
                     e.short_description AS ShortDescription,
-                    e.description AS Description,
                     e.event_date::timestamp AS EventDate,
 
                     CASE 
@@ -62,8 +61,7 @@ public class EventsService
                 ORDER BY 
                     e.is_featured DESC,
                     e.event_date ASC,
-                    e.start_time ASC
-                LIMIT @Limit";
+                    e.start_time ASC" ;
 
             using var connection = new NpgsqlConnection(_connectionString);
 
@@ -148,7 +146,6 @@ public class EventsService
                     e.event_type_id AS EventTypeId,
                     e.title AS Title,
                     e.short_description AS ShortDescription,
-                    e.description AS Description,
                     e.event_date::timestamp AS EventDate,
 
                     CASE 
@@ -199,7 +196,6 @@ public class EventsService
                     e.event_type_id AS EventTypeId,
                     e.title AS Title,
                     e.short_description AS ShortDescription,
-                    e.description AS Description,
                     e.event_date::timestamp AS EventDate,
 
                     CASE 
@@ -240,7 +236,7 @@ public class EventsService
         int eventTypeId,
         string title,
         string? shortDescription,
-        string? description,
+        //string? description,
         DateTime eventDate,
         TimeSpan? startTime,
         TimeSpan? endTime,
@@ -256,14 +252,14 @@ public class EventsService
             const string insertSql = @"
                 INSERT INTO events (
                     event_type_id, created_by, title,
-                    short_description, description,
+                    short_description, 
                     event_date, start_time, end_time,
                     location, address, image_url,
                     is_featured, is_active, created_at
                 )
                 VALUES (
                     @EventTypeId, @CreatedBy, @Title,
-                    @ShortDescription, @Description,
+                    @ShortDescription,
                     @EventDate, @StartTime, @EndTime,
                     @Location, @Address, @ImageUrl,
                     @IsFeatured, @IsActive, NOW()
@@ -277,7 +273,7 @@ public class EventsService
                 CreatedBy = createdBy,
                 Title = title,
                 ShortDescription = shortDescription,
-                Description = description,
+                //Description = description,
                 EventDate = eventDate,
                 StartTime = startTime,
                 EndTime = endTime,
@@ -306,7 +302,7 @@ public class EventsService
         int eventTypeId,
         string title,
         string? shortDescription,
-        string? description,
+        //string? description,
         DateTime eventDate,
         TimeSpan? startTime,
         TimeSpan? endTime,
@@ -325,7 +321,6 @@ public class EventsService
                     updated_by = @UpdatedBy,
                     title = @Title,
                     short_description = @ShortDescription,
-                    description = @Description,
                     event_date = @EventDate,
                     start_time = @StartTime,
                     end_time = @EndTime,
@@ -345,7 +340,7 @@ public class EventsService
                 UpdatedBy = updatedBy,
                 Title = title,
                 ShortDescription = shortDescription,
-                Description = description,
+                //Description = description,
                 EventDate = eventDate,
                 StartTime = startTime,
                 EndTime = endTime,

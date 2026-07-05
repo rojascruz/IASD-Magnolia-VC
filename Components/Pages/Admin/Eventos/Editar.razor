@@ -82,20 +82,26 @@
                             <ValidationMessage For="@(() => eventModel.Title)" class="text-danger" />
                         </div>
                     </div>
-                    <div class="form-row-2col mt-3">
-                        <div class="form-group-simple">
-                            <label class="form-label-simple">Descripción corta <span class="required-mark">*</span></label>
-                            <InputTextArea class="form-control-simple textarea-simple" @bind-Value="eventModel.ShortDescription" 
-                                          placeholder="Breve descripción del evento" rows="3" maxlength="100" />
-                            <div class="char-counter-simple">@(eventModel.ShortDescription?.Length ?? 0)/100</div>
-                            <ValidationMessage For="@(() => eventModel.ShortDescription)" class="text-danger" />
-                        </div>
-                        <div class="form-group-simple">
-                            <label class="form-label-simple">Descripción completa <span class="required-mark">*</span></label>
-                            <InputTextArea class="form-control-simple textarea-simple" @bind-Value="eventModel.FullDescription" 
-                                          placeholder="Describe tu evento en detalle..." rows="3" maxlength="2000" />
-                            <div class="char-counter-simple">@(eventModel.FullDescription?.Length ?? 0)/2000</div>
-                            <ValidationMessage For="@(() => eventModel.FullDescription)" class="text-danger" />
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="form-group-simple">
+                                <label class="form-label-simple">
+                                    Descripción corta <span class="required-mark">*</span>
+                                </label>
+
+                                <InputTextArea class="form-control-simple textarea-simple"
+                                               @bind-Value="eventModel.ShortDescription"
+                                               placeholder="Breve descripción del evento"
+                                               rows="4"
+                                               maxlength="300" />
+
+                                <div class="char-counter-simple">
+                                    @(eventModel.ShortDescription?.Length ?? 0)/300
+                                </div>
+
+                                <ValidationMessage For="@(() => eventModel.ShortDescription)"
+                                                   class="text-danger" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -314,7 +320,7 @@
                     Id = eventData.Id,
                     Title = eventData.Title,
                     ShortDescription = eventData.ShortDescription,
-                    FullDescription = eventData.Description ?? string.Empty,
+                    // FullDescription = eventData.Description ?? string.Empty,
                     Location = eventData.Location,
                     Address = eventData.Address,
                     EventTypeId = eventData.EventTypeId,
@@ -445,7 +451,7 @@
                 eventModel.EventTypeId,
                 eventModel.Title,
                 eventModel.ShortDescription,
-                eventModel.FullDescription,
+                // eventModel.FullDescription,
                 eventDate.Date,
                 startTime.TimeOfDay,
                 endTime.TimeOfDay,
@@ -540,7 +546,7 @@
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string ShortDescription { get; set; } = string.Empty;
-        public string FullDescription { get; set; } = string.Empty;
+        // public string FullDescription { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public int EventTypeId { get; set; }
