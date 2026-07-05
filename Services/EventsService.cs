@@ -1,291 +1,446 @@
-using IASD_Magnolia.Models;
+Ôªøusing IASD_Magnolia.Models;
 using Npgsql;
 using Dapper;
 
 namespace IASD_Magnolia.Services;
 
 /// <summary>
-/// Servicio para gestionar eventos de la iglesia desde PostgreSQL.
-/// Obtiene eventos activos para mostrar en la p·gina principal y otras p·ginas.
+/// Servicio actualizado para gestionar eventos con tipos desde PostgreSQL.
 /// </summary>
-/// <remarks>
-/// MANTENIMIENTO:
-/// 
-/// C”MO FUNCIONA:
-/// 1. Se conecta a PostgreSQL usando Npgsql
-/// 2. Ejecuta queries SQL usando Dapper (micro-ORM)
-/// 3. Mapea resultados autom·ticamente a objetos Event
-/// 4. Filtra solo eventos activos y no eliminados
-/// 5. Ordena por: destacados primero, luego por fecha
-/// 
-/// CONFIGURACI”N:
-/// - Connection string debe estar en appsettings.json
-/// - Clave: "ConnectionStrings:PostgreSQL"
-/// 
-/// AGREGAR M¡S M…TODOS:
-/// - GetEventByIdAsync(Guid id) - Para p·gina de detalle
-/// - GetEventsByCategoryAsync(string category) - Si agregas categorÌas
-/// - SearchEventsAsync(string query) - Para b˙squeda
-/// 
-/// DEPENDENCIAS:
-/// - Npgsql: Driver de PostgreSQL para .NET
-/// - Dapper: Micro-ORM para mapeo objeto-relacional
-/// - IConfiguration: Para obtener connection string
-/// - ILogger: Para logging
-/// 
-/// CREADO: 2025-01-XX | AUTOR: Equipo IASD Magnolia
-/// </remarks>
 public class EventsService
 {
     private readonly string _connectionString;
     private readonly ILogger<EventsService> _logger;
 
-    /// <summary>
-    /// Constructor - InyecciÛn de dependencias autom·tica
-    /// </summary>
-    /// <param name="configuration">ConfiguraciÛn de la aplicaciÛn (appsettings.json)</param>
-    /// <param name="logger">Logger para registrar eventos y errores</param>
     public EventsService(IConfiguration configuration, ILogger<EventsService> logger)
     {
-        // Obtener connection string desde appsettings.json
         _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "Connection string 'PostgreSQL' no encontrada en appsettings.json");
-
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' no encontrada");
         _logger = logger;
     }
 
     /// <summary>
-    /// Obtiene los prÛximos eventos activos para mostrar en la p·gina principal.
-    /// M·ximo 4 eventos, ordenados por: destacados primero, luego por fecha m·s cercana.
+    /// Obtiene los pr√≥ximos eventos con su informaci√≥n de tipo
     /// </summary>
-    /// <param name="limit">Cantidad m·xima de eventos a obtener (default: 4)</param>
-    /// <returns>Lista de eventos activos y no eliminados</returns>
-    /// <remarks>
-    /// FILTROS APLICADOS:
-    /// - is_active = true (solo eventos activos)
-    /// - deleted_at IS NULL (no eliminados)
-    /// - event_date >= HOY (solo eventos futuros o de hoy)
-    /// 
-    /// ORDEN:
-    /// 1. is_featured DESC (destacados primero)
-    /// 2. event_date ASC (fecha m·s cercana primero)
-    /// 3. start_time ASC (hora m·s temprana primero)
-    /// 
-    /// EJEMPLO DE USO:
-    /// var events = await eventsService.GetUpcomingEventsAsync(4);
-    /// </remarks>
-    public async Task<List<Event>> GetUpcomingEventsAsync(int limit = 4)
+    public async Task<List<EventWithType>> GetUpcomingEventsWithTypeAsync(int limit = 12)
     {
         try
         {
-            _logger.LogInformation("Obteniendo prÛximos {Limit} eventos desde PostgreSQL", limit);
+            _logger.LogInformation("Obteniendo pr√≥ximos {Limit} eventos con tipos desde PostgreSQL", limit);
 
-            // Query SQL con aliases para mapear snake_case (BD) a PascalCase (C#)
             const string sql = @"
                 SELECT 
-                    id AS Id,
-                    title AS Title,
-                    description AS Description,
-                    event_date AS EventDate,
-                    start_time AS StartTime,
-                    end_time AS EndTime,
-                    location AS Location,
-                    image_url AS ImageUrl,
-                    is_featured AS IsFeatured,
-                    is_active AS IsActive,
-                    created_by AS CreatedBy,
-                    updated_by AS UpdatedBy,
-                    created_at AS CreatedAt,
-                    updated_at AS UpdatedAt,
-                    deleted_at AS DeletedAt
-                FROM events
-                WHERE 
-                    is_active = true 
-                    AND deleted_at IS NULL
-                    AND event_date >= CURRENT_DATE
+                    e.id AS Id,
+                    e.event_type_id AS EventTypeId,
+                    e.title AS Title,
+                    e.short_description AS ShortDescription,
+                    e.description AS Description,
+                    e.event_date::timestamp AS EventDate,
+
+                    CASE 
+                        WHEN e.start_time IS NULL THEN NULL
+                        ELSE e.start_time - TIME '00:00'
+                    END AS StartTime,
+
+                    CASE 
+                        WHEN e.end_time IS NULL THEN NULL
+                        ELSE e.end_time - TIME '00:00'
+                    END AS EndTime,
+                    e.location AS Location,
+                    e.address AS Address,
+                    e.image_url AS ImageUrl,
+                    e.is_featured AS IsFeatured,
+                    e.is_active AS IsActive,
+                    et.name AS EventTypeName,
+                    et.color AS EventTypeColor
+                FROM events e
+                INNER JOIN event_types et ON e.event_type_id = et.id
+                WHERE e.is_active = true
+                    AND e.deleted_at IS NULL
+                    AND e.event_date >= (CURRENT_TIMESTAMP AT TIME ZONE 'America/Puerto_Rico')::date
+                    AND et.is_active = true
                 ORDER BY 
-                    is_featured DESC,
-                    event_date ASC,
-                    start_time ASC
+                    e.is_featured DESC,
+                    e.event_date ASC,
+                    e.start_time ASC
                 LIMIT @Limit";
 
-            // Conectar a PostgreSQL y ejecutar query
             using var connection = new NpgsqlConnection(_connectionString);
 
-            // Dapper ejecuta el query y mapea autom·ticamente a List<Event>
-            var events = await connection.QueryAsync<Event>(sql, new { Limit = limit });
 
-            var eventsList = events.ToList();
+            var events = await connection.QueryAsync<EventWithType>(sql, new { Limit = limit });
+            var eventList = events.ToList();
 
-            _logger.LogInformation(
-                "Se obtuvieron {Count} eventos exitosamente", 
-                eventsList.Count);
 
-            return eventsList;
-        }
-        catch (NpgsqlException ex)
-        {
-            // Error especÌfico de PostgreSQL (conexiÛn, permisos, etc.)
-            _logger.LogError(ex, 
-                "Error de PostgreSQL al obtener eventos: {Message}", 
-                ex.Message);
+          
 
-            // Devolver lista vacÌa en lugar de lanzar excepciÛn
-            // La UI mostrar· "No hay eventos" en lugar de error
-            return new List<Event>();
+            _logger.LogInformation("Se obtuvieron {Count} eventos con tipos", eventList.Count);
+            return eventList;
         }
         catch (Exception ex)
         {
-            // Cualquier otro error
-            _logger.LogError(ex, 
-                "Error inesperado al obtener eventos: {Message}", 
-                ex.Message);
+          
+          
+            _logger.LogError(ex, "Error al obtener eventos con tipos desde PostgreSQL");
+            return new List<EventWithType>();
+        }
+    }
 
-            return new List<Event>();
+   
+
+    /// <summary>
+    /// Obtiene todos los tipos de eventos activos
+    /// </summary>
+    public async Task<List<EventType>> GetEventTypesAsync()
+    {
+        try
+        {
+            const string sql = @"
+                SELECT 
+                    id AS Id,
+                    name AS Name,
+                    description AS Description,
+                    color AS Color,
+                    is_active AS IsActive,
+                    created_at AS CreatedAt,
+                    updated_at AS UpdatedAt
+                FROM event_types
+                WHERE is_active = true
+                ORDER BY name ASC";
+
+            using var connection = new NpgsqlConnection(_connectionString);
+
+            _logger.LogInformation("EventsServiceNew: Obteniendo tipos de eventos...");
+            var types = await connection.QueryAsync<EventType>(sql);
+            var typesList = types.ToList();
+
+            _logger.LogInformation("EventsServiceNew: Se obtuvieron {Count} tipos de eventos", typesList.Count);
+            if (typesList.Any())
+            {
+                _logger.LogInformation("EventsServiceNew: Tipos: {Types}", string.Join(", ", typesList.Select(t => t.Name)));
+            }
+
+            return typesList;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "EventsServiceNew: ‚ùå ERROR al obtener tipos de eventos");
+            return new List<EventType>();
+        }
+    }
+
+   
+
+    // =====================================================
+    // M√âTODOS DE ADMINISTRACI√ìN (CRUD)
+    // =====================================================
+
+    /// <summary>
+    /// Obtiene TODOS los eventos (incluyendo inactivos y pasados) para administraci√≥n
+    /// </summary>
+    public async Task<List<EventWithType>> GetAllEventsForAdminAsync()
+    {
+        try
+        {
+            const string sql = @"
+                SELECT 
+                    e.id AS Id,
+                    e.event_type_id AS EventTypeId,
+                    e.title AS Title,
+                    e.short_description AS ShortDescription,
+                    e.description AS Description,
+                    e.event_date::timestamp AS EventDate,
+
+                    CASE 
+                        WHEN e.start_time IS NULL THEN NULL
+                        ELSE e.start_time - TIME '00:00'
+                    END AS StartTime,
+
+                    CASE 
+                        WHEN e.end_time IS NULL THEN NULL
+                        ELSE e.end_time - TIME '00:00'
+                    END AS EndTime,
+                    e.location AS Location,
+                    e.address AS Address,
+                    e.image_url AS ImageUrl,
+                    e.is_featured AS IsFeatured,
+                    e.is_active AS IsActive,
+                    e.created_at AS CreatedAt,
+                    e.updated_at AS UpdatedAt,
+                    et.name AS EventTypeName,
+                    et.color AS EventTypeColor
+                FROM events e
+                INNER JOIN event_types et ON e.event_type_id = et.id
+                WHERE e.deleted_at IS NULL
+                ORDER BY e.created_at DESC";
+
+            using var connection = new NpgsqlConnection(_connectionString);
+            var events = await connection.QueryAsync<EventWithType>(sql);
+
+            return events.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener todos los eventos para admin");
+            return new List<EventWithType>();
         }
     }
 
     /// <summary>
-    /// Obtiene TODOS los eventos activos (para la p·gina de eventos completa).
-    /// Sin lÌmite de cantidad, ordenados por fecha.
+    /// Obtiene un evento por ID para edici√≥n
     /// </summary>
-    /// <returns>Lista completa de eventos activos</returns>
-    /// <remarks>
-    /// MANTENIMIENTO:
-    /// - Usar este mÈtodo en la p·gina /eventos
-    /// - Considerar paginaciÛn si hay muchos eventos (>50)
-    /// </remarks>
-    public async Task<List<Event>> GetAllEventsAsync()
+    public async Task<EventWithType?> GetEventByIdAsync(Guid eventId)
     {
         try
         {
-            _logger.LogInformation("Obteniendo TODOS los eventos desde PostgreSQL");
-
             const string sql = @"
                 SELECT 
-                    id AS Id,
-                    title AS Title,
-                    description AS Description,
-                    event_date AS EventDate,
-                    start_time AS StartTime,
-                    end_time AS EndTime,
-                    location AS Location,
-                    image_url AS ImageUrl,
-                    is_featured AS IsFeatured,
-                    is_active AS IsActive,
-                    created_by AS CreatedBy,
-                    updated_by AS UpdatedBy,
-                    created_at AS CreatedAt,
-                    updated_at AS UpdatedAt,
-                    deleted_at AS DeletedAt
-                FROM events
-                WHERE 
-                    is_active = true 
-                    AND deleted_at IS NULL
-                    AND event_date >= CURRENT_DATE
-                ORDER BY 
-                    is_featured DESC,
-                    event_date ASC,
-                    start_time ASC";
+                    e.id AS Id,
+                    e.event_type_id AS EventTypeId,
+                    e.title AS Title,
+                    e.short_description AS ShortDescription,
+                    e.description AS Description,
+                    e.event_date::timestamp AS EventDate,
+
+                    CASE 
+                        WHEN e.start_time IS NULL THEN NULL
+                        ELSE e.start_time - TIME '00:00'
+                    END AS StartTime,
+
+                    CASE 
+                        WHEN e.end_time IS NULL THEN NULL
+                        ELSE e.end_time - TIME '00:00'
+                    END AS EndTime,
+                    e.location AS Location,
+                    e.address AS Address,
+                    e.image_url AS ImageUrl,
+                    e.is_featured AS IsFeatured,
+                    e.is_active AS IsActive,
+                    e.created_at AS CreatedAt,
+                    et.name AS EventTypeName,
+                    et.color AS EventTypeColor
+                FROM events e
+                INNER JOIN event_types et ON e.event_type_id = et.id
+                WHERE e.id = @EventId AND e.deleted_at IS NULL";
 
             using var connection = new NpgsqlConnection(_connectionString);
-            var events = await connection.QueryAsync<Event>(sql);
-            var eventsList = events.ToList();
-
-            _logger.LogInformation("Se obtuvieron {Count} eventos totales", eventsList.Count);
-
-            return eventsList;
+            return await connection.QueryFirstOrDefaultAsync<EventWithType>(sql, new { EventId = eventId });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al obtener todos los eventos");
-            return new List<Event>();
-        }
-    }
-
-    /// <summary>
-    /// Obtiene un evento especÌfico por su ID.
-    /// ⁄til para p·gina de detalle del evento.
-    /// </summary>
-    /// <param name="id">UUID del evento</param>
-    /// <returns>Evento encontrado o null si no existe</returns>
-    public async Task<Event?> GetEventByIdAsync(Guid id)
-    {
-        try
-        {
-            _logger.LogInformation("Obteniendo evento con ID: {EventId}", id);
-
-            const string sql = @"
-                SELECT 
-                    id AS Id,
-                    title AS Title,
-                    description AS Description,
-                    event_date AS EventDate,
-                    start_time AS StartTime,
-                    end_time AS EndTime,
-                    location AS Location,
-                    image_url AS ImageUrl,
-                    is_featured AS IsFeatured,
-                    is_active AS IsActive,
-                    created_by AS CreatedBy,
-                    updated_by AS UpdatedBy,
-                    created_at AS CreatedAt,
-                    updated_at AS UpdatedAt,
-                    deleted_at AS DeletedAt
-                FROM events
-                WHERE 
-                    id = @Id 
-                    AND is_active = true 
-                    AND deleted_at IS NULL";
-
-            using var connection = new NpgsqlConnection(_connectionString);
-
-            // QueryFirstOrDefaultAsync devuelve null si no encuentra nada
-            var evento = await connection.QueryFirstOrDefaultAsync<Event>(sql, new { Id = id });
-
-            if (evento != null)
-            {
-                _logger.LogInformation("Evento encontrado: {Title}", evento.Title);
-            }
-            else
-            {
-                _logger.LogWarning("No se encontrÛ evento con ID: {EventId}", id);
-            }
-
-            return evento;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error al obtener evento por ID: {EventId}", id);
+            _logger.LogError(ex, "Error al obtener evento por ID");
             return null;
         }
     }
 
     /// <summary>
-    /// Verifica la conexiÛn a la base de datos.
-    /// ⁄til para health checks y troubleshooting.
+    /// Crea un nuevo evento
     /// </summary>
-    /// <returns>True si la conexiÛn es exitosa, False si falla</returns>
-    public async Task<bool> TestConnectionAsync()
+    public async Task<(bool Success, string Message, Guid? EventId)> CreateEventAsync(
+        int eventTypeId,
+        string title,
+        string? shortDescription,
+        string? description,
+        DateTime eventDate,
+        TimeSpan? startTime,
+        TimeSpan? endTime,
+        string? location,
+        string? address,
+        string? imageUrl,
+        bool isFeatured,
+        bool isActive,
+        Guid? createdBy)
     {
         try
         {
-            _logger.LogInformation("Probando conexiÛn a PostgreSQL...");
+            const string insertSql = @"
+                INSERT INTO events (
+                    event_type_id, created_by, title,
+                    short_description, description,
+                    event_date, start_time, end_time,
+                    location, address, image_url,
+                    is_featured, is_active, created_at
+                )
+                VALUES (
+                    @EventTypeId, @CreatedBy, @Title,
+                    @ShortDescription, @Description,
+                    @EventDate, @StartTime, @EndTime,
+                    @Location, @Address, @ImageUrl,
+                    @IsFeatured, @IsActive, NOW()
+                )
+                RETURNING id";
 
             using var connection = new NpgsqlConnection(_connectionString);
-            await connection.OpenAsync();
+            var eventId = await connection.ExecuteScalarAsync<Guid>(insertSql, new
+            {
+                EventTypeId = eventTypeId,
+                CreatedBy = createdBy,
+                Title = title,
+                ShortDescription = shortDescription,
+                Description = description,
+                EventDate = eventDate,
+                StartTime = startTime,
+                EndTime = endTime,
+                Location = location,
+                Address = address,
+                ImageUrl = imageUrl,
+                IsFeatured = isFeatured,
+                IsActive = isActive
+            });
 
-            // Query simple para verificar conexiÛn
-            var result = await connection.ExecuteScalarAsync<int>("SELECT 1");
-
-            _logger.LogInformation("? ConexiÛn a PostgreSQL exitosa");
-            return result == 1;
+            _logger.LogInformation("Evento creado exitosamente: {EventId}", eventId);
+            return (true, "Evento creado exitosamente", eventId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "? Error al conectar a PostgreSQL: {Message}", ex.Message);
-            return false;
+            _logger.LogError(ex, "Error al crear evento");
+            return (false, $"Error al crear evento: {ex.Message}", null);
         }
     }
+
+    /// <summary>
+    /// Actualiza un evento existente
+    /// </summary>
+    public async Task<(bool Success, string Message)> UpdateEventAsync(
+        Guid eventId,
+        int eventTypeId,
+        string title,
+        string? shortDescription,
+        string? description,
+        DateTime eventDate,
+        TimeSpan? startTime,
+        TimeSpan? endTime,
+        string? location,
+        string? address,
+        string? imageUrl,
+        bool isFeatured,
+        bool isActive,
+        Guid? updatedBy)
+    {
+        try
+        {
+            const string updateSql = @"
+                UPDATE events SET
+                    event_type_id = @EventTypeId,
+                    updated_by = @UpdatedBy,
+                    title = @Title,
+                    short_description = @ShortDescription,
+                    description = @Description,
+                    event_date = @EventDate,
+                    start_time = @StartTime,
+                    end_time = @EndTime,
+                    location = @Location,
+                    address = @Address,
+                    image_url = @ImageUrl,
+                    is_featured = @IsFeatured,
+                    is_active = @IsActive,
+                    updated_at = NOW()
+                WHERE id = @EventId";
+
+            using var connection = new NpgsqlConnection(_connectionString);
+            await connection.ExecuteAsync(updateSql, new
+            {
+                EventId = eventId,
+                EventTypeId = eventTypeId,
+                UpdatedBy = updatedBy,
+                Title = title,
+                ShortDescription = shortDescription,
+                Description = description,
+                EventDate = eventDate,
+                StartTime = startTime,
+                EndTime = endTime,
+                Location = location,
+                Address = address,
+                ImageUrl = imageUrl,
+                IsFeatured = isFeatured,
+                IsActive = isActive
+            });
+
+            _logger.LogInformation("Evento actualizado: {EventId}", eventId);
+            return (true, "Evento actualizado exitosamente");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al actualizar evento");
+            return (false, $"Error al actualizar evento: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Elimina un evento (soft delete)
+    /// </summary>
+    public async Task<(bool Success, string Message)> DeleteEventAsync(Guid eventId)
+    {
+        try
+        {
+            // Primero obtener la imagen del evento para eliminarla del filesystem
+            const string getImageSql = "SELECT image_url FROM events WHERE id = @EventId";
+
+            using var connection = new NpgsqlConnection(_connectionString);
+            var imageUrl = await connection.QueryFirstOrDefaultAsync<string>(getImageSql, new { EventId = eventId });
+
+            const string deleteSql = @"
+                UPDATE events SET
+                    deleted_at = NOW(),
+                    is_active = FALSE,
+                    updated_at = NOW()
+                WHERE id = @EventId";
+
+            await connection.ExecuteAsync(deleteSql, new { EventId = eventId });
+
+            // Eliminar la imagen del filesystem si existe
+            if (!string.IsNullOrEmpty(imageUrl))
+            {
+                DeleteImageFromFileSystem(imageUrl);
+            }
+
+            _logger.LogInformation("Evento eliminado: {EventId}", eventId);
+            return (true, "Evento eliminado exitosamente");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al eliminar evento");
+            return (false, $"Error al eliminar evento: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Elimina una imagen del filesystem
+    /// </summary>
+    public void DeleteImageFromFileSystem(string? imageUrl)
+    {
+        if (string.IsNullOrEmpty(imageUrl))
+        {
+            _logger.LogInformation("DeleteImageFromFileSystem: imageUrl est√° vac√≠a o null, no hay nada que eliminar");
+            return;
+        }
+
+        try
+        {   
+            _logger.LogInformation("DeleteImageFromFileSystem: Intentando eliminar imagen: {ImageUrl}", imageUrl);
+
+            // Convertir la URL relativa a ruta f√≠sica
+            var relativePath = imageUrl.TrimStart('/');
+            _logger.LogInformation("DeleteImageFromFileSystem: Ruta relativa: {RelativePath}", relativePath);
+
+            // Construir la ruta completa
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+            _logger.LogInformation("DeleteImageFromFileSystem: Ruta completa: {FullPath}", fullPath);
+
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+                _logger.LogInformation("‚úÖ Imagen eliminada exitosamente del filesystem: {ImagePath}", fullPath);
+            }
+            else
+            {
+                _logger.LogWarning("‚ö†Ô∏è La imagen no existe en el filesystem: {FullPath}", fullPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "‚ùå Error al eliminar la imagen del filesystem: {ImageUrl}", imageUrl);
+        }
+    }
+
 }

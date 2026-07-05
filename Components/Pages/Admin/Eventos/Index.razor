@@ -3,7 +3,7 @@
 @using IASD_Magnolia.Services
 @using IASD_Magnolia.Models
 @using IASD_Magnolia.Components.Admin
-@inject EventsServiceNew EventsService
+@inject EventsService EventsService
 @inject AuthStateService AuthState
 @inject NavigationManager Navigation
 @inject ILogger<Index> Logger
@@ -19,7 +19,7 @@
                     <p>Administra todos los eventos de la iglesia</p>
                 </div>
                 <button class="btn-create" @onclick="GoToCreate">
-                    <i class="fa-solid fa-calendar-plus"></i> Crear nuevo usuario
+                    <i class="fa-solid fa-calendar-plus"></i> Crear nuevo evento
                 </button>
              
             </div>

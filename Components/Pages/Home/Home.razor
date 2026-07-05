@@ -1,7 +1,7 @@
 @page "/"
 @using IASD_Magnolia.Components.Shared
 @using IASD_Magnolia.Models
-@inject IASD_Magnolia.Services.EventsServiceNew EventsService
+@inject IASD_Magnolia.Services.EventsService EventsService
 
 <PageTitle>Inicio - Iglesia Adventista del Séptimo Día Magnolia</PageTitle>
 
@@ -118,11 +118,15 @@
                         <h3>@evento.Title</h3>
                         @if (!string.IsNullOrEmpty(evento.FormattedTime))
                         {
-                            <p class="hora">? @evento.FormattedTime</p>
+
+                            <p class="hora"><i class="fas fa-clock"></i> @evento.FormattedTime</p>
                         }
                         @if (!string.IsNullOrEmpty(evento.DisplayLocation))
                         {
-                            <p class="ubicacion">?? @evento.DisplayLocation</p>
+                            <p class="ubicacion">
+                                <i class="fas fa-map-marker-alt"></i>
+                                @evento.DisplayLocation
+                            </p>
                         }
                         @if (!string.IsNullOrEmpty(evento.ShortDescription))
                         {

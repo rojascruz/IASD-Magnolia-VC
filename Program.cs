@@ -15,7 +15,6 @@ builder.Services.AddHttpClient<VerseOfTheDayService>();
 // Registrar servicios de Eventos (PostgreSQL)
 // Scoped: Una instancia por request/conexión de usuario
 builder.Services.AddScoped<EventsService>();
-builder.Services.AddScoped<EventsServiceNew>();
 builder.Services.AddScoped<EventTypesService>();
 
 // Registrar servicio de Recursos (Departamentos y Liderazgo)
