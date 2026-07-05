@@ -29,7 +29,5 @@ public class Leadership
         ? "/img/recursos/default-person.png" 
         : PhotoUrl;
 
-    public string ShortBiography => Biography != null && Biography.Length > 150 
-        ? Biography.Substring(0, 150) + "..." 
-        : Biography ?? string.Empty;
+
 }

@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 @using IASD_Magnolia.Services
 @using IASD_Magnolia.Models
-@inject EventsServiceNew EventsService
+@inject EventsService EventsService
 @inject AuthStateService AuthState
 @inject NavigationManager Navigation
 @inject ILogger<Eventos> Logger
@@ -13,11 +13,11 @@
     <section class="events-hero-section">
         <div class="events-hero-overlay">
             <div class="events-hero-content">
-               
+
                 <h1>Eventos</h1>
                 <p class="events-subtitle">Conéctate, participa y forma parte de todo lo que<br />Dios está haciendo en nuestra iglesia y comunidad.</p>
 
-        
+
             </div>
         </div>
     </section>
@@ -32,9 +32,9 @@
                         <span class="input-group-text bg-white border-end-0">
                             <i class="fas fa-search"></i>
                         </span>
-                        <input type="text" 
-                               class="form-control border-start-0" 
-                               placeholder="Buscar eventos..." 
+                        <input type="text"
+                               class="form-control border-start-0"
+                               placeholder="Buscar eventos..."
                                @bind="searchTerm"
                                @bind:event="oninput"
                                @onkeyup="OnSearchChanged" />
@@ -44,17 +44,17 @@
                 <!-- Fixed Filter Buttons -->
                 <div class="col-12 col-md-5">
                     <div class="btn-group w-100" role="group">
-                        <button type="button" 
+                        <button type="button"
                                 class="btn @(currentFilter == "todos" ? "btn-primary" : "btn-outline-primary")"
                                 @onclick="@(() => FilterByCategory("todos"))">
                             Todos los eventos
                         </button>
-                        <button type="button" 
+                        <button type="button"
                                 class="btn @(currentFilter == "proximos" ? "btn-primary" : "btn-outline-primary")"
                                 @onclick="@(() => FilterByCategory("proximos"))">
                             Próximos eventos
                         </button>
-                        <button type="button" 
+                        <button type="button"
                                 class="btn @(currentFilter == "especiales" ? "btn-primary" : "btn-outline-primary")"
                                 @onclick="@(() => FilterByCategory("especiales"))">
                             Eventos Especiales
@@ -106,8 +106,8 @@
                             <div class="event-card h-100">
                                 <div class="event-card-image">
                                     @* Debug: @evt.DisplayImage *@
-                                    <img src="@evt.DisplayImage" 
-                                         alt="@evt.Title" 
+                                    <img src="@evt.DisplayImage"
+                                         alt="@evt.Title"
                                          loading="lazy"
                                          onerror="console.error('Error loading:', this.src); this.onerror=null; this.src='/img/eventos/default-event.png';" />
                                     <div class="event-date-badge">
@@ -178,7 +178,7 @@
         </div>
     </section>
 
-@*     <!-- CTA Section -->
+    @*     <!-- CTA Section -->
     <section class="events-cta-section">
         <div class="container text-center">
             <h2 class="mb-3">¿Tienes alguna pregunta?</h2>
@@ -257,14 +257,14 @@
 
     private void ApplyFilters()
     {
-        filteredEvents = allEvents;
+        filteredEvents = allEvents.ToList();
 
-        // Apply category filter
         if (currentFilter == "proximos")
         {
-            var nextWeek = DateTime.Now.AddDays(7);
+            var tomorrow = DateTime.Today.AddDays(1);
+
             filteredEvents = filteredEvents
-                .Where(e => e.EventDate <= nextWeek)
+                .Where(e => e.EventDate.Date >= tomorrow)
                 .ToList();
         }
         else if (currentFilter == "especiales")
@@ -274,7 +274,6 @@
                 .ToList();
         }
 
-        // Apply event type filter
         if (selectedTypeId.HasValue)
         {
             filteredEvents = filteredEvents
@@ -282,12 +281,12 @@
                 .ToList();
         }
 
-        // Apply search filter
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
             var search = searchTerm.ToLower();
+
             filteredEvents = filteredEvents
-                .Where(e => 
+                .Where(e =>
                     e.Title.ToLower().Contains(search) ||
                     (e.ShortDescription != null && e.ShortDescription.ToLower().Contains(search)) ||
                     (e.EventTypeName != null && e.EventTypeName.ToLower().Contains(search)) ||
@@ -295,18 +294,16 @@
                 .ToList();
         }
 
-        // Calculate pagination
         totalPages = (int)Math.Ceiling(filteredEvents.Count / (double)itemsPerPage);
         if (totalPages < 1) totalPages = 1;
         if (currentPage > totalPages) currentPage = totalPages;
-
 
         UpdatePagedEvents();
     }
 
     private void UpdatePagedEvents()
     {
-       
+
         pagedEvents = filteredEvents
             .Skip((currentPage - 1) * itemsPerPage)
             .Take(itemsPerPage)

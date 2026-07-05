@@ -262,3 +262,10 @@ Para crear un nuevo módulo, seguir esta estructura:
 Ejemplo de flujo:
 
 Component → Service → PostgreSQL
+
+
+
+# Limpieza automatica de eventos
+La base de datos ejecuta diariamente un Cron Job (delete-past-events) a las 12:05 AM (America/Puerto_Rico) 
+para eliminar permanentemente los eventos cuya fecha ya expiró. 
+El Job está programado en UTC (04:05) debido a que el servidor PostgreSQL utiliza esa zona horaria.

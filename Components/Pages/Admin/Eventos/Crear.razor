@@ -4,7 +4,7 @@
 @using IASD_Magnolia.Models
 @using IASD_Magnolia.Components.Shared
 @using IASD_Magnolia.Components.Admin
-@inject EventsServiceNew EventsService
+@inject EventsService EventsService
 @inject AuthStateService AuthState
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
@@ -69,17 +69,17 @@
                     <div class="form-group-simple">
                         <label class="form-label-simple">Descripción corta <span class="required-mark">*</span></label>
                         <InputTextArea class="form-control-simple textarea-simple" @bind-Value="newEvent.ShortDescription" 
-                                      placeholder="Breve descripción del evento" rows="3" maxlength="100" />
-                        <div class="char-counter-simple">@(newEvent.ShortDescription?.Length ?? 0)/100</div>
+                                      placeholder="Breve descripción del evento" rows="3" maxlength="300" />
+                        <div class="char-counter-simple">@(newEvent.ShortDescription?.Length ?? 0)/300</div>
                         <ValidationMessage For="@(() => newEvent.ShortDescription)" class="text-danger" />
                     </div>
-                    <div class="form-group-simple">
+                    @* <div class="form-group-simple">
                         <label class="form-label-simple">Descripción completa <span class="required-mark">*</span></label>
                         <InputTextArea class="form-control-simple textarea-simple" @bind-Value="newEvent.FullDescription" 
                                       placeholder="Describe tu evento en detalle..." rows="3" maxlength="2000" />
                         <div class="char-counter-simple">@(newEvent.FullDescription?.Length ?? 0)/2000</div>
                         <ValidationMessage For="@(() => newEvent.FullDescription)" class="text-danger" />
-                    </div>
+                    </div> *@
                 </div>
             </div>
 
@@ -333,7 +333,7 @@
                 newEvent.EventTypeId,
                 newEvent.Title,
                 newEvent.ShortDescription,
-                newEvent.FullDescription,
+                // newEvent.FullDescription,
                 eventDate.Date,
                 startTime.TimeOfDay,
                 endTime.TimeOfDay,
@@ -400,7 +400,7 @@
     {
         public string Title { get; set; } = string.Empty;
         public string ShortDescription { get; set; } = string.Empty;
-        public string FullDescription { get; set; } = string.Empty;
+        // public string FullDescription { get; set; } = string.Empty;
         public DateTime EventDate { get; set; }
         public DateTime EndTime { get; set; }
         public string Location { get; set; } = string.Empty;
