@@ -46,34 +46,34 @@
                 {
                     <a href="/admin/usuarios" class="user-dropdown-item" @onclick="CloseMenu">
                         <i class="fas fa-users"></i>
-                        <span>Gestionar Usuarios</span>
-                    </a>
-                    <a href="/admin/tipos-eventos" class="user-dropdown-item" @onclick="CloseMenu">
-                        <i class="fas fa-tags"></i>
-                        <span>Gestionar Tipos de Eventos</span>
+                        <span>Administrar Usuarios</span>
                     </a>
 
                     <a href="/admin/departamentos" class="user-dropdown-item" @onclick="CloseMenu">
                         <i class="fas fa-sitemap"></i>
-                        <span>Gestionar Departamentos</span>
+                        <span>Administrar Departamentos</span>
                     </a>
 
                     <a href="/admin/liderazgo" class="user-dropdown-item" @onclick="CloseMenu">
                         <i class="fas fa-users"></i>
-                        <span>Gestionar Liderazgo</span>
+                        <span>Administrar Liderazgo</span>
+                    </a>
+                    <a href="/admin/tipos-eventos" class="user-dropdown-item" @onclick="CloseMenu">
+                        <i class="fas fa-tags"></i>
+                        <span>Administrar Tipos de Eventos</span>
                     </a>
                 }
 
-                @* Gestionar Eventos - disponible para Admin y Editor *@
+                @* Administrar Eventos - disponible para Admin y Editor *@
                 @if (AuthState.IsAuthenticated)
                 {
                     <a href="/admin/eventos" class="user-dropdown-item" @onclick="CloseMenu">
                         <i class="fas fa-calendar-alt"></i>
-                        <span>Gestionar Eventos</span>
+                        <span>Administrar Eventos</span>
                     </a>
                 }
 
-             @*    <a href="/mi-perfil" class="user-dropdown-item" @onclick="CloseMenu">
+                @*    <a href="/mi-perfil" class="user-dropdown-item" @onclick="CloseMenu">
                     <i class="fas fa-user-circle"></i>
                     <span>Mi Perfil</span>
                 </a>
@@ -96,7 +96,7 @@
 else
 {
     <a href="/" class="">
-      
+
     </a>
 }
 
