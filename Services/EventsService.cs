@@ -61,7 +61,8 @@ public class EventsService
                 ORDER BY 
                     e.is_featured DESC,
                     e.event_date ASC,
-                    e.start_time ASC" ;
+                    e.start_time ASC
+                    LIMIT @Limit;";
 
             using var connection = new NpgsqlConnection(_connectionString);
 
