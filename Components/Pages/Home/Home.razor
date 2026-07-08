@@ -1,34 +1,32 @@
 @page "/"
 @using IASD_Magnolia.Components.Shared
 @using IASD_Magnolia.Models
+@using Microsoft.Extensions.Localization
+@using IASD_Magnolia.Resources
 @inject IASD_Magnolia.Services.EventsService EventsService
+@inject IStringLocalizer<SharedResource> L
 
-<PageTitle>Inicio - Iglesia Adventista del Séptimo Día Magnolia</PageTitle>
+<PageTitle>@L["Nav.Home"] - IASD Magnolia</PageTitle>
 
-<!-- Hero Section -->
 <section class="hero-section">
     <div class="hero-container">
 
         <div class="hero-content">
             <h1>
-                Vive la esperanza.<br />
-                <span class="highlight">Comparte el amor.</span>
+                @L["Home.HeroTitle1"]<br />
+                <span class="highlight">@L["Home.HeroTitle2"]</span>
             </h1>
 
-            <p>
-                Somos una comunidad que busca honrar a Dios,
-                servir a los demás y preparar corazones para
-                el próximo regreso de Jesús.
-            </p>
+            <p>@L["Home.HeroSubtitle"]</p>
 
             <div class="hero-buttons">
                 <a href="/eventos" class="btn-primary">
                     <i class="fa-regular fa-calendar"></i>
-                    PRÓXIMOS EVENTOS
+                    @L["Home.UpcomingEvents"]
                 </a>
 
                 <a href="/clubes" class="hero-btn-secondary">
-                    CLUB
+                    @L["Nav.Club"]
                 </a>
             </div>
         </div>
@@ -40,7 +38,6 @@
     </div>
 </section>
 
-<!-- Sección de Iconos -->
 <section class="icons-section">
     <div class="icons-container">
 
@@ -48,52 +45,51 @@
             <div class="pillar-icon">
                 <i class="fa-solid fa-users"></i>
             </div>
-            <h3>Comunidad</h3>
-            <p>Un lugar donde pertenecer</p>
+            <h3>@L["Home.Community"]</h3>
+            <p>@L["Home.CommunitySubtitle"]</p>
         </div>
 
         <div class="icon-item">
             <div class="pillar-icon">
                 <i class="fa-solid fa-book-open"></i>
             </div>
-            <h3>Crecimiento</h3>
-            <p>Formación espiritual para toda la familia</p>
+            <h3>@L["Home.Growth"]</h3>
+            <p>@L["Home.GrowthSubtitle"]</p>
         </div>
 
         <div class="icon-item">
             <div class="pillar-icon">
                 <i class="fa-regular fa-heart"></i>
             </div>
-            <h3>Servicio</h3>
-            <p>Amor en acción para los que lo necesitan</p>
+            <h3>@L["Home.Service"]</h3>
+            <p>@L["Home.ServiceSubtitle"]</p>
         </div>
 
         <div class="icon-item">
             <div class="pillar-icon">
                 <i class="fa-solid fa-hand-holding-heart"></i>
             </div>
-            <h3>Misión</h3>
-            <p>Llevando la esperanza a nuestra ciudad</p>
+            <h3>@L["Home.Mission"]</h3>
+            <p>@L["Home.MissionSubtitle"]</p>
         </div>
 
         <div class="icon-item">
             <div class="pillar-icon">
                 <i class="fa-solid fa-earth-americas"></i>
             </div>
-            <h3>Esperanza</h3>
-            <p>Preparados para su próximo regreso</p>
+            <h3>@L["Home.Hope"]</h3>
+            <p>@L["Home.HopeSubtitle"]</p>
         </div>
 
     </div>
 </section>
 
-<!-- Próximos Eventos -->
 <section class="eventos-section">
     <div class="section-header">
-        <h2>Próximos Eventos</h2>
+        <h2>@L["Home.UpcomingEvents"]</h2>
 
         <a href="/eventos" class="link-ver-todos">
-            VER TODOS LOS EVENTOS
+            @L["Home.ViewAllEvents"]
             <i class="fa-solid fa-arrow-right-long"></i>
         </a>
     </div>
@@ -102,7 +98,7 @@
         @if (isLoadingEvents)
         {
             <div class="eventos-loading">
-                <p>Cargando eventos...</p>
+                <p>@L["Home.Loading"]</p>
             </div>
         }
         else if (eventos != null && eventos.Any())
@@ -152,61 +148,60 @@
         else
         {
             <div class="eventos-empty">
-                <p>No hay eventos próximos en este momento.</p>
-                <p>¡Pronto tendremos nuevas actividades!</p>
+                <p>@L["Home.NoEvents"]</p>
+                <p>@L["Home.NoEventsSubtitle"]</p>
             </div>
         }
     </div>
 </section>
 
-<!-- Días de Culto -->
 <section class="culto-section">
     <div class="section-header">
-        <h2>Días de Culto</h2>
+        <h2>@L["Home.WorshipDays"]</h2>
     </div>
 
     <div class="culto-grid">
 
         <div class="culto-card">
-            <p class="culto-dia">LUNES</p>
+            <p class="culto-dia">@L["Days.Monday"]</p>
             <div class="pillar-icon">
                 <i class="fa-solid fa-hands-praying"></i>
             </div>
-            <h3 class="culto-nombre">Noche de Oración</h3>
+            <h3 class="culto-nombre">@L["Home.PrayerNight"]</h3>
             <div class="culto-separator"></div>
             <p class="culto-hora">8:00 PM</p>
         </div>
 
         <div class="culto-card">
-            <p class="culto-dia">MIÉRCOLES</p>
+            <p class="culto-dia">@L["Days.Wednesday"]</p>
             <div class="pillar-icon">
                 <i class="fa-solid fa-moon"></i>
             </div>
-            <h3 class="culto-nombre">Noche de Testimonios</h3>
+            <h3 class="culto-nombre">@L["Home.TestimonyNight"]</h3>
             <div class="culto-separator"></div>
             <p class="culto-hora">8:00 PM</p>
         </div>
 
         <div class="culto-card">
-            <p class="culto-dia">VIERNES</p>
+            <p class="culto-dia">@L["Days.Friday"]</p>
             <div class="pillar-icon">
                 <i class="fa-solid fa-people-group"></i>
             </div>
-            <h3 class="culto-nombre">Sociedad de Jóvenes</h3>
+            <h3 class="culto-nombre">@L["Home.YouthSociety"]</h3>
             <div class="culto-separator"></div>
             <p class="culto-hora">8:00 PM</p>
         </div>
 
         <div class="culto-card">
-            <p class="culto-dia">SÁBADO</p>
+            <p class="culto-dia">@L["Days.Saturday"]</p>
             <div class="pillar-icon">
                 <i class="fa-solid fa-church"></i>
             </div>
-            <h3 class="culto-nombre">Escuela Sabática</h3>
+            <h3 class="culto-nombre">@L["Home.SabbathSchool"]</h3>
             <div class="culto-separator"></div>
             <p class="culto-hora">9:30 AM</p>
 
-            <h3 class="culto-nombre culto-nombre-second">Culto Divino</h3>
+            <h3 class="culto-nombre culto-nombre-second">@L["Home.DivineFellowship"]</h3>
             <div class="culto-separator"></div>
             <p class="culto-hora">11:00 AM</p>
         </div>

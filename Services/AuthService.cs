@@ -1,7 +1,6 @@
 using IASD_Magnolia.Models;
 using Npgsql;
 using Dapper;
-using IASD_Magnolia.Models;
 
 namespace IASD_Magnolia.Services;
 

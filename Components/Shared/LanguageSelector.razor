@@ -1,0 +1,30 @@
+﻿@using System.Globalization
+@inject NavigationManager Navigation
+
+<div class="language-selector">
+    <a class="language-option @(CurrentCulture == "es" ? "active" : "")"
+       href="@GetCultureUrl("es")"
+       data-enhance-nav="false">
+        ES
+    </a>
+
+    <span class="language-separator">|</span>
+
+    <a class="language-option @(CurrentCulture == "en" ? "active" : "")"
+       href="@GetCultureUrl("en")"
+       data-enhance-nav="false">
+        EN
+    </a>
+</div>
+
+@code {
+    private string CurrentCulture => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+    private string GetCultureUrl(string culture)
+    {
+        var currentUri = new Uri(Navigation.Uri);
+        var redirectUri = currentUri.PathAndQuery;
+
+        return $"/set-culture?culture={culture}&redirectUri={Uri.EscapeDataString(redirectUri)}";
+    }
+}

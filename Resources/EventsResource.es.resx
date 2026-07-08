@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="Title" xml:space="preserve">
+		<value>Eventos</value>
+	</data>
+
+		<data name="Subtitle" xml:space="preserve">
+		<value>Conéctate, participa y forma parte de todo lo que Dios está haciendo en nuestra iglesia y comunidad.</value>
+	</data>
+
+		<data name="SearchPlaceholder" xml:space="preserve">
+		<value>Buscar eventos...</value>
+	</data>
+
+		<data name="AllEvents" xml:space="preserve">
+		<value>Todos los eventos</value>
+	</data>
+
+		<data name="UpcomingEvents" xml:space="preserve">
+		<value>Próximos eventos</value>
+	</data>
+
+		<data name="SpecialEvents" xml:space="preserve">
+		<value>Eventos especiales</value>
+	</data>
+
+		<data name="AllTypes" xml:space="preserve">
+		<value>Todos los tipos</value>
+	</data>
+
+		<data name="Loading" xml:space="preserve">
+		<value>Cargando...</value>
+	</data>
+
+		<data name="NoEventsFound" xml:space="preserve">
+		<value>No se encontraron eventos</value>
+	</data>
+
+		<data name="PaginationLabel" xml:space="preserve">
+		<value>Navegación de eventos</value>
+	</data>
+</root>

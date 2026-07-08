@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="Title" xml:space="preserve">
+		  <value>Ministries AND Departments</value>
+		</data>
+
+	<data name="Subtitle" xml:space="preserve">
+		  <value>Each ministry has a different purpose, but they all share the same mission: serving God and our community with love and dedication.</value>
+		</data>
+
+	<data name="Schedule" xml:space="preserve">
+		  <value>Schedule:</value>
+		</data>
+
+	<data name="SabbathSchoolTitle" xml:space="preserve">
+		  <value>Sabbath School</value>
+		</data>
+
+	<data name="SabbathSchoolDescription" xml:space="preserve">
+		  <value>Systematic Bible study every Sabbath with classes for all ages led by dedicated teachers.</value>
+		</data>
+
+	<data name="SabbathSchoolTime" xml:space="preserve">
+		  <value>Saturdays 9:30 AM</value>
+		</data>
+
+	<data name="YouthTitle" xml:space="preserve">
+		  <value>Youth Ministry</value>
+		</data>
+
+	<data name="YouthDescription" xml:space="preserve">
+		  <value>A ministry for Adventist youth featuring spiritual, social, and missionary activities.</value>
+		</data>
+
+	<data name="YouthTime" xml:space="preserve">
+		  <value>Fridays 8:00 PM</value>
+		</data>
+
+	<data name="HealthTitle" xml:space="preserve">
+		  <value>Health Ministry</value>
+		</data>
+
+	<data name="HealthDescription" xml:space="preserve">
+		  <value>Promoting physical, mental, and spiritual well-being through preventive health programs.</value>
+		</data>
+
+	<data name="HealthTime" xml:space="preserve">
+		  <value>Mondays 8:00 PM</value>
+		</data>
+
+	<data name="ChildrenTitle" xml:space="preserve">
+		  <value>Children's Ministry</value>
+		</data>
+
+	<data name="ChildrenDescription" xml:space="preserve">
+		  <value>Specialized care and Bible teaching for children through age-appropriate activities.</value>
+		</data>
+
+	<data name="ChildrenTime" xml:space="preserve">
+		  <value>Sabbaths during the worship service</value>
+		</data>
+
+	<data name="PrayerTitle" xml:space="preserve">
+		  <value>Prayer Ministry</value>
+		</data>
+
+	<data name="PrayerDescription" xml:space="preserve">
+		  <value>Interceding in prayer for the needs of the church and the community. United in prayer.</value>
+		</data>
+
+	<data name="ADRATitle" xml:space="preserve">
+		  <value>ADRA</value>
+		</data>
+
+	<data name="ADRADescription" xml:space="preserve">
+		  <value>A Christian humanitarian ministry providing help and hope to our community through outreach projects and donations.</value>
+		</data>
+
+	<data name="ADRATime1" xml:space="preserve">
+		  <value>Wednesday 7:30 - 8:30 PM</value>
+		</data>
+
+	<data name="ADRATime2" xml:space="preserve">
+		  <value>Saturday 9:30 - 11:00 AM</value>
+		</data>
+</root>

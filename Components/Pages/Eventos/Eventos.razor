@@ -2,11 +2,17 @@
 @rendermode InteractiveServer
 @using IASD_Magnolia.Services
 @using IASD_Magnolia.Models
+@using Microsoft.Extensions.Localization
+@using IASD_Magnolia.Resources
+
 @inject EventsService EventsService
 @inject AuthStateService AuthState
 @inject NavigationManager Navigation
 @inject ILogger<Eventos> Logger
-<PageTitle>Eventos - IASD Magnolia</PageTitle>
+@inject IStringLocalizer<EventsResource> L
+
+
+<PageTitle>@L["Title"] - IASD Magnolia</PageTitle>
 
 <div class="events-page">
     <!-- Hero Section -->
@@ -14,9 +20,11 @@
         <div class="events-hero-overlay">
             <div class="events-hero-content">
 
-                <h1>Eventos</h1>
-                <p class="events-subtitle">Conéctate, participa y forma parte de todo lo que<br />Dios está haciendo en nuestra iglesia y comunidad.</p>
+                <h1>@L["Title"]</h1>
 
+                <p class="events-subtitle">
+                    @L["Subtitle"]
+                </p>
 
             </div>
         </div>
@@ -34,7 +42,7 @@
                         </span>
                         <input type="text"
                                class="form-control border-start-0"
-                               placeholder="Buscar eventos..."
+                               placeholder="@L["SearchPlaceholder"]"
                                @bind="searchTerm"
                                @bind:event="oninput"
                                @onkeyup="OnSearchChanged" />
@@ -47,17 +55,17 @@
                         <button type="button"
                                 class="btn @(currentFilter == "todos" ? "btn-primary" : "btn-outline-primary")"
                                 @onclick="@(() => FilterByCategory("todos"))">
-                            Todos los eventos
+                            @L["AllEvents"]
                         </button>
                         <button type="button"
                                 class="btn @(currentFilter == "proximos" ? "btn-primary" : "btn-outline-primary")"
                                 @onclick="@(() => FilterByCategory("proximos"))">
-                            Próximos eventos
+                            @L["UpcomingEvents"]
                         </button>
                         <button type="button"
                                 class="btn @(currentFilter == "especiales" ? "btn-primary" : "btn-outline-primary")"
                                 @onclick="@(() => FilterByCategory("especiales"))">
-                            Eventos Especiales
+                            @L["SpecialEvents"]
                         </button>
                     </div>
                 </div>
@@ -65,7 +73,9 @@
                 <!-- Event Type Dropdown -->
                 <div class="col-12 col-md-3">
                     <select class="form-select" @onchange="OnEventTypeChanged">
-                        <option value="">Todos los tipos</option>
+                        <option value="">
+                            @L["AllTypes"]
+                        </option>
                         @if (eventTypes != null)
                         {
                             @foreach (var type in eventTypes)
@@ -86,7 +96,9 @@
             {
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando...</span>
+                        <span class="visually-hidden">
+                            @L["Loading"]
+                        </span>
                     </div>
                 </div>
             }
@@ -94,7 +106,7 @@
             {
                 <div class="text-center py-5">
                     <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No se encontraron eventos</p>
+                    <p class="text-muted">@L["NoEventsFound"]</p>
                 </div>
             }
             else

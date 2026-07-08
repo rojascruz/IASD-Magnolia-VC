@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<!-- Navigation -->
+	<data name="Nav.Home" xml:space="preserve">
+    <value>HOME</value>
+  </data>
+	<data name="Nav.AboutUs" xml:space="preserve">
+    <value>ABOUT US</value>
+  </data>
+	<data name="Nav.Ministries" xml:space="preserve">
+    <value>MINISTRIES</value>
+  </data>
+	<data name="Nav.Resources" xml:space="preserve">
+    <value>RESOURCES</value>
+  </data>
+	<data name="Nav.Events" xml:space="preserve">
+    <value>EVENTS</value>
+  </data>
+	<data name="Nav.Club" xml:space="preserve">
+    <value>CLUB</value>
+  </data>
+
+	<!-- Footer -->
+	<data name="Footer.ChurchName" xml:space="preserve">
+    <value>Seventh-day Adventist Church</value>
+  </data>
+	<data name="Footer.Location" xml:space="preserve">
+    <value>MAGNOLIA, BAYAMÓN</value>
+  </data>
+	<data name="Footer.Description" xml:space="preserve">
+    <value>We are a community preparing people for the second coming of Christ.</value>
+  </data>
+	<data name="Footer.QuickLinks" xml:space="preserve">
+    <value>QUICK LINKS</value>
+  </data>
+	<data name="Footer.ContactUs" xml:space="preserve">
+    <value>CONTACT US</value>
+  </data>
+	<data name="Footer.Location2" xml:space="preserve">
+    <value>LOCATION</value>
+  </data>
+	<data name="Footer.ViewGoogleMaps" xml:space="preserve">
+    <value>VIEW ON GOOGLE MAPS</value>
+  </data>
+	<data name="Footer.Address1" xml:space="preserve">
+    <value>Magnolia Urbanization</value>
+  </data>
+	<data name="Footer.Address2" xml:space="preserve">
+    <value>Bayamón, PR 00959</value>
+  </data>
+	<data name="Footer.MapText" xml:space="preserve">
+    <value>Find us easily on Google Maps We look forward to seeing you!</value>
+  </data>
+	<data name="Footer.Copyright" xml:space="preserve">
+    <value>© 2025 Seventh-day Adventist Church Magnolia. All rights reserved.</value>
+  </data>
+	<data name="Footer.LoveMessage" xml:space="preserve">
+    <value>With love and hope</value>
+  </data>
+
+	<!-- Home -->
+	<data name="Home.HeroTitle1" xml:space="preserve">
+    <value>Live the hope.</value>
+  </data>
+	<data name="Home.HeroTitle2" xml:space="preserve">
+    <value>Share the love.</value>
+  </data>
+	<data name="Home.HeroSubtitle" xml:space="preserve">
+    <value>We are a community that seeks to honor God, serve others, and prepare hearts for the second coming of Jesus.</value>
+  </data>
+	<data name="Home.UpcomingEvents" xml:space="preserve">
+    <value>UPCOMING EVENTS</value>
+  </data>
+	<data name="Home.ViewAllEvents" xml:space="preserve">
+    <value>VIEW ALL EVENTS</value>
+  </data>
+	<data name="Home.Loading" xml:space="preserve">
+    <value>Loading events...</value>
+  </data>
+	<data name="Home.NoEvents" xml:space="preserve">
+    <value>No upcoming events at this time.</value>
+  </data>
+	<data name="Home.NoEventsSubtitle" xml:space="preserve">
+    <value>We'll have new activities soon!</value>
+  </data>
+	<data name="Home.WorshipDays" xml:space="preserve">
+    <value>Worship Days</value>
+  </data>
+	<data name="Home.PrayerNight" xml:space="preserve">
+    <value>Prayer Night</value>
+  </data>
+	<data name="Home.TestimonyNight" xml:space="preserve">
+    <value>Testimony Night</value>
+  </data>
+	<data name="Home.YouthSociety" xml:space="preserve">
+    <value>Youth Society</value>
+  </data>
+	<data name="Home.SabbathSchool" xml:space="preserve">
+    <value>Sabbath School</value>
+  </data>
+	<data name="Home.DivineFellowship" xml:space="preserve">
+    <value>Divine Service</value>
+  </data>
+	<data name="Home.Community" xml:space="preserve">
+    <value>Community</value>
+  </data>
+	<data name="Home.CommunitySubtitle" xml:space="preserve">
+    <value>A place to belong</value>
+  </data>
+	<data name="Home.Growth" xml:space="preserve">
+    <value>Growth</value>
+  </data>
+	<data name="Home.GrowthSubtitle" xml:space="preserve">
+    <value>Spiritual formation for the whole family</value>
+  </data>
+	<data name="Home.Service" xml:space="preserve">
+    <value>Service</value>
+  </data>
+	<data name="Home.ServiceSubtitle" xml:space="preserve">
+    <value>Love in action for those in need</value>
+  </data>
+	<data name="Home.Mission" xml:space="preserve">
+    <value>Mission</value>
+  </data>
+	<data name="Home.MissionSubtitle" xml:space="preserve">
+    <value>Bringing hope to our city</value>
+  </data>
+	<data name="Home.Hope" xml:space="preserve">
+    <value>Hope</value>
+  </data>
+	<data name="Home.HopeSubtitle" xml:space="preserve">
+    <value>Prepared for His return</value>
+  </data>
+
+	<!-- Days of the week -->
+	<data name="Days.Monday" xml:space="preserve">
+    <value>MONDAY</value>
+  </data>
+	<data name="Days.Wednesday" xml:space="preserve">
+    <value>WEDNESDAY</value>
+  </data>
+	<data name="Days.Friday" xml:space="preserve">
+    <value>FRIDAY</value>
+  </data>
+	<data name="Days.Saturday" xml:space="preserve">
+    <value>SATURDAY</value>
+  </data>
+
+	<!-- Verse of the day -->
+	<data name="Verse.Title" xml:space="preserve">
+    <value>Verse of the day</value>
+  </data>
+	<data name="Verse.Loading" xml:space="preserve">
+    <value>Loading verse of the day...</value>
+  </data>
+
+	<!-- Errors -->
+	<data name="Error.UnhandledError" xml:space="preserve">
+    <value>An unhandled error has occurred.</value>
+  </data>
+	<data name="Error.Reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+
+	<data name="Verse.FallbackText" xml:space="preserve">
+  <value>For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.</value>
+</data>
+
+	<data name="Verse.FallbackReference" xml:space="preserve">
+  <value>John 3:16</value>
+</data>
+</root>

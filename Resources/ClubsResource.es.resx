@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="PageTitle" xml:space="preserve"><value>Nuestros Clubes</value></data>
+	<data name="HeroTitle" xml:space="preserve"><value>Nuestros Clubes</value></data>
+	<data name="HeroSubtitle" xml:space="preserve"><value>Programas diseñados para niños y jóvenes que buscan aprender, crecer y servir a Dios de una manera divertida.</value></data>
+	<data name="RegisterButton" xml:space="preserve"><value>Inscripción a los Clubes</value></data>
+
+	<data name="AdventurersTitle" xml:space="preserve"><value>Los Aventureros</value></data>
+	<data name="AdventurersAlt" xml:space="preserve"><value>Aventureros</value></data>
+	<data name="AdventurersAge" xml:space="preserve"><value>6 - 9 años</value></data>
+	<data name="AdventurersDescription" xml:space="preserve"><value>Un programa diseñado para los más pequeños, donde aprenden sobre Jesús a través de juegos, manualidades y actividades al aire libre.</value></data>
+	<data name="AdventurersFeature1" xml:space="preserve"><value>Historias bíblicas interactivas</value></data>
+	<data name="AdventurersFeature2" xml:space="preserve"><value>Manualidades creativas</value></data>
+	<data name="AdventurersFeature3" xml:space="preserve"><value>Juegos al aire libre</value></data>
+	<data name="AdventurersFeature4" xml:space="preserve"><value>Canciones y música</value></data>
+	<data name="AdventurersFeature5" xml:space="preserve"><value>Exploración de la naturaleza</value></data>
+	<data name="AdventurersFeature6" xml:space="preserve"><value>Actividades de servicio</value></data>
+
+	<data name="PathfindersTitle" xml:space="preserve"><value>Conquistadores</value></data>
+	<data name="PathfindersAlt" xml:space="preserve"><value>Conquistadores</value></data>
+	<data name="PathfindersAge" xml:space="preserve"><value>10 - 15 años</value></data>
+	<data name="PathfindersDescription" xml:space="preserve"><value>Programa integral que desarrolla habilidades prácticas, espirituales y sociales a través de especialidades, campamentos y servicio comunitario.</value></data>
+	<data name="PathfindersFeature1" xml:space="preserve"><value>Especialidades y honores</value></data>
+	<data name="PathfindersFeature2" xml:space="preserve"><value>Campamentos y caminatas</value></data>
+	<data name="PathfindersFeature3" xml:space="preserve"><value>Servicio comunitario</value></data>
+	<data name="PathfindersFeature4" xml:space="preserve"><value>Deportes y recreación</value></data>
+	<data name="PathfindersFeature5" xml:space="preserve"><value>Estudio de la naturaleza</value></data>
+	<data name="PathfindersFeature6" xml:space="preserve"><value>Desarrollo de liderazgo</value></data>
+
+	<data name="CadetsTitle" xml:space="preserve"><value>Cadetes</value></data>
+	<data name="CadetsAlt" xml:space="preserve"><value>Cadetes</value></data>
+	<data name="CadetsAge" xml:space="preserve"><value>16+ años</value></data>
+	<data name="CadetsDescription" xml:space="preserve"><value>Programa avanzado para jóvenes que buscan desarrollar liderazgo cristiano y prepararse para el servicio en la iglesia y la comunidad.</value></data>
+	<data name="CadetsFeature1" xml:space="preserve"><value>Liderazgo y mentoría</value></data>
+	<data name="CadetsFeature2" xml:space="preserve"><value>Proyectos misioneros</value></data>
+	<data name="CadetsFeature3" xml:space="preserve"><value>Estudio bíblico avanzado</value></data>
+	<data name="CadetsFeature4" xml:space="preserve"><value>Capacitación ministerial</value></data>
+	<data name="CadetsFeature5" xml:space="preserve"><value>Servicio en la iglesia</value></data>
+	<data name="CadetsFeature6" xml:space="preserve"><value>Desarrollo profesional</value></data>
+
+	<data name="Meetings" xml:space="preserve"><value>Reuniones:</value></data>
+	<data name="MeetingTime" xml:space="preserve"><value>Sábados 5:00 PM</value></data>
+
+	<data name="LeadershipTitle" xml:space="preserve"><value>Liderazgo de los Clubes</value></data>
+</root>

@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<!-- Hero -->
+	<data name="Title" xml:space="preserve">
+	  <value>Church Resources</value>
+	</data>
+
+	<data name="Subtitle" xml:space="preserve">
+	  <value>Meet the leaders and departments who faithfully serve our church with love and dedication.</value>
+	</data>
+
+	<!-- Filters -->
+	<data name="SearchPlaceholder" xml:space="preserve">
+	  <value>Search by name or position...</value>
+	</data>
+
+	<data name="AllMinistries" xml:space="preserve">
+	  <value>All Ministries</value>
+	</data>
+
+	<!-- States -->
+	<data name="Loading" xml:space="preserve">
+	  <value>Loading...</value>
+	</data>
+
+	<data name="NoResults" xml:space="preserve">
+	  <value>No resources found</value>
+	</data>
+
+	<data name="NoResultsDescription" xml:space="preserve">
+	  <value>Try different search criteria.</value>
+	</data>
+
+	<!-- Contact -->
+	<data name="Email" xml:space="preserve">
+	  <value>Email</value>
+	</data>
+
+	<data name="Phone" xml:space="preserve">
+	  <value>Phone</value>
+	</data>
+
+	<!-- Pagination -->
+	<data name="ShowingResults" xml:space="preserve">
+	  <value>Showing {0} of {1} resources</value>
+	</data>
+
+	<!-- Values -->
+	<data name="ValuesCommittedTitle" xml:space="preserve">
+	  <value>Committed People</value>
+	</data>
+
+	<data name="ValuesCommittedDescription" xml:space="preserve">
+	  <value>Men and women dedicated to serving with love and humility.</value>
+	</data>
+
+	<data name="ValuesPurposeTitle" xml:space="preserve">
+	  <value>One Purpose</value>
+	</data>
+
+	<data name="ValuesPurposeDescription" xml:space="preserve">
+	  <value>Bringing hope, making disciples, and serving our community.</value>
+	</data>
+
+	<data name="ValuesTogetherTitle" xml:space="preserve">
+	  <value>Working Together</value>
+	</data>
+
+	<data name="ValuesTogetherDescription" xml:space="preserve">
+	  <value>Every ministry and every leader plays an important role.</value>
+	</data>
+
+	<data name="ValuesGloryTitle" xml:space="preserve">
+	  <value>For God's Glory</value>
+	</data>
+
+	<data name="ValuesGloryDescription" xml:space="preserve">
+	  <value>Everything we do is to honor God and bless lives.</value>
+	</data>
+</root>

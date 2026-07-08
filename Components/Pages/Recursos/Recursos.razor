@@ -1,19 +1,27 @@
 @page "/recursos"
 @rendermode InteractiveServer
+
+@using Microsoft.Extensions.Localization
 @using IASD_Magnolia.Services
 @using IASD_Magnolia.Models
+@using IASD_Magnolia.Resources
+
+
+@inject IStringLocalizer<ResourcesResource> L
 @inject ResourcesService ResourcesService
 @inject ILogger<Recursos> Logger
 
-<PageTitle>Recursos - IASD Magnolia</PageTitle>
+<PageTitle>@L["Title"] - IASD Magnolia</PageTitle>
 
 <div class="recursos-page">
     <!-- Hero Section -->
     <section class="recursos-hero-section">
         <div class="recursos-hero-overlay">
             <div class="recursos-hero-content">
-                <h1>Recursos de la Iglesia</h1>
-                <p class="recursos-subtitle">Conoce a los líderes y departamentos que sirven en<br />nuestra iglesia con amor y dedicación.</p>
+                <h1>@L["Title"]</h1>
+                <p class="recursos-subtitle">
+                    @L["Subtitle"]
+                </p>
             </div>
         </div>
     </section>
@@ -22,15 +30,17 @@
     <section class="recursos-filter-section">
         <div class="container">
             <div class="row g-3 align-items-center">
+
                 <!-- Search -->
                 <div class="col-12 col-md-6">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0">
                             <i class="fas fa-search"></i>
                         </span>
-                        <input type="text" 
-                               class="form-control border-start-0" 
-                               placeholder="Buscar por nombre o posición..." 
+
+                        <input type="text"
+                               class="form-control border-start-0"
+                               placeholder="@L["SearchPlaceholder"]"
                                @bind="searchTerm"
                                @bind:event="oninput"
                                @onkeyup="OnSearchChanged" />
@@ -40,16 +50,20 @@
                 <!-- Department Filter -->
                 <div class="col-12 col-md-6">
                     <select class="form-select" @onchange="OnDepartmentChanged">
-                        <option value="">Todos los ministerios</option>
+                        <option value="">@L["AllMinistries"]</option>
+
                         @if (departments != null)
                         {
                             @foreach (var dept in departments)
                             {
-                                <option value="@dept.Id">@dept.Name</option>
+                                <option value="@dept.Id">
+                                    @dept.Name
+                                </option>
                             }
                         }
                     </select>
                 </div>
+
             </div>
         </div>
     </section>
@@ -57,63 +71,102 @@
     <!-- Leadership Grid -->
     <section class="recursos-grid-section py-5">
         <div class="container">
+
             @if (isLoading)
             {
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando...</span>
+                        <span class="visually-hidden">@L["Loading"]</span>
                     </div>
                 </div>
             }
             else if (pagedLeadership == null || !pagedLeadership.Any())
             {
                 <div class="empty-state text-center py-5">
+
                     <i class="fas fa-user-times fa-4x text-muted mb-3"></i>
-                    <h3>No se encontraron recursos</h3>
-                    <p class="text-muted">Intenta con otros criterios de búsqueda</p>
+
+                    <h3>@L["NoResults"]</h3>
+
+                    <p class="text-muted">
+                        @L["NoResultsDescription"]
+                    </p>
+
                 </div>
             }
             else
             {
                 <!-- Grid 3 columnas -->
                 <div class="row g-4">
+
                     @foreach (var leader in pagedLeadership)
                     {
                         <div class="col-12 col-md-6 col-lg-4">
+
                             <div class="recurso-card">
+
                                 <div class="recurso-photo-container">
-                                    <img src="@leader.DisplayPhoto" alt="@leader.FullName" class="recurso-photo" />
+
+                                    <img src="@leader.DisplayPhoto"
+                                         alt="@leader.FullName"
+                                         class="recurso-photo" />
+
                                     <div class="recurso-department-badge">
                                         @leader.DepartmentName
                                     </div>
+
                                 </div>
+
                                 <div class="recurso-body">
-                                    <h5 class="recurso-name">@leader.FullName</h5>
-                                    <p class="recurso-position">@leader.Position</p>
+
+                                    <h5 class="recurso-name">
+                                        @leader.FullName
+                                    </h5>
+
+                                    <p class="recurso-position">
+                                        @leader.Position
+                                    </p>
 
                                     @if (!string.IsNullOrEmpty(leader.Biography))
                                     {
-                                        <p class="recurso-bio">@leader.Biography</p>
+                                        <p class="recurso-bio">
+                                            @leader.Biography
+                                        </p>
                                     }
 
                                     <div class="recurso-contact">
+
                                         @if (!string.IsNullOrEmpty(leader.PublicEmail))
                                         {
-                                            <a href="mailto:@leader.PublicEmail" class="recurso-contact-item" title="Email">
+                                            <a href="mailto:@leader.PublicEmail"
+                                               class="recurso-contact-item"
+                                               title="@L["Email"]">
+
                                                 <i class="fas fa-envelope"></i>
+
                                             </a>
                                         }
+
                                         @if (!string.IsNullOrEmpty(leader.PublicPhone))
                                         {
-                                            <a href="tel:@leader.PublicPhone" class="recurso-contact-item" title="Teléfono">
+                                            <a href="tel:@leader.PublicPhone"
+                                               class="recurso-contact-item"
+                                               title="@L["Phone"]">
+
                                                 <i class="fas fa-phone"></i>
+
                                             </a>
                                         }
+
                                     </div>
+
                                 </div>
+
                             </div>
+
                         </div>
                     }
+
                 </div>
 
                 <!-- Pagination -->
@@ -124,8 +177,12 @@
                             <ul class="pagination justify-content-center">
                                 <!-- Previous Button -->
                                 <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                                    <button class="page-link" @onclick="() => ChangePage(currentPage - 1)" disabled="@(currentPage == 1)">
+                                    <button class="page-link"
+                                            @onclick="() => ChangePage(currentPage - 1)"
+                                            disabled="@(currentPage == 1)">
+
                                         <i class="fas fa-chevron-left"></i>
+
                                     </button>
                                 </li>
 
@@ -141,18 +198,27 @@
 
                                 <!-- Next Button -->
                                 <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                                    <button class="page-link" @onclick="() => ChangePage(currentPage + 1)" disabled="@(currentPage == totalPages)">
+                                    <button class="page-link"
+                                            @onclick="() => ChangePage(currentPage + 1)"
+                                            disabled="@(currentPage == totalPages)">
+
                                         <i class="fas fa-chevron-right"></i>
+
                                     </button>
                                 </li>
+
                             </ul>
+
                         </nav>
+
                         <p class="text-center text-muted mt-2">
-                            Mostrando @pagedLeadership.Count de @filteredLeadership.Count recursos
+                            @string.Format(L["ShowingResults"], pagedLeadership.Count, filteredLeadership.Count)
                         </p>
+
                     </div>
                 }
             }
+
         </div>
     </section>
 
@@ -166,8 +232,8 @@
                         <div class="value-icon mb-3">
                             <i class="fas fa-shield-alt"></i>
                         </div>
-                        <h5 class="value-title">Personas comprometidas</h5>
-                        <p class="value-description">Hombres y mujeres dedicados a servir con amor y humildad.</p>
+                        <h5>@L["ValuesCommittedTitle"]</h5>
+                        <p>@L["ValuesCommittedDescription"]</p>
                     </div>
                 </div>
 
@@ -177,8 +243,8 @@
                         <div class="value-icon mb-3">
                             <i class="fas fa-heart"></i>
                         </div>
-                        <h5 class="value-title">Un solo propósito</h5>
-                        <p class="value-description">Llevar esperanza, formar discípulos y servir a nuestra comunidad.</p>
+                        <h5>@L["ValuesPurposeTitle"]</h5>
+                        <p>@L["ValuesPurposeDescription"]</p>
                     </div>
                 </div>
 
@@ -188,8 +254,8 @@
                         <div class="value-icon mb-3">
                             <i class="fas fa-users"></i>
                         </div>
-                        <h5 class="value-title">Trabajamos juntos</h5>
-                        <p class="value-description">Cada ministerio y líder cumple un papel importante.</p>
+                        <h5>@L["ValuesTogetherTitle"]</h5>
+                        <p>@L["ValuesTogetherDescription"]</p>
                     </div>
                 </div>
 
@@ -199,8 +265,9 @@
                         <div class="value-icon mb-3">
                             <i class="fas fa-book-bible"></i>
                         </div>
-                        <h5 class="value-title">Para la gloria de Dios</h5>
-                        <p class="value-description">Todo lo que hacemos es para honrar a Dios y bendecir vidas.</p>
+
+                        <h5>@L["ValuesGloryTitle"]</h5>
+                        <p>@L["ValuesGloryDescription"]</p>
                     </div>
                 </div>
             </div>

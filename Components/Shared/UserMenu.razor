@@ -48,16 +48,6 @@
                         <i class="fas fa-users"></i>
                         <span>Gestionar Usuarios</span>
                     </a>
-                }
-
-                @* Gestionar Eventos - disponible para Admin y Editor *@
-                @if (AuthState.IsAuthenticated)
-                {
-                    <a href="/admin/eventos" class="user-dropdown-item" @onclick="CloseMenu">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Gestionar Eventos</span>
-                    </a>
-
                     <a href="/admin/tipos-eventos" class="user-dropdown-item" @onclick="CloseMenu">
                         <i class="fas fa-tags"></i>
                         <span>Gestionar Tipos de Eventos</span>
@@ -71,6 +61,15 @@
                     <a href="/admin/liderazgo" class="user-dropdown-item" @onclick="CloseMenu">
                         <i class="fas fa-users"></i>
                         <span>Gestionar Liderazgo</span>
+                    </a>
+                }
+
+                @* Gestionar Eventos - disponible para Admin y Editor *@
+                @if (AuthState.IsAuthenticated)
+                {
+                    <a href="/admin/eventos" class="user-dropdown-item" @onclick="CloseMenu">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Gestionar Eventos</span>
                     </a>
                 }
 

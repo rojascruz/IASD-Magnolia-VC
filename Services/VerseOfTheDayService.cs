@@ -1,6 +1,8 @@
-using IASD_Magnolia.Models;
 using HtmlAgilityPack;
+using IASD_Magnolia.Models;
+using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace IASD_Magnolia.Services;
 
@@ -42,7 +44,14 @@ public class VerseOfTheDayService
     /// URL del sitio web de donde se obtienen los versículos
     /// MANTENIMIENTO: Cambia esto si quieres usar otra fuente
     /// </summary>
-    private const string TargetUrl = "https://www.verseoftheday.com/es/";
+    private static string GetTargetUrl()
+    {
+        var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+        return culture == "en"
+            ? "https://www.verseoftheday.com/en/"
+            : "https://www.verseoftheday.com/es/";
+    }
 
     /// <summary>
     /// Versículos de respaldo que se usan cuando falla la conexión al sitio web.
@@ -97,10 +106,12 @@ public class VerseOfTheDayService
     {
         try
         {
-            _logger.LogInformation("Obteniendo versículo del día desde {Url}", TargetUrl);
+            var targetUrl = GetTargetUrl();
+
+            _logger.LogInformation("Obteniendo versículo del día desde {Url}", targetUrl);
 
             // Hacer request HTTP al sitio web
-            var html = await _httpClient.GetStringAsync(TargetUrl);
+            var html = await _httpClient.GetStringAsync(targetUrl);
 
             // Parsear el HTML y extraer el versículo
             var verse = ParseHtmlContent(html);
