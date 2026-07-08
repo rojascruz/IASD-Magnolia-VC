@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+		<data name="Title" xml:space="preserve">
+	  <value>Ministerios y Departamentos</value>
+	</data>
+
+		<data name="Subtitle" xml:space="preserve">
+	  <value>Cada ministerio tiene un propósito diferente, pero todos comparten la misma misión: servir a Dios y a nuestra comunidad con amor y dedicación.</value>
+	</data>
+
+		<data name="Schedule" xml:space="preserve">
+	  <value>Horario:</value>
+	</data>
+
+		<data name="SabbathSchoolTitle" xml:space="preserve">
+	  <value>Escuela Sabática</value>
+	</data>
+
+		<data name="SabbathSchoolDescription" xml:space="preserve">
+	  <value>Estudio sistemático de la Biblia todos los sábados. Clases para todas las edades con maestros capacitados.</value>
+	</data>
+
+		<data name="SabbathSchoolTime" xml:space="preserve">
+	  <value>Sábados 9:30 AM</value>
+	</data>
+
+		<data name="YouthTitle" xml:space="preserve">
+	  <value>Ministerio de Jóvenes</value>
+	</data>
+
+		<data name="YouthDescription" xml:space="preserve">
+	  <value>Ministerio dedicado a los jóvenes adventistas, con actividades espirituales, sociales y misioneras.</value>
+	</data>
+
+		<data name="YouthTime" xml:space="preserve">
+	  <value>Viernes 8:00 PM</value>
+	</data>
+
+		<data name="HealthTitle" xml:space="preserve">
+	  <value>Ministerio de Salud</value>
+	</data>
+
+		<data name="HealthDescription" xml:space="preserve">
+	  <value>Promovemos el bienestar físico, mental y espiritual a través de programas de salud preventiva.</value>
+	</data>
+
+		<data name="HealthTime" xml:space="preserve">
+	  <value>Lunes 8:00 PM</value>
+	</data>
+
+		<data name="ChildrenTitle" xml:space="preserve">
+	  <value>Ministerio Infantil</value>
+	</data>
+
+		<data name="ChildrenDescription" xml:space="preserve">
+	  <value>Cuidado y enseñanza especializada para nuestros niños, con actividades adaptadas a su edad.</value>
+	</data>
+
+		<data name="ChildrenTime" xml:space="preserve">
+	  <value>Sábados durante el culto</value>
+	</data>
+
+		<data name="PrayerTitle" xml:space="preserve">
+	  <value>Ministerio de Oración</value>
+	</data>
+
+		<data name="PrayerDescription" xml:space="preserve">
+	  <value>Intercesión y oración por las necesidades de la iglesia y la comunidad. Unidos en oración.</value>
+	</data>
+
+		<data name="ADRATitle" xml:space="preserve">
+	  <value>ADRA</value>
+	</data>
+
+		<data name="ADRADescription" xml:space="preserve">
+	  <value>Servicio cristiano que brinda ayuda y esperanza a nuestra comunidad mediante proyectos solidarios y donativos.</value>
+	</data>
+
+		<data name="ADRATime1" xml:space="preserve">
+	  <value>Miércoles 7:30 - 8:30 PM</value>
+	</data>
+
+		<data name="ADRATime2" xml:space="preserve">
+	  <value>Sábado 9:30 - 11:00 AM</value>
+	</data>
+</root>	

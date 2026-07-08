@@ -1,71 +1,62 @@
 @page "/sobre-nosotros"
+@using Microsoft.Extensions.Localization
+@using IASD_Magnolia.Resources
+@inject IStringLocalizer<AboutResource> L
 
-<PageTitle>Sobre Nosotros - Iglesia Adventista del Séptimo Día Magnolia</PageTitle>
+<PageTitle>@L["Title"] - IASD Magnolia</PageTitle>
 
-<!-- Hero Section con imagen de fondo -->
 <section class="about-hero-section">
     <div class="about-hero-overlay">
         <div class="about-hero-content">
-           
-            <h1>Sobre Nosotros</h1>
-            <p class="about-subtitle">Conoce nuestra historia, misión y propósito.</p>
-            <p class="about-description">
-                Somos parte de la Iglesia Adventista del Séptimo Día, un<br/>
-                movimiento cristiano mundial que proclama el evangelio eterno<br/>
-                y la esperanza del pronto regreso de Jesús.
-            </p>
-      
+            <h1>@L["Title"]</h1>
+            <p class="about-subtitle">@L["Subtitle"]</p>
+            <p class="about-description">@L["Description"]</p>
         </div>
     </div>
 </section>
 
 <hr />
-<!-- Sección de Misión, Visión, Propósito y Lema -->
+
 <section class="pillars-section">
     <div class="pillars-container">
         <div class="pillar-card">
             <div class="pillar-icon">
                 <i class="bi bi-bullseye"></i>
             </div>
-            <h3>MISIÓN</h3>
-            <p>Anunciar el evangelio eterno a toda nación, tribu, lengua y pueblo, guiando a las personas a aceptar a Jesús como Salvador personal y preparándolas para su pronto regreso.</p>
+            <h3>@L["MissionTitle"]</h3>
+            <p>@L["MissionText"]</p>
         </div>
 
         <div class="pillar-card">
             <div class="pillar-icon">
                 <i class="fa-solid fa-eye"></i>
             </div>
-            <h3>VISIÓN</h3>
-            <p>Vivir y compartir el amor de Cristo, reflejando esperanza, servicio y fe mientras esperamos el glorioso regreso de Jesús.</p>
+            <h3>@L["VisionTitle"]</h3>
+            <p>@L["VisionText"]</p>
         </div>
 
         <div class="pillar-card">
             <div class="pillar-icon">
                 <i class="fa-regular fa-heart"></i>
             </div>
-            <h3>PROPÓSITO</h3>
-            <p>Inspirar a cada persona a tener una relación con Dios, crecer juntos en la fe y servir a los demás con amor y compasión.</p>
+            <h3>@L["PurposeTitle"]</h3>
+            <p>@L["PurposeText"]</p>
         </div>
 
         <div class="pillar-card">
             <div class="pillar-icon">
                 <i class="fa-solid fa-book-open-reader"></i>
             </div>
-            <h3>NUESTRO LEMA</h3>
-            <p>"Vive la esperanza.<br/>Comparte el amor."</p>
+            <h3>@L["MottoTitle"]</h3>
+            <p>@L["MottoText"]</p>
             <p class="pillar-verse">Juan 3:16</p>
         </div>
     </div>
 </section>
 
-<!-- Nuestra Historia -->
 <section class="history-section">
-    <h2>NUESTRA HISTORIA</h2>
-    <p class="history-intro">
-        La Iglesia Adventista del Séptimo Día fue organizada oficialmente en 1863.<br/>
-        Desde entonces, ha crecido alrededor del mundo, llevando esperanza,<br/>
-        educación, salud y servicio a millones de personas.
-    </p>
+    <h2>@L["HistoryTitle"]</h2>
+    <p class="history-intro">@L["HistoryIntro"]</p>
 
     <div class="timeline">
         <div class="timeline-item">
@@ -73,99 +64,95 @@
                 <i class="fa-regular fa-calendar"></i>
             </div>
             <h4>1863</h4>
-            <p>Organización oficial de la Iglesia Adventista del Séptimo Día el 21 de mayo de 1863.</p>
+            <p>@L["History1863"]</p>
         </div>
 
         <div class="timeline-item">
             <div class="timeline-icon">
                 <i class="fa-solid fa-users"></i>
             </div>
-            <h4>CRECIMIENTO</h4>
-            <p>Hoy estamos presentes en más de 200 países y territorios con más de 21 millones de miembros.</p>
+            <h4>@L["GrowthTitle"]</h4>
+            <p>@L["GrowthText"]</p>
         </div>
 
         <div class="timeline-item">
             <div class="timeline-icon">
                 <i class="fa-solid fa-heart-pulse"></i>
             </div>
-            <h4>SERVICIO</h4>
-            <p>A través de la educación, la salud, la asistencia humanitaria y el servicio cristiano, llevamos esperanza.</p>
+            <h4>@L["ServiceTitle"]</h4>
+            <p>@L["ServiceText"]</p>
         </div>
 
         <div class="timeline-item">
             <div class="timeline-icon">
                 <i class="fa-solid fa-earth-americas"></i>
             </div>
-            <h4>MISIÓN MUNDIAL</h4>
-            <p>Proclamar el evangelio eterno a todo el mundo y preparar un pueblo para el pronto regreso de Jesús.</p>
+            <h4>@L["WorldMissionTitle"]</h4>
+            <p>@L["WorldMissionText"]</p>
         </div>
     </div>
 </section>
 
-<!-- Nuestras Creencias -->
 <section class="beliefs-section">
     <div class="beliefs-container">
         <div class="beliefs-content">
-            <h2>NUESTRAS CREENCIAS</h2>
-            <p class="beliefs-intro">
-                Como iglesia, aceptamos las 28 creencias fundamentales que se encuentran<br/>
-                en la Biblia. Entre ellas:
-            </p>
+            <h2>@L["BeliefsTitle"]</h2>
+            <p class="beliefs-intro">@L["BeliefsIntro"]</p>
 
             <div class="beliefs-grid">
                 <div class="belief-item">
                     <div class="pillar-icon">
                         <i class="fa-solid fa-book-bible"></i>
                     </div>
-                    <p>La Biblia</p>
+                    <p>@L["BeliefBible"]</p>
                 </div>
 
                 <div class="belief-item">
                     <div class="pillar-icon">
                         <i class="fa-solid fa-cross"></i>
                     </div>
-                    <p>La salvación<br/>por gracia</p>
+                    <p>@L["BeliefSalvation"]</p>
                 </div>
 
                 <div class="belief-item">
                     <div class="belief-icon">
-                        <img src="/img/AboutUs/FooterLogo.png" alt="El sábado día de reposo" />
+                        <img src="/img/AboutUs/FooterLogo.png" alt="@L["BeliefSabbath"]" />
                     </div>
-                    <p>El sábado<br/>día de reposo</p>
+                    <p>@L["BeliefSabbath"]</p>
                 </div>
 
                 <div class="belief-item">
                     <div class="pillar-icon">
                         <i class="fa-solid fa-book-bible"></i>
                     </div>
-                    <p>La segunda<br/>venida de Cristo</p>
+                    <p>@L["BeliefSecondComing"]</p>
                 </div>
 
                 <div class="belief-item">
                     <div class="pillar-icon">
                         <i class="fa-solid fa-church"></i>
                     </div>
-                    <p>El ministerio de Cristo<br/>en el santuario celestial</p>
+                    <p>@L["BeliefSanctuary"]</p>
                 </div>
 
                 <div class="belief-item">
                     <div class="pillar-icon">
                         <i class="fa-solid fa-users"></i>
                     </div>
-                    <p>La iglesia</p>
+                    <p>@L["BeliefChurch"]</p>
                 </div>
 
                 <div class="belief-item">
                     <div class="pillar-icon">
                         <i class="fa-solid fa-earth-americas"></i>
                     </div>
-                    <p>La misión</p>
+                    <p>@L["BeliefMission"]</p>
                 </div>
             </div>
         </div>
 
         <div class="beliefs-image">
-            <img src="/img/AboutUs/Biblia.png" alt="Biblia abierta" />
+            <img src="/img/AboutUs/Biblia.png" alt="@L["BibleImageAlt"]" />
         </div>
     </div>
 </section>

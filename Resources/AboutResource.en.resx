@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="Title" xml:space="preserve"><value>About Us</value></data>
+	<data name="Subtitle" xml:space="preserve"><value>Learn about our history, mission, and purpose.</value></data>
+	<data name="Description" xml:space="preserve"><value>We are part of the Seventh-day Adventist Church, a worldwide Christian movement that proclaims the everlasting gospel and the hope of Jesus’ soon return.</value></data>
+
+	<data name="MissionTitle" xml:space="preserve"><value>MISSION</value></data>
+	<data name="MissionText" xml:space="preserve"><value>To proclaim the everlasting gospel to every nation, tribe, language, and people, leading others to accept Jesus as their personal Savior and preparing them for His soon return.</value></data>
+
+	<data name="VisionTitle" xml:space="preserve"><value>VISION</value></data>
+	<data name="VisionText" xml:space="preserve"><value>To live and share the love of Christ, reflecting hope, service, and faith as we await the glorious return of Jesus.</value></data>
+
+	<data name="PurposeTitle" xml:space="preserve"><value>PURPOSE</value></data>
+	<data name="PurposeText" xml:space="preserve"><value>To inspire every person to build a relationship with God, grow together in faith, and serve others with love and compassion.</value></data>
+
+	<data name="MottoTitle" xml:space="preserve"><value>OUR MOTTO</value></data>
+	<data name="MottoText" xml:space="preserve"><value>"Live the hope. Share the love."</value></data>
+
+	<data name="HistoryTitle" xml:space="preserve"><value>OUR HISTORY</value></data>
+	<data name="HistoryIntro" xml:space="preserve"><value>The Seventh-day Adventist Church was officially organized in 1863. Since then, it has grown around the world, bringing hope, education, health, and service to millions of people.</value></data>
+	<data name="History1863" xml:space="preserve"><value>Official organization of the Seventh-day Adventist Church on May 21, 1863.</value></data>
+
+	<data name="GrowthTitle" xml:space="preserve"><value>GROWTH</value></data>
+	<data name="GrowthText" xml:space="preserve"><value>Today, we are present in more than 200 countries and territories with more than 21 million members.</value></data>
+
+	<data name="ServiceTitle" xml:space="preserve"><value>SERVICE</value></data>
+	<data name="ServiceText" xml:space="preserve"><value>Through education, health, humanitarian assistance, and Christian service, we bring hope to others.</value></data>
+
+	<data name="WorldMissionTitle" xml:space="preserve"><value>WORLD MISSION</value></data>
+	<data name="WorldMissionText" xml:space="preserve"><value>To proclaim the everlasting gospel to the whole world and prepare a people for the soon return of Jesus.</value></data>
+
+	<data name="BeliefsTitle" xml:space="preserve"><value>OUR BELIEFS</value></data>
+	<data name="BeliefsIntro" xml:space="preserve"><value>As a church, we accept the 28 fundamental beliefs found in the Bible. Among them:</value></data>
+
+	<data name="BeliefBible" xml:space="preserve"><value>The Bible</value></data>
+	<data name="BeliefSalvation" xml:space="preserve"><value>Salvation by grace</value></data>
+	<data name="BeliefSabbath" xml:space="preserve"><value>The Sabbath day of rest</value></data>
+	<data name="BeliefSecondComing" xml:space="preserve"><value>The second coming of Christ</value></data>
+	<data name="BeliefSanctuary" xml:space="preserve"><value>Christ’s ministry in the heavenly sanctuary</value></data>
+	<data name="BeliefChurch" xml:space="preserve"><value>The church</value></data>
+	<data name="BeliefMission" xml:space="preserve"><value>The mission</value></data>
+	<data name="BibleImageAlt" xml:space="preserve"><value>Open Bible</value></data>
+</root>

@@ -32,26 +32,28 @@
 }
 
     .about-hero-content h1 {
-        font-size: clamp(2.2rem, 5vw, 3rem);
+        font-size: clamp(3rem, 5vw, 5rem);
         font-weight: 800;
         margin: 0 0 10px;
         color: white;
+        text-align: center
     }
 
 .about-subtitle {
-    font-size: clamp(1.1rem, 2.3vw, 1.25rem);
+    font-size: clamp(1.25rem, 2.3vw, 1.6rem);
     color: #F7941D;
     margin: 0 0 20px;
     font-weight: 700;
+    text-align: center
 }
 
 .about-description {
-    font-size: 1rem;
+    font-size: 1.2rem;
     line-height: 1.7;
     color: white;
     margin: 0;
+    text-align: center
 }
-
 /* PILARES */
 .pillars-section {
     background: white;

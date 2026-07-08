@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="PageTitle" xml:space="preserve"><value>Our Clubs</value></data>
+	<data name="HeroTitle" xml:space="preserve"><value>Our Clubs</value></data>
+	<data name="HeroSubtitle" xml:space="preserve"><value>Programs designed for children and youth who want to learn, grow, and serve God in a fun way.</value></data>
+	<data name="RegisterButton" xml:space="preserve"><value>Club Registration</value></data>
+
+	<data name="AdventurersTitle" xml:space="preserve"><value>Adventurers</value></data>
+	<data name="AdventurersAlt" xml:space="preserve"><value>Adventurers</value></data>
+	<data name="AdventurersAge" xml:space="preserve"><value>Ages 6 - 9</value></data>
+	<data name="AdventurersDescription" xml:space="preserve"><value>A program designed for younger children, where they learn about Jesus through games, crafts, and outdoor activities.</value></data>
+	<data name="AdventurersFeature1" xml:space="preserve"><value>Interactive Bible stories</value></data>
+	<data name="AdventurersFeature2" xml:space="preserve"><value>Creative crafts</value></data>
+	<data name="AdventurersFeature3" xml:space="preserve"><value>Outdoor games</value></data>
+	<data name="AdventurersFeature4" xml:space="preserve"><value>Songs and music</value></data>
+	<data name="AdventurersFeature5" xml:space="preserve"><value>Nature exploration</value></data>
+	<data name="AdventurersFeature6" xml:space="preserve"><value>Service activities</value></data>
+
+	<data name="PathfindersTitle" xml:space="preserve"><value>Pathfinders</value></data>
+	<data name="PathfindersAlt" xml:space="preserve"><value>Pathfinders</value></data>
+	<data name="PathfindersAge" xml:space="preserve"><value>Ages 10 - 15</value></data>
+	<data name="PathfindersDescription" xml:space="preserve"><value>A complete program that develops practical, spiritual, and social skills through honors, camping, and community service.</value></data>
+	<data name="PathfindersFeature1" xml:space="preserve"><value>Honors and specialties</value></data>
+	<data name="PathfindersFeature2" xml:space="preserve"><value>Camping and hiking</value></data>
+	<data name="PathfindersFeature3" xml:space="preserve"><value>Community service</value></data>
+	<data name="PathfindersFeature4" xml:space="preserve"><value>Sports and recreation</value></data>
+	<data name="PathfindersFeature5" xml:space="preserve"><value>Nature study</value></data>
+	<data name="PathfindersFeature6" xml:space="preserve"><value>Leadership development</value></data>
+
+	<data name="CadetsTitle" xml:space="preserve"><value>Cadets</value></data>
+	<data name="CadetsAlt" xml:space="preserve"><value>Cadets</value></data>
+	<data name="CadetsAge" xml:space="preserve"><value>Ages 16+</value></data>
+	<data name="CadetsDescription" xml:space="preserve"><value>An advanced program for youth seeking to develop Christian leadership and prepare for service in the church and community.</value></data>
+	<data name="CadetsFeature1" xml:space="preserve"><value>Leadership and mentoring</value></data>
+	<data name="CadetsFeature2" xml:space="preserve"><value>Mission projects</value></data>
+	<data name="CadetsFeature3" xml:space="preserve"><value>Advanced Bible study</value></data>
+	<data name="CadetsFeature4" xml:space="preserve"><value>Ministry training</value></data>
+	<data name="CadetsFeature5" xml:space="preserve"><value>Church service</value></data>
+	<data name="CadetsFeature6" xml:space="preserve"><value>Professional development</value></data>
+
+	<data name="Meetings" xml:space="preserve"><value>Meetings:</value></data>
+	<data name="MeetingTime" xml:space="preserve"><value>Saturdays 5:00 PM</value></data>
+
+	<data name="LeadershipTitle" xml:space="preserve"><value>Club Leadership</value></data>
+</root>

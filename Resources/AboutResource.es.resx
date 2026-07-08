@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="Title" xml:space="preserve"><value>Sobre Nosotros</value></data>
+	<data name="Subtitle" xml:space="preserve"><value>Conoce nuestra historia, misión y propósito.</value></data>
+	<data name="Description" xml:space="preserve"><value>Somos parte de la Iglesia Adventista del Séptimo Día, un movimiento cristiano mundial que proclama el evangelio eterno y la esperanza del pronto regreso de Jesús.</value></data>
+
+	<data name="MissionTitle" xml:space="preserve"><value>MISIÓN</value></data>
+	<data name="MissionText" xml:space="preserve"><value>Anunciar el evangelio eterno a toda nación, tribu, lengua y pueblo, guiando a las personas a aceptar a Jesús como Salvador personal y preparándolas para su pronto regreso.</value></data>
+
+	<data name="VisionTitle" xml:space="preserve"><value>VISIÓN</value></data>
+	<data name="VisionText" xml:space="preserve"><value>Vivir y compartir el amor de Cristo, reflejando esperanza, servicio y fe mientras esperamos el glorioso regreso de Jesús.</value></data>
+
+	<data name="PurposeTitle" xml:space="preserve"><value>PROPÓSITO</value></data>
+	<data name="PurposeText" xml:space="preserve"><value>Inspirar a cada persona a tener una relación con Dios, crecer juntos en la fe y servir a los demás con amor y compasión.</value></data>
+
+	<data name="MottoTitle" xml:space="preserve"><value>NUESTRO LEMA</value></data>
+	<data name="MottoText" xml:space="preserve"><value>"Vive la esperanza. Comparte el amor."</value></data>
+
+	<data name="HistoryTitle" xml:space="preserve"><value>NUESTRA HISTORIA</value></data>
+	<data name="HistoryIntro" xml:space="preserve"><value>La Iglesia Adventista del Séptimo Día fue organizada oficialmente en 1863. Desde entonces, ha crecido alrededor del mundo, llevando esperanza, educación, salud y servicio a millones de personas.</value></data>
+	<data name="History1863" xml:space="preserve"><value>Organización oficial de la Iglesia Adventista del Séptimo Día el 21 de mayo de 1863.</value></data>
+
+	<data name="GrowthTitle" xml:space="preserve"><value>CRECIMIENTO</value></data>
+	<data name="GrowthText" xml:space="preserve"><value>Hoy estamos presentes en más de 200 países y territorios con más de 21 millones de miembros.</value></data>
+
+	<data name="ServiceTitle" xml:space="preserve"><value>SERVICIO</value></data>
+	<data name="ServiceText" xml:space="preserve"><value>A través de la educación, la salud, la asistencia humanitaria y el servicio cristiano, llevamos esperanza.</value></data>
+
+	<data name="WorldMissionTitle" xml:space="preserve"><value>MISIÓN MUNDIAL</value></data>
+	<data name="WorldMissionText" xml:space="preserve"><value>Proclamar el evangelio eterno a todo el mundo y preparar un pueblo para el pronto regreso de Jesús.</value></data>
+
+	<data name="BeliefsTitle" xml:space="preserve"><value>NUESTRAS CREENCIAS</value></data>
+	<data name="BeliefsIntro" xml:space="preserve"><value>Como iglesia, aceptamos las 28 creencias fundamentales que se encuentran en la Biblia. Entre ellas:</value></data>
+
+	<data name="BeliefBible" xml:space="preserve"><value>La Biblia</value></data>
+	<data name="BeliefSalvation" xml:space="preserve"><value>La salvación por gracia</value></data>
+	<data name="BeliefSabbath" xml:space="preserve"><value>El sábado día de reposo</value></data>
+	<data name="BeliefSecondComing" xml:space="preserve"><value>La segunda venida de Cristo</value></data>
+	<data name="BeliefSanctuary" xml:space="preserve"><value>El ministerio de Cristo en el santuario celestial</value></data>
+	<data name="BeliefChurch" xml:space="preserve"><value>La iglesia</value></data>
+	<data name="BeliefMission" xml:space="preserve"><value>La misión</value></data>
+	<data name="BibleImageAlt" xml:space="preserve"><value>Biblia abierta</value></data>
+</root>

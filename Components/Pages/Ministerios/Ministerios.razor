@@ -1,18 +1,17 @@
 @page "/ministerios"
+@using Microsoft.Extensions.Localization
+@using IASD_Magnolia.Resources
+@inject IStringLocalizer<MinistriesResource> L
 
-<PageTitle>Ministerios y Departamentos - Iglesia Adventista del Séptimo Día Magnolia</PageTitle>
+
+<PageTitle>@L["Title"] - IASD Magnolia</PageTitle>
 
 <!-- Hero Section con imagen de fondo -->
 <section class="ministry-hero-section">
     <div class="ministry-hero-overlay">
         <div class="ministry-hero-content">
-           
-            <h1>Ministerios y Departamentos</h1>
-            <p class="ministry-subtitle">
-                Cada ministerio tiene un propósito diferente, pero todos<br/>
-                comparten la misma misión: servir a Dios y a nuestra comunidad<br/>
-                con amor y dedicación.
-            </p>
+            <h1>@L["Title"]</h1>
+            <p class="ministry-subtitle">@L["Subtitle"]</p>
         </div>
     </div>
 </section>
@@ -25,11 +24,11 @@
             <div class="ministry-icon-circle">
                 <i class="fa-solid fa-book-open"></i>
             </div>
-            <h3>Escuela Sabática</h3>
-            <p>Estudio sistemático de la Biblia todos los sábados. Clases para todas las edades con maestros capacitados.</p>
+            <h3>@L["SabbathSchoolTitle"]</h3>
+            <p>@L["SabbathSchoolDescription"]</p>
             <div class="ministry-schedule">
                 <i class="fa-regular fa-clock"></i>
-                <span><strong>Horario:</strong> Sábados 9:30 AM</span>
+                <span><strong>@L["Schedule"]</strong> @L["SabbathSchoolTime"]</span>
             </div>
         </div>
 
@@ -38,11 +37,11 @@
             <div class="ministry-icon-circle">
                 <i class="fa-solid fa-user-group"></i>
             </div>
-            <h3>Ministerio de Jóvenes</h3>
-            <p>Ministerio dedicado a los jóvenes adventistas, con actividades espirituales, sociales y misioneras.</p>
+            <h3>@L["YouthTitle"]</h3>
+            <p>@L["YouthDescription"]</p>
             <div class="ministry-schedule">
                 <i class="fa-regular fa-clock"></i>
-                <span><strong>Horario:</strong> Viernes 8:00 PM</span>
+                <span><strong>@L["Schedule"]</strong> @L["YouthTime"]</span>
             </div>
         </div>
 
@@ -51,11 +50,11 @@
             <div class="ministry-icon-circle">
                 <i class="fa-solid fa-heart-pulse"></i>
             </div>
-            <h3>Ministerio de Salud</h3>
-            <p>Promovemos el bienestar físico, mental y espiritual a través de programas de salud preventiva.</p>
+            <h3>@L["HealthTitle"]</h3>
+            <p>@L["HealthDescription"]</p>
             <div class="ministry-schedule">
                 <i class="fa-regular fa-clock"></i>
-                <span><strong>Horario:</strong> Lunes 8:00 PM</span>
+                <span><strong>@L["Schedule"]</strong> @L["HealthTime"]</span>
             </div>
         </div>
 
@@ -64,11 +63,11 @@
             <div class="ministry-icon-circle">
                 <i class="fa-solid fa-children"></i>
             </div>
-            <h3>Ministerio Infantil</h3>
-            <p>Cuidado y enseñanza especializada para nuestros niños, con actividades adaptadas a su edad.</p>
+            <h3>@L["ChildrenTitle"]</h3>
+            <p>@L["ChildrenDescription"]</p>
             <div class="ministry-schedule">
                 <i class="fa-regular fa-clock"></i>
-                <span><strong>Horario:</strong> Sábados durante el culto</span>
+                <span><strong>@L["Schedule"]</strong> @L["ChildrenTime"]</span>
             </div>
         </div>
 
@@ -77,8 +76,8 @@
             <div class="ministry-icon-circle">
                 <i class="fa-solid fa-hands-praying"></i>
             </div>
-            <h3>Ministerio de Oración</h3>
-            <p>Intercesión y oración por las necesidades de la iglesia y la comunidad. Unidos en oración.</p>
+            <h3>@L["PrayerTitle"]</h3>
+            <p>@L["PrayerDescription"]</p>
             @* <div class="ministry-schedule">
                 <i class="fa-regular fa-clock"></i>
                 <span><strong>Horario:</strong> Miércoles 8:00 PM</span>
@@ -90,17 +89,20 @@
             <div class="ministry-icon-circle">
                 <i class="fa-solid fa-music"></i>
             </div>
-            <h3>ADRA</h3>
-            <p>Servicio cristiano que brinda ayuda y esperanza a nuestra comunidad atraéz de proyectos solidatios y donativos</p>
+            <h3>@L["ADRATitle"]</h3>
+            <p>@L["ADRADescription"]</p>
+
             <div class="ministry-schedule">
                 <i class="fa-regular fa-clock"></i>
-                <span><strong>Horario:</strong> Miercoles 7:30 - 8:30PM</span>
+                <span><strong>@L["Schedule"]</strong> @L["ADRATime1"]</span>
             </div>
+
             <div class="ministry-schedule">
                 <i class="fa-regular fa-clock"></i>
-                <span><strong>Horario:</strong> Sábado 9:30 - 11:00 AM</span>
+                <span><strong>@L["Schedule"]</strong> @L["ADRATime2"]</span>
             </div>
         </div>
+
     </div>
 </section>
 

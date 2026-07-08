@@ -273,7 +273,7 @@ else
     private bool isSaving = false;
     private IBrowserFile? selectedPhoto;
     private string? photoPreview;
-    private string? originalPhotoPath;
+    private string originalPhotoPath = string.Empty;
     private bool removeCurrentPhoto = false;
 
     private bool showToast = false;
@@ -286,7 +286,7 @@ else
         leader = await LeadershipService.GetLeadershipByIdAsync(Id);
         if (leader != null)
         {
-            originalPhotoPath = leader.PhotoUrl;
+            originalPhotoPath = leader.PhotoUrl ?? string.Empty;
         }
         departments = await DepartmentsService.GetAllDepartmentsAsync();
         isLoading = false;
